@@ -62,7 +62,13 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WindowListener {
+  @override
+  void onWindowFocus() {
+    // Make sure to call once.
+    setState(() {});
+  }
+
   Widget getAppBarTitle(String title) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {

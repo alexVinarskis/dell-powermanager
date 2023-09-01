@@ -28,7 +28,8 @@ bool FlutterWindow::OnCreate() {
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
-    this->Show();
+    // https://pub.dev/packages/window_manager - hide at launch
+    // this->Show();
   });
 
   return true;
