@@ -40,4 +40,7 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y ninja-build libgtk-3-dev libsqlite3-dev
       - run: flutter config --enable-linux-desktop
-      - run: flutter build linux --release
+      - run: ./package.sh
+      - uses: kittaakos/upload-artifact-as-is@v0
+        with:
+          path: '*.deb'

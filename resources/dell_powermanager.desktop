@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version={VERSION}
+Type=Application
+Terminal=false
+Exec={PATH_EXEC}
+Name={NAME}
+Icon={PATH_ICON}
