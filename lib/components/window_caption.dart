@@ -1,11 +1,8 @@
 // Modified from window_manager package
 
 import 'package:flutter/material.dart';
-
-import 'package:window_manager/src/widgets/drag_to_move_area.dart';
-import 'package:window_manager/src/widgets/window_caption_button.dart';
-import 'package:window_manager/src/window_listener.dart';
-import 'package:window_manager/src/window_manager.dart';
+import 'package:window_manager/window_manager.dart';
+import 'drag_to_move_area.dart' as custom_drag_to_move_area;
 
 const double kWindowCaptionHeight = 32;
 
@@ -66,7 +63,7 @@ class _WindowCaptionState extends State<WindowCaption> with WindowListener {
       child: Row(
         children: [
           Expanded(
-            child: DragToMoveArea(
+            child: custom_drag_to_move_area.DragToMoveArea(
               child: SizedBox(
                 height: double.infinity,
                 child: Row(

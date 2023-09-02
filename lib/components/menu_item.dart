@@ -19,10 +19,6 @@ class MenuItem extends StatelessWidget {
       color: isSelected ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5) : Colors.transparent,
       elevation: 0,
       margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
-      // shape: RoundedRectangleBorder(
-      //   side: BorderSide(color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent, width: 1),
-      //   borderRadius: BorderRadius.circular(20),
-      // ),
       child: InkWell(
         onTap: onPress,
         child: Row(

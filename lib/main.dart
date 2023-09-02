@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:window_manager/window_manager.dart';
 import 'components/window_caption.dart' as window_caption;
+import 'dart:io' show Platform;
 
 Future<void> main() async {
   const String title      = "Dell Power Manager by VA";
@@ -20,7 +21,9 @@ Future<void> main() async {
     titleBarStyle: TitleBarStyle.hidden,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.setHasShadow(false);
+    if (!Platform.isLinux) {
+      await windowManager.setHasShadow(false);
+    }
     windowManager.show();
   });
 
