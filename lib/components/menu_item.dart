@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MenuItem extends StatelessWidget {
-  const MenuItem(this.title, this.icon, {super.key, this.description = "", this.autoHide = true, this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false});
+  const MenuItem(this.title, this.icon, {super.key, this.description = "", this.autoHide = true, this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.backgroundColor = Colors.transparent});
 
   final String title;
   final String description;
@@ -10,13 +10,14 @@ class MenuItem extends StatelessWidget {
   final double paddingV;
   final IconData icon;
   final bool isSelected;
+  final Color backgroundColor;
   final onPress;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      color: isSelected ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5) : Colors.transparent,
+      color: isSelected ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5) : backgroundColor,
       elevation: 0,
       margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
       child: InkWell(

@@ -1,5 +1,6 @@
-import 'package:dell_powermanager/components/menu_item.dart';
 import 'package:flutter/material.dart';
+import '../components/menu_item.dart';
+import '../components/info_button.dart';
 
 class ScreenParent extends StatefulWidget {
   const ScreenParent({super.key, required this.title, this.appBarHeight=45});
@@ -58,7 +59,12 @@ class ScreenParentState extends State<ScreenParent> {
                   paddingH: 20,
                   isSelected: currentMenu == 2,
                 ),
-               
+                const Expanded(child: SizedBox(),),
+                const InfoButton(
+                  title: 'Misc',
+                  paddingV: 20,
+                  paddingH: 20,
+                ),
               ]),
             ),
             Expanded(
