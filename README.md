@@ -27,3 +27,10 @@ Secondary TODOs:
 Potential future features to consider:
 * Add Windows support
 * Add monitoring service for auto switching thermal profiles based on CPU load
+
+## Credits
+* Dell for providing 'Dell Command | Configure CLI'
+* Google for creating Flutter :)
+
+## License
+This application is licensed under GPLv3. In short, this means you use/copy/modify/distribute it for free, but you must provide source code of your modifications, and keep the same license. You cannot sell it as proprietary software. See [LICENSE](LICENSE) for details.
