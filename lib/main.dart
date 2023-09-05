@@ -1,9 +1,10 @@
-import 'package:dell_powermanager/screens/screen_parent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:window_manager/window_manager.dart';
 import 'components/window_caption.dart' as window_caption;
 import 'dart:io' show Platform;
+import '../classes/api.dart';
+import '../screens/screen_parent.dart';
 
 Future<void> main() async {
   const String title      = "Dell Power Manager by VA";
@@ -27,6 +28,7 @@ Future<void> main() async {
     windowManager.show();
   });
 
+  Api(const Duration(milliseconds: 2000));
   runApp(const MyApp(title: title));
 }
 

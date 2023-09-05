@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
+import '../components/menu_dependencies.dart';
 
 class ScreenParent extends StatefulWidget {
   const ScreenParent({super.key, required this.title, this.appBarHeight=45});
@@ -60,6 +61,10 @@ class ScreenParentState extends State<ScreenParent> {
                   isSelected: currentMenu == 2,
                 ),
                 const Expanded(child: SizedBox(),),
+                const MenuDependencies(
+                  paddingV: 0,
+                  paddingH: 20,
+                ),
                 const InfoButton(
                   title: 'Misc',
                   paddingV: 20,

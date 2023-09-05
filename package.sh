@@ -10,7 +10,8 @@ set -e
 PACKAGE="dell-powermanager"
 NAME="Dell Power Manager by VA"
 
-PATH_EXEC="/usr/local/bin/dell_powermanager"
+PATH_EXEC="/usr/local/bin/dell-powermanager"
+PATH_CCTK="/opt/dell/dcc/cctk"
 ICON_PATH="/opt/$PACKAGE/icon"
 APP_PATH="/opt/$PACKAGE"
 APP_DIR="./package$APP_PATH"
@@ -38,12 +39,13 @@ sed -i "s|{VERSION}|${VERSION}|g"           ./package/usr/local/share/applicatio
 sed -i "s|{PATH_EXEC}|${PATH_EXEC}|g"       ./package/usr/local/share/applications/dell_powermanager.desktop
 sed -i "s|{PATH_ICON}|${ICON_PATH}|g"       ./package/usr/local/share/applications/dell_powermanager.desktop
 sed -i "s|{NAME}|${NAME}|g"                 ./package/usr/local/share/applications/dell_powermanager.desktop
+sed -i "s|{PATH_CCTK}|${PATH_CCTK}|g"       ./package/etc/sudoers.d/"$PACKAGE"
 
 ARCHITECTURE="amd64"
 PRIORITY="standard"
 MAINTAINER="alexVinarskis <alex.vinarskis@gmail.com>"
 HOMEPAGE="https://github.com/alexVinarskis/dell-powermanager"
-DEPENDS="libgtk-3-0, libblkid1, liblzma5"
+DEPENDS="libgtk-3-0, libblkid1, liblzma5, wget, tar, pkexec"
 DESCRIPTION="Cross-Platform Dell Power Managmer re-implementation in Flutter"
 
 # Create control file of .deb
