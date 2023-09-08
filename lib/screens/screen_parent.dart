@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
 import '../components/menu_dependencies.dart';
+import '../configs/constants.dart';
+import '../screens/screen_battery.dart';
+import '../screens/screen_summary.dart';
+import '../screens/screen_thermals.dart';
 
 class ScreenParent extends StatefulWidget {
   const ScreenParent({super.key, required this.title, this.appBarHeight=45});
@@ -18,6 +22,14 @@ class ScreenParent extends StatefulWidget {
 class ScreenParentState extends State<ScreenParent> {
   int currentMenu = 0;
 
+  Widget _getRHSScreen(int index) {
+    switch (index) {
+      case 1: return const ScreenBattery(key: Key("screenBattery"));
+      case 2: return const ScreenThermals(key: Key("screenThermals"));
+      default: return const ScreenSummary(key: Key("ScreenSummary"));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +42,7 @@ class ScreenParentState extends State<ScreenParent> {
               flex: 2,
               child: Column(children: [
                 const SizedBox(height: 40,),
-                MenuItem('Battery Information',
+                MenuItem('System Information',
                   description: 'Charge level, state and battery health',
                   Icons.info_outline_rounded,
                   onPress: () {setState(() {
@@ -80,6 +92,10 @@ class ScreenParentState extends State<ScreenParent> {
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(40)),
                     color: Theme.of(context).colorScheme.background,
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: Constants.animationMs),
+                    child: Column(children: [_getRHSScreen(currentMenu)]),
                   ),
                 ),
               ),

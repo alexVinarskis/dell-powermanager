@@ -95,4 +95,17 @@ class Api {
       return false;
     }
   }
+  static Future<bool> requestAction(String cctkType, String mode) async {
+    try {
+      if (Platform.isLinux) {
+        ProcessResult pr = (await shell.run('sudo ${Constants.apiPathLinux} --$cctkType=$mode'))[0];
+        return pr.exitCode == 0;
+      } else {
+        // ToDo Windows integration;
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 }
