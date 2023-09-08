@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../classes/api.dart';
-import '../components/thermal_mode_item.dart';
+import '../components/mode_item.dart';
 import '../configs/cctk.dart';
 
 const indexTitle = 0;
@@ -36,7 +36,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
       padding: const EdgeInsets.only(left: 10, top: 20),
       child: Column(children: [
         for (var mode in thermalModesStrings.keys) 
-          ThermalModeItem(thermalModesStrings[mode]![indexTitle],
+          ModeItem(thermalModesStrings[mode]![indexTitle],
             description: thermalModesStrings[mode]![indexDescription],
             onPress: () async {
               if (!currentlyLoading) {

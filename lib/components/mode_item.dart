@@ -8,8 +8,8 @@ enum OptionState {
   deselected,
 }
 
-class ThermalModeItem extends StatefulWidget {
-  const ThermalModeItem(this.title, {super.key, this.description = "", this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.backgroundColor = Colors.transparent, this.isLoading = false});
+class ModeItem extends StatefulWidget {
+  const ModeItem(this.title, {super.key, this.description = "", this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.backgroundColor = Colors.transparent, this.isLoading = false});
 
   final String title;
   final String description;
@@ -21,10 +21,10 @@ class ThermalModeItem extends StatefulWidget {
   final onPress;
 
   @override
-  State<ThermalModeItem> createState() => _ThermalModeItemState();
+  State<ModeItem> createState() => _ModeItemState();
 }
 
-class _ThermalModeItemState extends State<ThermalModeItem> {
+class _ModeItemState extends State<ModeItem> {
   var state = 0;
   Widget _getProgressBar(var state, BuildContext context) {
     switch (state) {
