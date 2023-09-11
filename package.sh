@@ -46,7 +46,7 @@ PRIORITY="standard"
 MAINTAINER="alexVinarskis <alex.vinarskis@gmail.com>"
 HOMEPAGE="https://github.com/alexVinarskis/dell-powermanager"
 DEPENDS="libgtk-3-0, libblkid1, liblzma5, wget, tar, pkexec"
-DESCRIPTION="Cross-Platform Dell Power Managmer re-implementation in Flutter"
+DESCRIPTION="Cross-Platform Dell Power Manager re-implementation in Flutter"
 
 # Create control file of .deb
 touch "$DEB_DIR"/control

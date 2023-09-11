@@ -14,6 +14,10 @@ class Constants {
 
   static const packagesLinuxDownloadPath = '/tmp/dell-powermanager';
 
-  // this path must also be harcoded in ./package.sh to be added to sudoers.d!
+  static const applicationLegalese = '\u{a9} 2023 ${Constants.authorName}';
+  static const applicationDescription = "Cross-Platform Dell Power Manager re-implementation in Flutter. Powered by 'Dell Command | Control' CLI, it provides user firiendly UI for controlling your machine. This application is NOT affiliated with Dell.";
+  // These string shall also be hardcoded to ./package!
   static const apiPathLinux = '/opt/dell/dcc/cctk';
+  static const applicationName = 'Dell Power Manager by VA';
+  static const applicationVersion = '0.1.0';
 }
