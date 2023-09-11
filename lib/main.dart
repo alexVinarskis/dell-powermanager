@@ -1,13 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:window_manager/window_manager.dart';
 import 'components/window_caption.dart' as window_caption;
 import 'dart:io' show Platform;
 import '../classes/api.dart';
 import '../screens/screen_parent.dart';
+import '../configs/constants.dart';
 
 Future<void> main() async {
-  const String title      = "Dell Power Manager by VA";
+  const String title      = Constants.applicationName;
   const Size minSize      = Size(1280, 860);
   const Size currentSize  = Size(1280, 860);
 
@@ -28,6 +31,11 @@ Future<void> main() async {
     windowManager.show();
   });
 
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['assets/fonts'], license);
+  });
+
   Api(const Duration(milliseconds: 2000));
   runApp(const MyApp(title: title));
 }
@@ -44,17 +52,19 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
+        popupMenuTheme: PopupMenuThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
+        popupMenuTheme: PopupMenuThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       ),
       themeMode: ThemeMode.system,
-      home: ClipRRect(
+      home: Platform.isLinux ? ClipRRect(
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
         child: MyHomePage(title: title),
-      ),
+      ) : MyHomePage(title: title),
     );
   }
 }

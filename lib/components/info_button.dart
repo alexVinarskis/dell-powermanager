@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../configs/constants.dart';
@@ -29,14 +30,39 @@ class InfoButton extends StatelessWidget {
     launchUrl(Uri.parse(url));
   }
 
-  Widget _getCredits(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(text: 'Made by ${Constants.authorName} in ', style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5))),
-          TextSpan(text: '🇨🇭', style: GoogleFonts.notoColorEmoji()),
-        ],
+  void _showAboutDialog({required BuildContext context}) {
+    final List<Widget> aboutBoxChildren = <Widget>[
+      const SizedBox(height: 24),
+      const SizedBox(
+        width: 300,
+        child: Text(Constants.applicationDescription, textAlign: TextAlign.justify,),
       ),
+      const SizedBox(height: 24),
+      Row(children: [
+        Text('Made by ${Constants.authorName} in ', style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5))),
+        SvgPicture.asset('assets/images/ch.svg', height: Theme.of(context).textTheme.bodyMedium!.fontSize,)
+      ],),
+    ];
+
+    Future.delayed(
+      const Duration(seconds: 0), () => showAboutDialog(
+        context: context,
+        applicationIcon: SvgPicture.asset('assets/images/icon.svg', height: 95,),
+        applicationName: Constants.applicationName,
+        applicationVersion: Constants.applicationVersion,
+        applicationLegalese: Constants.applicationLegalese,
+        children: aboutBoxChildren,
+      ),
+    );
+  }
+
+  Widget _getTitleUrl(String title) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title),
+        const Icon(Icons.link),
+      ],
     );
   }
 
@@ -57,19 +83,21 @@ class InfoButton extends StatelessWidget {
             onTap: () {
               _launchURL(Constants.urlHomepage);
             },
-            child: const Text('Homepage'),
+            child: _getTitleUrl('Homepage'),
           ),
           PopupMenuItem<SampleItem>(
             value: SampleItem.itemBug,
             onTap: () {
               _launchURL(Constants.urlBugReport);
             },
-            child: const Text('Report Bug'),
+            child: _getTitleUrl('Report Bug'),
           ),
           PopupMenuItem<SampleItem>(
             value: SampleItem.itemCredits,
-            enabled: false,
-            child: _getCredits(context),
+            onTap: () {
+              _showAboutDialog(context: context);
+            },
+            child: const Text('About'),
           ),
         ],
       ),
