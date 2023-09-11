@@ -9,7 +9,7 @@ enum OptionState {
 }
 
 class ModeItem extends StatefulWidget {
-  const ModeItem(this.title, {super.key, this.description = "", this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.backgroundColor = Colors.transparent, this.isLoading = false});
+  const ModeItem(this.title, {super.key, this.description = "", this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.backgroundColor = Colors.transparent, this.isLoading = false, this.bottomItem});
 
   final String title;
   final String description;
@@ -18,6 +18,7 @@ class ModeItem extends StatefulWidget {
   final bool isSelected;
   final bool isLoading;
   final Color backgroundColor;
+  final Widget? bottomItem;
   final onPress;
 
   @override
@@ -64,7 +65,7 @@ class _ModeItemState extends State<ModeItem> {
             ),
             const SizedBox(height: 5,),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: Text(widget.description,
                 textAlign: TextAlign.justify,
                 maxLines: 2,
@@ -72,6 +73,13 @@ class _ModeItemState extends State<ModeItem> {
                 softWrap: true,
               ),
             ),
+            widget.bottomItem != null ?
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: widget.bottomItem,
+              )
+              :
+              const SizedBox(height: 20,),
             _getProgressBar(widget.isSelected ? widget.isLoading ? OptionState.selecting : OptionState.selectSucceeded : OptionState.deselected, context),
           ],
         ),
