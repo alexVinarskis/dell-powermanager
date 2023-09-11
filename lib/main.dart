@@ -8,8 +8,8 @@ import '../screens/screen_parent.dart';
 
 Future<void> main() async {
   const String title      = "Dell Power Manager by VA";
-  const Size minSize      = Size(1280, 720);
-  const Size currentSize  = Size(1280, 720);
+  const Size minSize      = Size(1280, 860);
+  const Size currentSize  = Size(1280, 860);
 
   WidgetsFlutterBinding.ensureInitialized();
   WindowManager.instance.ensureInitialized();
