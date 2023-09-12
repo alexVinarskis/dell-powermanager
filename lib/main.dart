@@ -9,26 +9,25 @@ import '../classes/api.dart';
 import '../screens/screen_parent.dart';
 import '../configs/constants.dart';
 
+const Size minSize      = Size(1280, 860);
+const Size currentSize  = Size(1280, 860);
+
 Future<void> main() async {
   const String title      = Constants.applicationName;
-  const Size minSize      = Size(1280, 860);
-  const Size currentSize  = Size(1280, 860);
 
   WidgetsFlutterBinding.ensureInitialized();
-  WindowManager.instance.ensureInitialized();
+  windowManager.ensureInitialized();
   Window.setEffect(effect: WindowEffect.transparent);
 
-  WindowOptions windowOptions = const WindowOptions(
-    size: currentSize,
-    minimumSize: minSize,
-    windowButtonVisibility: false,
-    titleBarStyle: TitleBarStyle.hidden,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
+  windowManager.waitUntilReadyToShow().then((_) async {
     if (!Platform.isLinux) {
       await windowManager.setHasShadow(false);
     }
-    windowManager.show();
+    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+    await windowManager.setSize(currentSize);
+    await windowManager.setMinimumSize(minSize);
+    await windowManager.show();
+    await windowManager.focus();
   });
 
   LicenseRegistry.addLicense(() async* {
@@ -79,9 +78,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+  @override
   void onWindowFocus() {
     // Make sure to call once.
-    setState(() {});
+    setState(() {
+      windowManager.setMinimumSize(minSize);
+    });
   }
 
   Widget getAppBarTitle(String title) {
@@ -120,19 +131,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               brightness: Theme.of(context).brightness,
               title: getAppBarTitle(widget.title),
             ),
-          ),
-          const DragToResizeArea(
-            enableResizeEdges: [
-              ResizeEdge.topLeft,
-              ResizeEdge.top,
-              ResizeEdge.topRight,
-              ResizeEdge.left,
-              ResizeEdge.right,
-              ResizeEdge.bottomLeft,
-              ResizeEdge.bottomLeft,
-              ResizeEdge.bottomRight,
-            ],
-            child: SizedBox(),
           ),
         ],
       ),
