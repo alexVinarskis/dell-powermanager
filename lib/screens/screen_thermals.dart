@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../classes/api.dart';
 import '../components/mode_item.dart';
-import '../configs/cctk.dart';
+import '../classes/cctk.dart';
+import '../classes/cctk_state.dart';
 
 const indexTitle = 0;
 const indexDescription = 1;
@@ -25,6 +26,36 @@ class ScreenThermals extends StatefulWidget {
 class ScreenThermalsState extends State<ScreenThermals> {
   String currentMode = '';
   bool currentlyLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _handleStateUpdate(Api.cctkState);
+    CCTKState.addQueryParameter(CCTK.thermalManagement);
+    Api.addCallbacksStateChanged(_handleStateUpdate);
+    Api.requestUpdate();
+  }
+  @override
+  void dispose() {
+    CCTKState.removeQueryParameter(CCTK.thermalManagement);
+    Api.removeCallbacksStateChanged(_handleStateUpdate);
+    super.dispose();
+  }
+  void _handleStateUpdate(CCTKState cctkState) {
+    if (currentlyLoading) {
+      return;
+    }
+    if (!cctkState.parameters.containsKey(CCTK.thermalManagement)) {
+      return;
+    }
+    String param = cctkState.parameters[CCTK.thermalManagement];
+    if (param.isEmpty) {
+      return;
+    }
+    setState(() {
+      currentMode = param.split(':')[0];
+    });
+  }
 
   Future<bool> changeMode(mode) async {
     return await Api.requestAction(CCTK.thermalManagement.cmd, mode);
@@ -56,6 +87,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
             paddingH: 20,
             isSelected: currentMode == mode,
             isLoading:  currentMode == mode && currentlyLoading,
+            isDataMissing: currentMode.isEmpty,
           ),
       ]),
     );

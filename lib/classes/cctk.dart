@@ -1,4 +1,3 @@
-
 class CCTK {
   static const thermalManagement = (cmd: 'ThermalManagement',
     args: (

@@ -49,7 +49,7 @@ class MenuDependenciesState extends State<MenuDependencies> {
 
   @override
   void dispose() {
-    Api.removeCallsbacksDepsChanged(_handleApiStateUpdate);
+    Api.removeCallbacksDepsChanged(_handleApiStateUpdate);
     super.dispose();
   }
 

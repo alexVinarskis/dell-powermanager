@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^5.1.0
   url_launcher: ^6.1.14
   flutter_svg: ^2.0.7
+  skeleton_text: ^3.0.1
 
 dev_dependencies:
   flutter_test:
