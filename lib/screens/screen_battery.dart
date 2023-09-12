@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../classes/api.dart';
 import '../components/mode_item.dart';
-import '../configs/cctk.dart';
+import '../classes/cctk.dart';
+import '../classes/cctk_state.dart';
 
 const indexTitle = 0;
 const indexDescription = 1;
@@ -33,26 +34,65 @@ class ScreenBatteryState extends State<ScreenBattery> {
   RangeValues customChargeRange = const RangeValues(0.50, 0.85);
   bool customChargeRangeChanging = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _handleStateUpdate(Api.cctkState);
+    CCTKState.addQueryParameter(CCTK.primaryBattChargeCfg);
+    Api.addCallbacksStateChanged(_handleStateUpdate);
+    Api.requestUpdate();
+  }
+  @override
+  void dispose() {
+    CCTKState.removeQueryParameter(CCTK.primaryBattChargeCfg);
+    Api.removeCallbacksStateChanged(_handleStateUpdate);
+    super.dispose();
+  }
+  void _handleStateUpdate(CCTKState cctkState) {
+    if (currentlyLoading) {
+      return;
+    }
+    if (!cctkState.parameters.containsKey(CCTK.primaryBattChargeCfg)) {
+      return;
+    }
+    String param = cctkState.parameters[CCTK.primaryBattChargeCfg];
+    if (param.isEmpty) {
+      return;
+    }
+    setState(() {
+      currentMode = param.split(':')[0];
+    });
+    if (param.contains(CCTK.primaryBattChargeCfg.args.custom) && param.split(':').length >= 2) {
+      // custom battery mode state has paremeters, parse them
+      double startValue = double.parse(param.split(':')[1].split("-")[0])/100;
+      double stopValue  = double.parse(param.split(':')[1].split("-")[1])/100;
+      setState(() {
+        customChargeRange = RangeValues(startValue, stopValue);
+      });
+    }
+  }
+
   Future<bool> _changeMode(mode) async {
     return await Api.requestAction(CCTK.primaryBattChargeCfg.cmd, mode);
   }
 
   void _handlePress(mode) async {
-    if (!currentlyLoading) {
+    if (currentlyLoading) {
+      return;
+    }
+    setState(() {
+      currentMode = mode;
+      currentlyLoading = true;
+    });
+    if (mode != CCTK.primaryBattChargeCfg.args.custom) {
+      await _changeMode(mode);
+    } else {
+      await _changeMode("$mode:${(customChargeRange.start*100).round()}-${(customChargeRange.end*100).round()}");
+    }
+    if (mounted) {
       setState(() {
-        currentMode = mode;
-        currentlyLoading = true;
+        currentlyLoading = false;
       });
-      if (mode != CCTK.primaryBattChargeCfg.args.custom) {
-        await _changeMode(mode);
-      } else {
-         await _changeMode("$mode:${(customChargeRange.start*100).round()}-${(customChargeRange.end*100).round()}");
-      }
-      if (mounted) {
-        setState(() {
-          currentlyLoading = false;
-        });
-      }
     }
   }
 
@@ -144,6 +184,7 @@ class ScreenBatteryState extends State<ScreenBattery> {
             isSelected: currentMode == mode,
             isLoading:  currentMode == mode && currentlyLoading,
             bottomItem: _getBottomBar(mode),
+            isDataMissing: currentMode.isEmpty,
           ),
       ]),
     );

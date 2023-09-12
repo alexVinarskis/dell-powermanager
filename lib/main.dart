@@ -35,7 +35,7 @@ Future<void> main() async {
     yield LicenseEntryWithLineBreaks(['assets/fonts'], license);
   });
 
-  Api(const Duration(milliseconds: 2000));
+  Api(const Duration(milliseconds: 10000));
   runApp(const MyApp(title: title));
 }
 
