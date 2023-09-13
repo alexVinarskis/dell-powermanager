@@ -10,7 +10,7 @@ import '../screens/screen_parent.dart';
 import '../configs/constants.dart';
 
 const Size minSize      = Size(1280, 860);
-const Size currentSize  = Size(1280, 860);
+Size currentSize  = Size(minSize.width-52, minSize.height-52);  // hack, since currentSize & minSize representations don't match
 
 Future<void> main() async {
   const String title      = Constants.applicationName;
@@ -81,6 +81,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   void initState() {
     super.initState();
     windowManager.addListener(this);
+    setState(() {
+      windowManager.setMinimumSize(minSize);
+      windowManager.setSize(currentSize);
+    });
   }
   @override
   void dispose() {
