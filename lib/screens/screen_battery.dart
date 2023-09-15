@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../classes/api.dart';
+import '../classes/api_cctk.dart';
 import '../components/mode_item.dart';
 import '../classes/cctk.dart';
 import '../classes/cctk_state.dart';
@@ -37,15 +37,15 @@ class ScreenBatteryState extends State<ScreenBattery> {
   @override
   void initState() {
     super.initState();
-    _handleStateUpdate(Api.cctkState);
-    CCTKState.addQueryParameter(CCTK.primaryBattChargeCfg);
-    Api.addCallbacksStateChanged(_handleStateUpdate);
-    Api.requestUpdate();
+    _handleStateUpdate(ApiCCTK.cctkState);
+    ApiCCTK.addQueryParameter(CCTK.primaryBattChargeCfg);
+    ApiCCTK.addCallbacksStateChanged(_handleStateUpdate);
+    ApiCCTK.requestUpdate();
   }
   @override
   void dispose() {
-    CCTKState.removeQueryParameter(CCTK.primaryBattChargeCfg);
-    Api.removeCallbacksStateChanged(_handleStateUpdate);
+    ApiCCTK.removeQueryParameter(CCTK.primaryBattChargeCfg);
+    ApiCCTK.removeCallbacksStateChanged(_handleStateUpdate);
     super.dispose();
   }
   void _handleStateUpdate(CCTKState cctkState) {
@@ -73,7 +73,7 @@ class ScreenBatteryState extends State<ScreenBattery> {
   }
 
   Future<bool> _changeMode(mode) async {
-    return await Api.requestAction(CCTK.primaryBattChargeCfg.cmd, mode);
+    return await ApiCCTK.request(CCTK.primaryBattChargeCfg.cmd, mode);
   }
 
   void _handlePress(mode) async {

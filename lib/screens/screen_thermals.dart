@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../classes/api.dart';
+import '../classes/api_cctk.dart';
 import '../components/mode_item.dart';
 import '../classes/cctk.dart';
 import '../classes/cctk_state.dart';
@@ -30,15 +30,15 @@ class ScreenThermalsState extends State<ScreenThermals> {
   @override
   void initState() {
     super.initState();
-    _handleStateUpdate(Api.cctkState);
-    CCTKState.addQueryParameter(CCTK.thermalManagement);
-    Api.addCallbacksStateChanged(_handleStateUpdate);
-    Api.requestUpdate();
+    _handleStateUpdate(ApiCCTK.cctkState);
+    ApiCCTK.addQueryParameter(CCTK.thermalManagement);
+    ApiCCTK.addCallbacksStateChanged(_handleStateUpdate);
+    ApiCCTK.requestUpdate();
   }
   @override
   void dispose() {
-    CCTKState.removeQueryParameter(CCTK.thermalManagement);
-    Api.removeCallbacksStateChanged(_handleStateUpdate);
+    ApiCCTK.removeQueryParameter(CCTK.thermalManagement);
+    ApiCCTK.removeCallbacksStateChanged(_handleStateUpdate);
     super.dispose();
   }
   void _handleStateUpdate(CCTKState cctkState) {
@@ -58,7 +58,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
   }
 
   Future<bool> changeMode(mode) async {
-    return await Api.requestAction(CCTK.thermalManagement.cmd, mode);
+    return await ApiCCTK.request(CCTK.thermalManagement.cmd, mode);
   }
 
   @override
