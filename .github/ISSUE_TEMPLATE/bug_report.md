@@ -23,10 +23,10 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Device Info (please complete the following information):**
  - OS: [e.g. Windows 22H2, Ubuntu 22.04]
  - Platform [eg. XPS 9530, Precision 5570]
- - Version [e.g. V1.1.0]
+ - App Version [e.g. V1.1.0]
 
 **Additional context**
 Add any other context about the problem here.
