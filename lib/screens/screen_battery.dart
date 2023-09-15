@@ -143,7 +143,6 @@ class ScreenBatteryState extends State<ScreenBattery> {
                 values: customChargeRange,
                 onChanged: (RangeValues newRange) {
                   setState(() {
-                    customChargeRange = newRange;
                     customChargeRange = RangeValues(
                       min(max(newRange.start, 0.5), min(0.95, customChargeRange.end-0.05)),  // start 0.50...0.95, stop-start >= 0.05
                       max(max(newRange.end, 0.55), customChargeRange.start+0.05),            // end   0.55...1.00, stop-start >= 0.05
