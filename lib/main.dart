@@ -5,6 +5,7 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:window_manager/window_manager.dart';
 import 'components/window_caption.dart' as window_caption;
 import 'dart:io' show Platform;
+import '../classes/api_battery.dart';
 import '../classes/api_cctk.dart';
 import '../screens/screen_parent.dart';
 import '../configs/constants.dart';
@@ -36,6 +37,7 @@ Future<void> main() async {
   });
 
   ApiCCTK(const Duration(milliseconds: 10000));
+  ApiBattery(const Duration(milliseconds: 10000));
   runApp(const MyApp(title: title));
 }
 
