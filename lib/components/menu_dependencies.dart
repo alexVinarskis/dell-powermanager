@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../configs/constants.dart';
-import '../classes/api.dart';
+import '../classes/api_cctk.dart';
+import '../classes/dependencies_manager.dart';
 
 enum DependenciesState {
   hidden,
@@ -44,12 +45,12 @@ class MenuDependenciesState extends State<MenuDependencies> {
   @override
   void initState() {
     super.initState();
-    Api.addCallbacksDepsChanged(_handleApiStateUpdate);
+    ApiCCTK.addCallbacksDepsChanged(_handleApiStateUpdate);
   }
 
   @override
   void dispose() {
-    Api.removeCallbacksDepsChanged(_handleApiStateUpdate);
+    ApiCCTK.removeCallbacksDepsChanged(_handleApiStateUpdate);
     super.dispose();
   }
 
@@ -72,7 +73,7 @@ class MenuDependenciesState extends State<MenuDependencies> {
     setState(() {
       _dependenciesState = DependenciesState.downloading;
     });
-    bool downloaded = await Api.downloadDependencies();
+    bool downloaded = await DependenciesManager.downloadDependencies();
     if (!downloaded) {
       setState(() {
         _dependenciesState = DependenciesState.downloadFailed;
@@ -82,7 +83,7 @@ class MenuDependenciesState extends State<MenuDependencies> {
     setState(() {
       _dependenciesState = DependenciesState.installing;
     });
-    bool installed = await Api.installDependencies();
+    bool installed = await DependenciesManager.installDependencies();
     setState(() {
       if (installed) {
         _dependenciesState = DependenciesState.installationSucceeded;
