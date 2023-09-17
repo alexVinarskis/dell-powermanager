@@ -16,8 +16,11 @@ ICON_PATH="/opt/$PACKAGE/icon"
 APP_PATH="/opt/$PACKAGE"
 APP_DIR="./package$APP_PATH"
 DEB_DIR="./package/DEBIAN"
-TAG=$(date '+%Y%m%d-%H%M%S')-$(git rev-parse --short HEAD)
-VERSION="0.1.0-${TAG}"
+VERSION=$(git describe --tags)+$(date '+%Y%m%d-%H%M%S')
+
+# Bake in app name and version tag
+sed -i "s|applicationName".*"|applicationName = '${NAME}';|g"            ./lib/configs/constants.dart
+sed -i "s|applicationVersion".*"|applicationVersion = '${VERSION}';|g"   ./lib/configs/constants.dart
 
 rm -rf ./package
 mkdir -p "$APP_DIR"
