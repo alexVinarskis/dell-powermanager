@@ -78,7 +78,7 @@ class ApiBattery {
       return false;
     }
     Map<String, dynamic> map = {};
-    List<String> lines = pr.stdout.toString().replaceAll(" ", "").split("\n");
+    List<String> lines = pr.stdout.toString().split("\n");
     for (String line in lines) {
       if (line.isEmpty) {
         continue;
