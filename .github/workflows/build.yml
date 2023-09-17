@@ -24,6 +24,8 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v3.6.0
+      - name:
+        run: git fetch --prune --unshallow --tags
       - uses: subosito/flutter-action@v2.10.0
         with:
           channel: 'stable'
@@ -35,6 +37,8 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v3.6.0
+      - name:
+        run: git fetch --prune --unshallow --tags
       - uses: subosito/flutter-action@v2.10.0
         with:
           channel: 'stable'
