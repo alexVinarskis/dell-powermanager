@@ -119,6 +119,12 @@ class ApiCCTK {
     } catch (e) {
       return false;
     }
-    return _processReponse(pr);
+    // process response
+    if (!_processReponse(pr)) {
+      return false;
+    }
+    // notify listeners
+    _callStateChanged(cctkState);
+    return true;
   }
 }

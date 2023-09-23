@@ -6,13 +6,6 @@ import '../classes/cctk_state.dart';
 
 const indexTitle = 0;
 const indexDescription = 1;
-final Map<String, List<String>> thermalModesStrings = {
-  // cctkCmd : Tile, Description
-  CCTK.thermalManagement.args.optimized : ["Optimized", "This is the standard setting for cooling fan and processor heat management. This setting is a balance of performance., noise and temperature.",],
-  CCTK.thermalManagement.args.quiet     : ["Quiet", "Processor and cooling fan speed are adjusted to reduce fan noise. This may mean a higher system surface temperature and reduced performance.",],
-  CCTK.thermalManagement.args.cool      : ["Cool", "Processor and cooling fan speed are adjusted to help maintain a cooler system surface temperature. This may mean reduced system performance and more noise.",],
-  CCTK.thermalManagement.args.ultra     : ["Ultra Performance", "Processor and cooling fan speed is increased for more performance. This may mean higher system suface temperature and more noise.",],
-};
 
 class ScreenThermals extends StatefulWidget {
   const ScreenThermals({super.key});
@@ -66,9 +59,9 @@ class ScreenThermalsState extends State<ScreenThermals> {
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 20),
       child: Column(children: [
-        for (var mode in thermalModesStrings.keys) 
-          ModeItem(thermalModesStrings[mode]![indexTitle],
-            description: thermalModesStrings[mode]![indexDescription],
+        for (var mode in CCTK.thermalManagementStrings.keys) 
+          ModeItem(CCTK.thermalManagementStrings[mode]![indexTitle],
+            description: CCTK.thermalManagementStrings[mode]![indexDescription],
             onPress: () async {
               if (!currentlyLoading) {
                 setState(() {
