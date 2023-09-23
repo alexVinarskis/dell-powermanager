@@ -7,6 +7,12 @@ import '../screens/screen_battery.dart';
 import '../screens/screen_summary.dart';
 import '../screens/screen_thermals.dart';
 
+enum MenuItems {
+  summary,
+  battery,
+  thermals,
+}
+
 class ScreenParent extends StatefulWidget {
   const ScreenParent({super.key, required this.title, this.appBarHeight=45});
 
@@ -20,14 +26,20 @@ class ScreenParent extends StatefulWidget {
 }
 
 class ScreenParentState extends State<ScreenParent> {
-  int currentMenu = 0;
+  MenuItems currentMenu = MenuItems.summary;
 
-  Widget _getRHSScreen(int index) {
-    switch (index) {
-      case 1: return const ScreenBattery(key: Key("screenBattery"));
-      case 2: return const ScreenThermals(key: Key("screenThermals"));
-      default: return const ScreenSummary(key: Key("ScreenSummary"));
+  Widget _getRHSScreen(MenuItems menuMode) {
+    switch (menuMode) {
+      case MenuItems.battery: return const ScreenBattery(key: Key("screenBattery"));
+      case MenuItems.thermals: return const ScreenThermals(key: Key("screenThermals"));
+      default: return ScreenSummary(key: const Key("ScreenSummary"), menuCallback: _handleMenuCallback,);
     }
+  }
+
+  void _handleMenuCallback(MenuItems menuItem) {
+    setState(() {
+      currentMenu = menuItem;
+    });
   }
 
   @override
@@ -46,31 +58,31 @@ class ScreenParentState extends State<ScreenParent> {
                   description: 'Charge level, state and battery health',
                   Icons.info_outline_rounded,
                   onPress: () {setState(() {
-                    currentMenu = 0;
+                    currentMenu = MenuItems.summary;
                   });},
                   paddingV: 10,
                   paddingH: 20,
-                  isSelected: currentMenu == 0,
+                  isSelected: currentMenu == MenuItems.summary,
                 ),
                 MenuItem('Battery Settings', 
                   description: 'Set charging modes for different use cases',
                   Icons.battery_3_bar_rounded,
                   onPress: () {setState(() {
-                    currentMenu = 1;
+                    currentMenu = MenuItems.battery;
                   });},
                   paddingV: 10,
                   paddingH: 20,
-                  isSelected: currentMenu == 1,
+                  isSelected: currentMenu == MenuItems.battery,
                 ),
-                MenuItem('Thermal Managment', 
+                MenuItem('Thermal Management', 
                   description: 'Customize system thermal and fan settings',
                   Icons.thermostat_rounded,
                   onPress: () {setState(() {
-                    currentMenu = 2;
+                    currentMenu = MenuItems.thermals;
                   });},
                   paddingV: 10,
                   paddingH: 20,
-                  isSelected: currentMenu == 2,
+                  isSelected: currentMenu == MenuItems.thermals,
                 ),
                 const Expanded(child: SizedBox(),),
                 const MenuDependencies(
