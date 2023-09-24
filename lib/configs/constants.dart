@@ -15,9 +15,8 @@ class Constants {
   static const packagesLinuxDownloadPath = '/tmp/dell-powermanager';
 
   static const applicationLegalese = '\u{a9} 2023 ${Constants.authorName}';
-  static const applicationDescription = "Cross-Platform Dell Power Manager re-implementation in Flutter. Powered by 'Dell Command | Control' CLI, it provides user firiendly UI for controlling your machine. This application is NOT affiliated with Dell.";
   // These string shall also be hardcoded to ./package!
   static const apiPathLinux = '/opt/dell/dcc/cctk';
   static const applicationName = 'Dell Power Manager by VA';
-  static const applicationVersion = '0.1.0';
+  static const applicationVersion = '0.5.0-3-g99820b7+20230924-225519';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeleton_text/skeleton_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 
 import '../classes/battery_state.dart';
 import '../classes/api_battery.dart';
@@ -121,26 +122,26 @@ class ScreenSummaryState extends State<ScreenSummary> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(bottom: 10),
               child: Text(
-                "Battery Overview",
+                S.of(context)!.summaryPageTitleOverview,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
               ),
             ),
-            _getBatteryStatValue(context, "Health:", _batteryState?.batteryHealth, unit: "%"),
-            _getBatteryStatValue(context, "Cycles count:", _batteryState?.batteryCycleCount != null ? _batteryState?.batteryCycleCount!.toDouble() : "", toInt: true),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleHealth}:", _batteryState?.batteryHealth, unit: S.of(context)!.summaryPageSubtitleHealthUnit),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleCycles}:", _batteryState?.batteryCycleCount != null ? _batteryState?.batteryCycleCount!.toDouble() : "", toInt: true),
             Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(top: 20, bottom: 10),
                 child: Text(
-                "Battery Information",
+                S.of(context)!.summaryPageTitleInformation,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
               ),
             ),
-            _getBatteryStatValue(context, "Model:", _batteryState?.batteryModelName),
-            _getBatteryStatValue(context, "Vendor:", _batteryState?.batteryManufacturer),
-            _getBatteryStatValue(context, "Type:", _batteryState?.batteryTechnology),
-            _getBatteryStatValue(context, "Design Capacity:", _batteryState?.batteryDesignCapacity, unit: "Wh"),
-            _getBatteryStatValue(context, "Design Voltage:", _batteryState?.batteryVoltageMinDesign, unit: "V"),
-            _getBatteryStatValue(context, "S/N:", _batteryState?.batterySerialNumber),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleModel}:", _batteryState?.batteryModelName),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleVendor}:", _batteryState?.batteryManufacturer),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleType}:", _batteryState?.batteryTechnology),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleDesignCapacity}:", _batteryState?.batteryDesignCapacity, unit: S.of(context)!.summaryPageSubtitleDesignCapacityUnit),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleDesignVoltage}:", _batteryState?.batteryVoltageMinDesign, unit: S.of(context)!.summaryPageSubtitleDesignVoltageUnit),
+            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleSerial}:", _batteryState?.batterySerialNumber),
           ],
         ),
       ),
@@ -161,12 +162,12 @@ class ScreenSummaryState extends State<ScreenSummary> {
                 size: 25,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              Text('  ${_batteryState!.powerSupplyPresent! ? _batteryState!.batteryCharging! ? "Plugged, charging with" : "Plugged, not charging" : "On Battery, discharging with"}',
+              Text('  ${_batteryState!.powerSupplyPresent! ? _batteryState!.batteryCharging! ? S.of(context)!.summaryPageStateCharing : S.of(context)!.summaryPageStateNotCharging : S.of(context)!.summaryPageStateDischarging}',
                 style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
               ),
               _batteryState!.powerSupplyPresent! && !_batteryState!.batteryCharging! ?
                 const SizedBox() : Text(
-                  ' ${_batteryState!.batteryCurrentPower!.toInt()}W',
+                  ' ${_batteryState!.batteryCurrentPower!.toInt()}${S.of(context)!.summaryPageStateCharingUnit}',
                   style: GoogleFonts.sourceCodePro().copyWith(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize, fontWeight: FontWeight.bold),
                 ),
             ],
@@ -188,7 +189,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
               size: 25,
               color: Theme.of(context).colorScheme.primary,
             ),
-            Text('  Battery Mode',
+            Text('  ${S.of(context)!.summaryPageTitleBatteryMode}',
               style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
             ),
             _currentBatteryMode.isNotEmpty ?
@@ -198,7 +199,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
                 ),
                 Text(
-                  CCTK.primaryBattChargeCfgStrings.containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfgStrings[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "",
+                  CCTK.primaryBattChargeCfgStrings(context).containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfgStrings(context)[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
                 ),
               ],) : const SizedBox(),
@@ -221,7 +222,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
               size: 25,
               color: Theme.of(context).colorScheme.primary,
             ),
-            Text('  Thermal Mode',
+            Text('  ${S.of(context)!.summaryPageTitleThermalMode}',
               style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
             ),
             _currentThermalMode.isNotEmpty ?
@@ -231,7 +232,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
                 ),
                 Text(
-                  CCTK.thermalManagementStrings.containsKey(_currentThermalMode) ? CCTK.thermalManagementStrings[_currentThermalMode]![indexTitle] : "",
+                  CCTK.thermalManagementStrings(context).containsKey(_currentThermalMode) ? CCTK.thermalManagementStrings(context)[_currentThermalMode]![indexTitle] : "",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
                 ),
               ],) : const SizedBox(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
 import '../components/menu_dependencies.dart';
@@ -32,7 +33,7 @@ class ScreenParentState extends State<ScreenParent> {
     switch (menuMode) {
       case MenuItems.battery: return const ScreenBattery(key: Key("screenBattery"));
       case MenuItems.thermals: return const ScreenThermals(key: Key("screenThermals"));
-      default: return ScreenSummary(key: const Key("ScreenSummary"), menuCallback: _handleMenuCallback,);
+      default: return ScreenSummary(key: const Key("screenSummary"), menuCallback: _handleMenuCallback,);
     }
   }
 
@@ -54,8 +55,8 @@ class ScreenParentState extends State<ScreenParent> {
               flex: 2,
               child: Column(children: [
                 const SizedBox(height: 40,),
-                MenuItem('System Information',
-                  description: 'Charge level, state and battery health',
+                MenuItem(S.of(context)!.parentMenuTitleSummary,
+                  description: S.of(context)!.parentMenuDescriptionSummary,
                   Icons.info_outline_rounded,
                   onPress: () {setState(() {
                     currentMenu = MenuItems.summary;
@@ -64,8 +65,8 @@ class ScreenParentState extends State<ScreenParent> {
                   paddingH: 20,
                   isSelected: currentMenu == MenuItems.summary,
                 ),
-                MenuItem('Battery Settings', 
-                  description: 'Set charging modes for different use cases',
+                MenuItem(S.of(context)!.parentMenuTitleBattery, 
+                  description: S.of(context)!.parentMenuDescriptionBattery,
                   Icons.battery_3_bar_rounded,
                   onPress: () {setState(() {
                     currentMenu = MenuItems.battery;
@@ -74,8 +75,8 @@ class ScreenParentState extends State<ScreenParent> {
                   paddingH: 20,
                   isSelected: currentMenu == MenuItems.battery,
                 ),
-                MenuItem('Thermal Management', 
-                  description: 'Customize system thermal and fan settings',
+                MenuItem(S.of(context)!.parentMenuTitleThermal, 
+                  description: S.of(context)!.parentMenuDescriptionThermal,
                   Icons.thermostat_rounded,
                   onPress: () {setState(() {
                     currentMenu = MenuItems.thermals;
@@ -89,8 +90,8 @@ class ScreenParentState extends State<ScreenParent> {
                   paddingV: 0,
                   paddingH: 20,
                 ),
-                const InfoButton(
-                  title: 'Misc',
+                InfoButton(
+                  title: S.of(context)!.infoButtonTitle,
                   paddingV: 20,
                   paddingH: 20,
                 ),
