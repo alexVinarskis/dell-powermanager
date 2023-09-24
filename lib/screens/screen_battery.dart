@@ -164,9 +164,9 @@ class ScreenBatteryState extends State<ScreenBattery> {
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 20),
       child: Column(children: [
-        for (var mode in CCTK.primaryBattChargeCfgStrings.keys) 
-          ModeItem(CCTK.primaryBattChargeCfgStrings[mode]![indexTitle],
-            description: "${CCTK.primaryBattChargeCfgStrings[mode]![indexDescription]}${CCTK.primaryBattChargeCfgStrings[mode]![indexDescriptionExt] != "" ? "\n" : ""}${CCTK.primaryBattChargeCfgStrings[mode]![indexDescriptionExt]}",
+        for (var mode in CCTK.primaryBattChargeCfgStrings(context).keys) 
+          ModeItem(CCTK.primaryBattChargeCfgStrings(context)[mode]![indexTitle],
+            description: "${CCTK.primaryBattChargeCfgStrings(context)[mode]![indexDescription]}${CCTK.primaryBattChargeCfgStrings(context)[mode]![indexDescriptionExt] != "" ? "\n" : ""}${CCTK.primaryBattChargeCfgStrings(context)[mode]![indexDescriptionExt]}",
             onPress: () {_handlePress(mode);},
             paddingV: 10,
             paddingH: 20,

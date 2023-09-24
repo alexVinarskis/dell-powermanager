@@ -59,9 +59,9 @@ class ScreenThermalsState extends State<ScreenThermals> {
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 20),
       child: Column(children: [
-        for (var mode in CCTK.thermalManagementStrings.keys) 
-          ModeItem(CCTK.thermalManagementStrings[mode]![indexTitle],
-            description: CCTK.thermalManagementStrings[mode]![indexDescription],
+        for (var mode in CCTK.thermalManagementStrings(context).keys) 
+          ModeItem(CCTK.thermalManagementStrings(context)[mode]![indexTitle],
+            description: CCTK.thermalManagementStrings(context)[mode]![indexDescription],
             onPress: () async {
               if (!currentlyLoading) {
                 setState(() {

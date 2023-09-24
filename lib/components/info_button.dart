@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../configs/constants.dart';
 
 enum SampleItem { itemHomepage, itemBug, itemCredits }
@@ -33,9 +34,9 @@ class InfoButton extends StatelessWidget {
   void _showAboutDialog({required BuildContext context}) {
     final List<Widget> aboutBoxChildren = <Widget>[
       const SizedBox(height: 24),
-      const SizedBox(
+      SizedBox(
         width: 300,
-        child: Text(Constants.applicationDescription, textAlign: TextAlign.justify,),
+        child: Text(S.of(context)!.appDescription, textAlign: TextAlign.justify,),
       ),
       const SizedBox(height: 24),
       Row(children: [
@@ -83,21 +84,21 @@ class InfoButton extends StatelessWidget {
             onTap: () {
               _launchURL(Constants.urlHomepage);
             },
-            child: _getTitleUrl('Homepage'),
+            child: _getTitleUrl(S.of(context)!.infoButtonItemHomepage),
           ),
           PopupMenuItem<SampleItem>(
             value: SampleItem.itemBug,
             onTap: () {
               _launchURL(Constants.urlBugReport);
             },
-            child: _getTitleUrl('Report Bug'),
+            child: _getTitleUrl(S.of(context)!.infoButtonItemBug),
           ),
           PopupMenuItem<SampleItem>(
             value: SampleItem.itemCredits,
             onTap: () {
               _showAboutDialog(context: context);
             },
-            child: const Text('About'),
+            child: Text(S.of(context)!.infoButtonItemAbout),
           ),
         ],
       ),

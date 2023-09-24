@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../configs/constants.dart';
 import '../classes/api_cctk.dart';
 import '../classes/dependencies_manager.dart';
@@ -16,16 +17,6 @@ enum DependenciesState {
   installationFailed,
   installationSucceeded,
 }
-
-final Map<DependenciesState, String> dependenciesStateTitles = {
-  DependenciesState.hidden                : "",
-  DependenciesState.awaiting              : "Tap for more info and install options",
-  DependenciesState.downloading           : "Please wait... Downloading...",
-  DependenciesState.installing            : "Please wait... Installing...",
-  DependenciesState.downloadFailed        : "Download Failed :<",
-  DependenciesState.installationFailed    : "Installation Failed :<",
-  DependenciesState.installationSucceeded : "Installation Succeeded",
-};
 
 class MenuDependencies extends StatefulWidget {
   const MenuDependencies({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
@@ -41,6 +32,7 @@ class MenuDependencies extends StatefulWidget {
 class MenuDependenciesState extends State<MenuDependencies> {
   // assume all dependencies are installed by default
   DependenciesState _dependenciesState = DependenciesState.hidden;
+  late Map<DependenciesState, String> dependenciesStateTitles;
 
   @override
   void initState() {
@@ -125,19 +117,17 @@ class MenuDependenciesState extends State<MenuDependencies> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Missing Dependencies'),
+          title: Text(S.of(context)!.dependenciesCardTitle),
           content: RichText(
             text: TextSpan(
               children: [
                 TextSpan(text:
-                  'This app requires ',
+                  S.of(context)!.dependenciesAlertP1,
                   style: Theme.of(context).textTheme.bodyMedium
                 ),
-                TextSpan(text: '"Dell Command | Configure"', style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!)),
+                TextSpan(text: ' "${S.of(context)!.dependenciesAlertP2}" ', style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!)),
                 TextSpan(text:
-                  ' CLI\n'
-                  'and its dependencies to operate. Press the button below\n'
-                  'to automatically install the following packages:\n\n',
+                  S.of(context)!.dependenciesAlertP3,
                   style: Theme.of(context).textTheme.bodyMedium
                 ),
                 TextSpan(text: Platform.isLinux ? Constants.packagesLinux.join('\n') : Constants.packagesWindows.join('\n'), style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!)),
@@ -154,7 +144,7 @@ class MenuDependenciesState extends State<MenuDependencies> {
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
               icon: const Icon(Icons.download_rounded),
-              label: const Text('Download and install'),
+              label: Text(S.of(context)!.dependenciesAlertButton),
               onPressed: () {
                 _getDependencies();
                 Navigator.of(context).pop();
@@ -168,6 +158,16 @@ class MenuDependenciesState extends State<MenuDependencies> {
 
   @override
   Widget build(BuildContext context) {
+    dependenciesStateTitles = {
+      DependenciesState.hidden                : "",
+      DependenciesState.awaiting              : S.of(context)!.dependenciesCardSubtitleAwaiting,
+      DependenciesState.downloading           : S.of(context)!.dependenciesCardSubtitleDownloading,
+      DependenciesState.installing            : S.of(context)!.dependenciesCardSubtitleInstalling,
+      DependenciesState.downloadFailed        : S.of(context)!.dependenciesCardSubtitleDownloadFailed,
+      DependenciesState.installationFailed    : S.of(context)!.dependenciesCardSubtitleInstallationFailed,
+      DependenciesState.installationSucceeded : S.of(context)!.dependenciesCardSubtitleInstallationSucceeded,
+    };
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: Constants.animationMs),
       child:  _dependenciesState != DependenciesState.hidden ? Card(
@@ -200,7 +200,7 @@ class MenuDependenciesState extends State<MenuDependencies> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Missing Dependencies',
+                          S.of(context)!.dependenciesCardTitle,
                           style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 5,),
                         Text(dependenciesStateTitles[_dependenciesState].toString(), textAlign: TextAlign.justify,),
