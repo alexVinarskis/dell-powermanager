@@ -1,7 +1,10 @@
-import 'package:dell_powermanager/classes/api_powermode.dart';
-import 'package:dell_powermanager/classes/powermode_state.dart';
 import 'package:flutter/material.dart';
+import 'package:skeleton_text/skeleton_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../classes/api_cctk.dart';
+import '../classes/api_powermode.dart';
+import '../classes/powermode_state.dart';
+import '../classes/powermode.dart';
 import '../components/mode_item.dart';
 import '../classes/cctk.dart';
 import '../classes/cctk_state.dart';
@@ -68,11 +71,64 @@ class ScreenThermalsState extends State<ScreenThermals> {
     return await ApiCCTK.request(CCTK.thermalManagement.cmd, mode);
   }
 
+  Widget _getPowermodeBadge(BuildContext context, {double paddingH = 0, double paddingV = 0,}) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
+      color: Colors.amber.withOpacity(0.4),
+      elevation: 0,
+      margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
+      child: _powermodeState == null ?
+        SkeletonAnimation(
+          curve: Curves.easeInOutCirc,
+          shimmerColor: Theme.of(context).colorScheme.secondaryContainer,
+          gradientColor: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0),
+          child: _getPowermodeContent(context),
+        ) :
+        _getPowermodeContent(context),
+    );
+  }
+  Widget _getPowermodeContent(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      width: 260,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            S.of(context)!.powermodeTitle,
+            style: TextStyle(fontSize: Theme.of(context).textTheme.titleSmall!.fontSize),
+          ),
+          Row(children: [
+            Text(
+              ":  ",
+              style: TextStyle(fontSize: Theme.of(context).textTheme.titleSmall!.fontSize),
+            ),
+            Text(
+              Powermode.profileInfoStrings(context)[_powermodeState?.profileInfo]?? "",
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],)
+        ]
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 20),
       child: Column(children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: _getPowermodeBadge(
+            context,
+            paddingH: 20,
+            paddingV: 10,
+          ),
+        ),
         for (var mode in CCTK.thermalManagementStrings(context).keys) 
           ModeItem(CCTK.thermalManagementStrings(context)[mode]![indexTitle],
             description: CCTK.thermalManagementStrings(context)[mode]![indexDescription],
