@@ -1,3 +1,5 @@
+import 'package:dell_powermanager/classes/api_powermode.dart';
+import 'package:dell_powermanager/classes/powermode_state.dart';
 import 'package:flutter/material.dart';
 import '../classes/api_cctk.dart';
 import '../components/mode_item.dart';
@@ -17,24 +19,31 @@ class ScreenThermals extends StatefulWidget {
 }
 
 class ScreenThermalsState extends State<ScreenThermals> {
+  PowermodeState? _powermodeState;
   String currentMode = '';
   bool currentlyLoading = false;
+  final Duration _refreshInternalPowermode = const Duration(seconds: 3);
 
   @override
   void initState() {
     super.initState();
-    _handleStateUpdate(ApiCCTK.cctkState);
+    _handlePowermodeStateUpdate(ApiPowermode.powermodeState);
+    _handleCCTKStateUpdate(ApiCCTK.cctkState);
+    ApiPowermode.addCallbacksStateChanged(_handlePowermodeStateUpdate);
+    ApiPowermode.addQueryDuration(_refreshInternalPowermode);
     ApiCCTK.addQueryParameter(CCTK.thermalManagement);
-    ApiCCTK.addCallbacksStateChanged(_handleStateUpdate);
+    ApiCCTK.addCallbacksStateChanged(_handleCCTKStateUpdate);
     ApiCCTK.requestUpdate();
   }
   @override
   void dispose() {
+    ApiPowermode.removeCallbacksStateChanged(_handlePowermodeStateUpdate);
+    ApiPowermode.removeQueryDuration(_refreshInternalPowermode);
     ApiCCTK.removeQueryParameter(CCTK.thermalManagement);
-    ApiCCTK.removeCallbacksStateChanged(_handleStateUpdate);
+    ApiCCTK.removeCallbacksStateChanged(_handleCCTKStateUpdate);
     super.dispose();
   }
-  void _handleStateUpdate(CCTKState cctkState) {
+  void _handleCCTKStateUpdate(CCTKState cctkState) {
     if (currentlyLoading) {
       return;
     }
@@ -47,6 +56,11 @@ class ScreenThermalsState extends State<ScreenThermals> {
     }
     setState(() {
       currentMode = param.split(':')[0];
+    });
+  }
+  void _handlePowermodeStateUpdate(PowermodeState? powermodeState) {
+    setState(() {
+      _powermodeState = powermodeState;
     });
   }
 
