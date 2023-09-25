@@ -1,3 +1,4 @@
+import 'package:dell_powermanager/classes/api_powermode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +40,7 @@ Future<void> main() async {
 
   ApiCCTK(const Duration(milliseconds: 10000));
   ApiBattery(const Duration(milliseconds: 10000));
+  ApiPowermode(const Duration(milliseconds: 10000));
   runApp(const MyApp(title: title));
 }
 
