@@ -1,7 +1,7 @@
 [![Build](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml)
 
 # Dell Power Manager
-Cross-Platform Dell Power Manager re-implementation in Flutter
+Cross-Platform Dell Power Manager re-implementation in Flutter. More screenshots in [Wiki](https://github.com/alexVinarskis/dell-powermanager/wiki).
 
 ![Screenshot Summary](images/screenshot_summary.png)
 
@@ -19,16 +19,17 @@ This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, 
 * Modern animated UI, supports Dark Mode
 * Short startup time, unline Dell's app
 * Packaged to .deb, with Desktop shortcuts etc.
+* Integrated OTA via Github API
 
 Control features:
 * Battery status overview (health etc.)
 * Battery charging control (w/o advanced/daily timing mode for now)
 * Thermal profiles control
+* Detects OS's power mode
 
 Planned TODOs:
 * Detect non-dell machines, act accordingly
-* Add detecting OS's power mode
-* Add OTA capabilities from Github releases
+* Detect unsupported modes on supported machines, act accordingly
 * Complete Windows support
 
 Potential future features to consider:
