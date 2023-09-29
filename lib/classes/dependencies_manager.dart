@@ -33,8 +33,8 @@ class DependenciesManager {
         List<ProcessResult> prs = (await shell.run('''    
           rm -rf ${Constants.packagesLinuxDownloadPath}/*     
           mkdir -p ${Constants.packagesLinuxDownloadPath}
-          wget --user-agent="Mozilla" ${Constants.packagesLinuxUrlLibssl[0]} -O ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}
-          wget --user-agent="Mozilla" ${Constants.packagesLinuxUrlDell[0]}   -O ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]}
+          curl -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlLibssl[0]} -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}
+          curl -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlDell[0]}   -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]}
           '''));
         for (ProcessResult pr in prs) {
           result = pr.exitCode == 0 && result;
@@ -56,7 +56,7 @@ class DependenciesManager {
         // Install libssl *first*, else after dell command cli is install, it may be queried, and may crash if libssl is missing
         List<ProcessResult> prs = (await shell.run('''
           tar -xf ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]} -C ${Constants.packagesLinuxDownloadPath}
-          pkexec sh -c "apt install -y -f ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}; apt install -y -f ${Constants.packagesLinuxDownloadPath}/*.deb; rm -rf ${Constants.packagesLinuxDownloadPath}/*"
+          pkexec bash -c "ss=0; apt install -y -f ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]} || ((ss++)); apt install -y -f ${Constants.packagesLinuxDownloadPath}/*.deb || ((ss++)); rm -rf ${Constants.packagesLinuxDownloadPath}/* || ((ss++)); exit \$ss"
           '''));
         for (ProcessResult pr in prs) {
           result = pr.exitCode == 0 && result;
