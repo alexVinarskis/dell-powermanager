@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
 import '../components/menu_dependencies.dart';
+import '../components/menu_ota.dart';
 import '../configs/constants.dart';
 import '../screens/screen_battery.dart';
 import '../screens/screen_summary.dart';
@@ -87,7 +88,11 @@ class ScreenParentState extends State<ScreenParent> {
                 ),
                 const Expanded(child: SizedBox(),),
                 const MenuDependencies(
-                  paddingV: 0,
+                  paddingV: 10,
+                  paddingH: 20,
+                ),
+                const MenuOta(
+                  paddingV: 10,
                   paddingH: 20,
                 ),
                 InfoButton(

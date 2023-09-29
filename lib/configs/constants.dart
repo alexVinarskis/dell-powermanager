@@ -2,8 +2,9 @@ class Constants {
   static const animationMs = 250;
 
   static const authorName = 'alexVinarskis';
-  static const urlHomepage = 'https://github.com/alexVinarskis/dell-powermanager';
-  static const urlBugReport = 'https://github.com/alexVinarskis/dell-powermanager/issues/new/choose';
+  static const urlHomepage = 'https://github.com/${Constants.authorName}/dell-powermanager';
+  static const urlBugReport = 'https://github.com/${Constants.authorName}/dell-powermanager/issues/new/choose';
+  static const urlApi = 'https://api.github.com/repos/${Constants.authorName}/dell-powermanager';
 
   static const packagesLinux = ['command-configure', 'srvadmin-hapi', 'libssl1.1'];
   static const packagesWindows = [];
@@ -18,5 +19,12 @@ class Constants {
   // These string shall also be hardcoded to ./package!
   static const apiPathLinux = '/opt/dell/dcc/cctk';
   static const applicationName = 'Dell Power Manager by VA';
-  static const applicationVersion = '0.5.0-3-g99820b7+20230924-225519';
+  static const applicationVersion = '0.1.0';
+
+  static const githubApiReleases = '${Constants.urlApi}/releases/latest';
+  static const githubApiRequest = 'curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28"';
+  static const githubApiFieldTagname = 'tag_name';
+  static const githubApiFieldAssets = 'assets';
+  static const githubApiFieldBrowserDownloadUrl = 'browser_download_url';
+  static const githubApiFieldHtmlUrl = 'html_url';
 }
