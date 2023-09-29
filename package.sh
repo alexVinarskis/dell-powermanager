@@ -48,7 +48,7 @@ ARCHITECTURE="amd64"
 PRIORITY="standard"
 MAINTAINER="alexVinarskis <alex.vinarskis@gmail.com>"
 HOMEPAGE="https://github.com/alexVinarskis/dell-powermanager"
-DEPENDS="libgtk-3-0, libblkid1, liblzma5, wget, tar, pkexec, power-profiles-daemon"
+DEPENDS="libgtk-3-0, libblkid1, liblzma5, curl, tar, pkexec, power-profiles-daemon, bash"
 DESCRIPTION="Cross-Platform Dell Power Manager re-implementation in Flutter"
 
 # Create control file of .deb
@@ -73,3 +73,5 @@ echo "sudo rm -f $PATH_EXEC" >> "$DEB_DIR"/prerm
 # Package
 dpkg-deb --build --root-owner-group ./package
 mv ./package.deb ./${PACKAGE}_${VERSION}_${ARCHITECTURE}.deb
+echo "Success! Produced './${PACKAGE}_${VERSION}_${ARCHITECTURE}.deb'"
+rm -rf ./package
