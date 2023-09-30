@@ -41,7 +41,7 @@ dependencies:
   url_launcher: ^6.1.14
   flutter_svg: ^2.0.7
   skeleton_text: ^3.0.1
-  intl: ^0.18.1
+  intl: ^0.18.0
   flutter_localization: ^0.1.14
   version: ^3.0.2
 
