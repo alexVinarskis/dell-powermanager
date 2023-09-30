@@ -17,8 +17,8 @@ class DependenciesManager {
         }
         return result;
       } else {
-        // ToDo Windows integration;
-        return false;
+        ProcessResult pr = (await shell.run('ls "${Constants.apiPathWindows}"'))[0];
+        return pr.exitCode == 0;
       }
     } catch (e) {
       return false;
@@ -28,22 +28,26 @@ class DependenciesManager {
   static Future<bool> downloadDependencies() async {
     bool result = true;
     try {
+      List<ProcessResult> prs;
       if (Platform.isLinux) {
         // handle download links individually, since one is tarred and need special handling in installation anyway
-        List<ProcessResult> prs = (await shell.run('''    
+        prs = (await shell.run('''
           rm -rf ${Constants.packagesLinuxDownloadPath}/*     
           mkdir -p ${Constants.packagesLinuxDownloadPath}
           curl -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlLibssl[0]} -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}
           curl -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlDell[0]}   -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]}
           '''));
-        for (ProcessResult pr in prs) {
-          result = pr.exitCode == 0 && result;
-        }
-        return result;
       } else {
-        // ToDo Windows integration;
-        return false;
+        prs = (await shell.run('''
+          rm -rf "${Constants.packagesWindowsDownloadPath}"
+          mkdir "${Constants.packagesWindowsDownloadPath}"
+          curl -L -A "User-Agent Mozilla" ${Constants.packagesWindowsUrlDell[0]} -o "${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}"
+          '''));
       }
+      for (ProcessResult pr in prs) {
+        result = pr.exitCode == 0 && result;
+      }
+      return result;
     } catch (e) {
       return false;
     }
@@ -52,20 +56,23 @@ class DependenciesManager {
   static Future<bool> installDependencies() async {
     bool result = true;
     try {
+      List<ProcessResult> prs;
       if (Platform.isLinux) {
         // Install libssl *first*, else after dell command cli is install, it may be queried, and may crash if libssl is missing
-        List<ProcessResult> prs = (await shell.run('''
+        prs = (await shell.run('''
           tar -xf ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]} -C ${Constants.packagesLinuxDownloadPath}
           pkexec bash -c "ss=0; apt install -y -f ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]} || ((ss++)); apt install -y -f ${Constants.packagesLinuxDownloadPath}/*.deb || ((ss++)); rm -rf ${Constants.packagesLinuxDownloadPath}/* || ((ss++)); exit \$ss"
           '''));
-        for (ProcessResult pr in prs) {
-          result = pr.exitCode == 0 && result;
-        }
-        return result;
       } else {
-        // ToDo Windows integration;
-        return false;
+        prs = (await shell.run('''
+          powershell -command "\$proc = Start-Process cmd -ArgumentList '/c \"${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}\" /s' -Verb runas -PassThru -Wait; exit \$proc.ExitCode"
+          rm -rf ${Constants.packagesWindowsDownloadPath}
+          '''));
       }
+      for (ProcessResult pr in prs) {
+        result = pr.exitCode == 0 && result;
+      }
+      return result;
     } catch (e) {
       return false;
     }

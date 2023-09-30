@@ -78,7 +78,7 @@ class ApiCCTK {
         pr = (await _shell.run('sudo ${Constants.apiPathLinux} $arg'))[0];
       } else {
         // ToDo Windows integration;
-        return false;
+        pr = (await _shell.run('"${Constants.apiPathWindows}" $arg'))[0];
       }
     } catch (e) {
       return false;
