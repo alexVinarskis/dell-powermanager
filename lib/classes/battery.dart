@@ -24,8 +24,25 @@ class Battery {
     ),
   );
   static const batteryInfoWindows = (
-    // ToDo Windows integration;
-    cmd: '',
-    args: (),
+    // As per https://superuser.com/a/995048
+    cmd: '''powershell -command "Get-WmiObject -Namespace 'root\\wmi' -Query 'select * from MSBatteryClass'" ''',
+    args: (
+      // paramters                   WmiObject name
+      powerSupplyPresent:           'PowerOnline',                        // True/False
+      batteryCharging:              'Charging',                           // True/False
+      batteryDischarging:           'Discharging',                        // True/False
+      batteryChargeRate:            'ChargeRate',
+      batteryDischargeRate:         'DischargeRate',                      // 15618
+      batteryVoltageNow:            'Voltage',                            // 11448 (@50%) - live voltage, NOT design voltage
+      batteryCycleCount:            'CycleCount',                         // 99
+      batteryCapacityLevel:         'Critical',                           // True/False
+      batteryCapacityFullDesign:    'DesignedCapacity',                   // Wh - 84280
+      batteryCapacityFull:          'FullChargedCapacity',                // Wh - 72743
+      batteryCapacityNow:           'RemainingCapacity',                  // Wh - 42248
+      batteryModelName:             'DeviceName',                         // DELL 70N2F34
+      batteryManufacturer:          'ManufactureName',                    // SMP
+      batterySerialNumber:          'SerialNumber',                       // 625
+      batteryTechnology:            'Chemistry',                          // Li-poly
+    ),
   );
 }
