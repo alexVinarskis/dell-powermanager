@@ -199,7 +199,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
                 ),
                 Text(
-                  CCTK.primaryBattChargeCfgStrings(context).containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfgStrings(context)[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "",
+                  CCTK.primaryBattChargeCfgStrings(context).containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfgStrings(context)[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "ERR: '$_currentBatteryMode'",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
                 ),
               ],) : const SizedBox(),
@@ -232,7 +232,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
                 ),
                 Text(
-                  CCTK.thermalManagementStrings(context).containsKey(_currentThermalMode) ? CCTK.thermalManagementStrings(context)[_currentThermalMode]![indexTitle] : "",
+                  CCTK.thermalManagementStrings(context).containsKey(_currentThermalMode) ? CCTK.thermalManagementStrings(context)[_currentThermalMode]![indexTitle] : "ERR: '$_currentThermalMode'",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
                 ),
               ],) : const SizedBox(),

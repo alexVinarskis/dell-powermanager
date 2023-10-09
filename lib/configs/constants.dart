@@ -16,8 +16,10 @@ class Constants {
   static const packagesLinuxDownloadPath = '/tmp/dell-powermanager';
 
   static const packagesWindowsUrlDell = ['https://dl.dell.com/FOLDER09477091M/2/Dell-Command-Configure-Application_D6VXJ_WIN_4.10.0.607_A00_01.EXE', 'Dell-Command-Configure-Application_D6VXJ_WIN_4.10.0.607_A00_01.EXE'];
-  static const packagesWindowsDownloadPath ="C:\\Users\\Alex\\AppData\\Local\\Temp\\dell-powermanager";
-  static const apiPathWindows =  "C:\\Program Files (x86)\\Dell\\Command Configure\\X86_64\\cctk.exe";
+  // CMD variables notation!
+  // Windows may have either CMD or PowerShell as default shell. Revert to using CMD, as it is always there
+  static const packagesWindowsDownloadPath ="%TEMP%\\dell-powermanager";
+  static const apiPathWindows =  "%ProgramFiles(x86)%\\Dell\\Command Configure\\X86_64\\cctk.exe";
 
   // These string shall also be hardcoded to ./package!
   static const apiPathLinux = '/opt/dell/dcc/cctk';
