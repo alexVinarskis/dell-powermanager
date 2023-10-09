@@ -63,8 +63,10 @@ class ApiBattery {
           return false;
         }
       } else {
-        // ToDo Windows integration;
-        return false;
+        ProcessResult pr = (await _shell.run(Battery.batteryInfoWindows.cmd))[0];
+        if (!_processReponseWindows(pr)) {
+          return false;
+        }
       }
     } catch (e) {
       return false;
@@ -90,6 +92,25 @@ class ApiBattery {
       map[parts[0]] = parts[1];
     }
     batteryState = BatteryState.fromLinuxMap(map);
+    return true;
+  }
+  static bool _processReponseWindows(ProcessResult pr) {
+     if (pr.exitCode != 0) {
+      return false;
+    }
+    Map<String, dynamic> map = {};
+    List<String> lines = pr.stdout.toString().split("\n");
+    for (String line in lines) {
+      if (line.isEmpty) {
+        continue;
+      }
+      List<String> parts = line.replaceAll("\r", "").split(": ");
+      if (parts.length != 2) {
+        continue;
+      }
+      map[parts[0].replaceAll(" ", "")] = parts[1];
+    }
+    batteryState = BatteryState.fromWindowsMap(map);
     return true;
   }
 }
