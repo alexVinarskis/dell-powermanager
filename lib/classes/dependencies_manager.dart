@@ -17,7 +17,7 @@ class DependenciesManager {
         }
         return result;
       } else {
-        ProcessResult pr = (await shell.run('ls "${Constants.apiPathWindows}"'))[0];
+        ProcessResult pr = (await shell.run('''cmd /c dir "${Constants.apiPathWindows}"'''))[0];
         return pr.exitCode == 0;
       }
     } catch (e) {
@@ -39,9 +39,9 @@ class DependenciesManager {
           '''));
       } else {
         prs = (await shell.run('''
-          rm -rf "${Constants.packagesWindowsDownloadPath}"
-          mkdir "${Constants.packagesWindowsDownloadPath}"
-          curl -L -A "User-Agent Mozilla" ${Constants.packagesWindowsUrlDell[0]} -o "${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}"
+          cmd /c IF EXIST "${Constants.packagesWindowsDownloadPath}" rmdir /s /q "${Constants.packagesWindowsDownloadPath}"
+          cmd /c mkdir "${Constants.packagesWindowsDownloadPath}"
+          cmd /c curl -L -A "User-Agent Edge" ${Constants.packagesWindowsUrlDell[0]} -o "${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}"
           '''));
       }
       for (ProcessResult pr in prs) {
@@ -65,8 +65,8 @@ class DependenciesManager {
           '''));
       } else {
         prs = (await shell.run('''
-          powershell -command "\$proc = Start-Process cmd -ArgumentList '/c \"${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}\" /s' -Verb runas -PassThru -Wait; exit \$proc.ExitCode"
-          rm -rf ${Constants.packagesWindowsDownloadPath}
+          cmd /c ${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]} /s
+          cmd /c IF EXIST "${Constants.packagesWindowsDownloadPath}" rmdir /s /q "${Constants.packagesWindowsDownloadPath}"
           '''));
       }
       for (ProcessResult pr in prs) {

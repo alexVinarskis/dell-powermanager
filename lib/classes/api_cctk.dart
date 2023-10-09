@@ -77,30 +77,30 @@ class ApiCCTK {
       if (Platform.isLinux) {
         pr = (await _shell.run('sudo ${Constants.apiPathLinux} $arg'))[0];
       } else {
-        // ToDo Windows integration;
-        pr = (await _shell.run('"${Constants.apiPathWindows}" $arg'))[0];
+        // Running 'CMD /c' in PS breaks '"', yet works in CMD. Hack to wrap it in `cmd /c` twise. Thanks Microsoft.
+        pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" $arg'''))[0];
       }
     } catch (e) {
       return false;
     }
     // process response
-    if (!_processReponse(pr)) {
+    if (!_processResponse(pr)) {
       return false;
     }
     // notify listeners
     _callStateChanged(cctkState);
     return true;
   }
-  static bool _processReponse(ProcessResult pr) {
+  static bool _processResponse(ProcessResult pr) {
      if (pr.exitCode != 0) {
       return false;
     }
     for (String output in pr.stdout.toString().split("\n")) {
-      List<String> argAndValue = output.split("=");
+      List<String> argAndValue = output.replaceAll(" ", "").replaceAll("\r", "").split("=");
       if (argAndValue.length < 2) continue;
       for (var paramKey in cctkState.parameters.keys) {
-        if (paramKey.cmd == argAndValue[0]) {
-          cctkState.parameters[paramKey] = argAndValue[1]; 
+        if (argAndValue[0].contains(paramKey.cmd)) {
+          cctkState.parameters[paramKey] = argAndValue[1];
         }
       }
     }
@@ -113,14 +113,14 @@ class ApiCCTK {
       if (Platform.isLinux) {
         pr = (await _shell.run('sudo ${Constants.apiPathLinux} --$cctkType=$mode'))[0];
       } else {
-        // ToDo Windows integration;
+        pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" --$cctkType=$mode'''))[0];
         return false;
       }
     } catch (e) {
       return false;
     }
     // process response
-    if (!_processReponse(pr)) {
+    if (!_processResponse(pr)) {
       return false;
     }
     // notify listeners
