@@ -77,7 +77,7 @@ class ApiPowermode {
     if (pr.exitCode != 0) {
       return false;
     }
-    powermodeState = PowermodeState.fromLinuxResponse(pr.stdout.toString().replaceAll(" ", "").replaceAll("\n", ""));
+    powermodeState = PowermodeState.fromLinuxResponse(pr.stdout.toString().trim().replaceAll("\n", ""));
     return true;
   }
 }
