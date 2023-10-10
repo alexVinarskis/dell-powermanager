@@ -107,7 +107,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
               style: TextStyle(fontSize: Theme.of(context).textTheme.titleSmall!.fontSize),
             ),
             Text(
-              Powermode.profileInfoStrings(context)[_powermodeState?.profileInfo]?? "",
+              Powermode.profileInfoStrings(context)[_powermodeState?.profileInfo]?? S.of(context)!.powermodeCustom,
               style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
             ),
           ],)

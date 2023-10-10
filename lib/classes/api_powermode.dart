@@ -63,8 +63,10 @@ class ApiPowermode {
           return false;
         }
       } else {
-        // ToDo Windows integration;
-        return false;
+        ProcessResult pr = (await _shell.run(Powermode.profileInfoWindows.cmd))[0];
+        if (!_processReponseWindows(pr)) {
+          return false;
+        }
       }
     } catch (e) {
       return false;
@@ -73,11 +75,19 @@ class ApiPowermode {
     _callStateChanged(powermodeState!);
     return true;
   }
+
   static bool _processReponseLinux(ProcessResult pr) {
     if (pr.exitCode != 0) {
       return false;
     }
     powermodeState = PowermodeState.fromLinuxResponse(pr.stdout.toString().trim().replaceAll("\n", ""));
+    return true;
+  }
+  static bool _processReponseWindows(ProcessResult pr) {
+    if (pr.exitCode != 0) {
+      return false;
+    }
+    powermodeState = PowermodeState.fromWindowsResponse(pr.stdout.toString().trim().replaceAll("\n", ""));
     return true;
   }
 }
