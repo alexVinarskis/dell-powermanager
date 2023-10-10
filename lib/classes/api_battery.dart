@@ -108,7 +108,7 @@ class ApiBattery {
       if (parts.length != 2) {
         continue;
       }
-      map[parts[0].replaceAll(" ", "")] = parts[1];
+      map[parts[0].trim()] = parts[1].trim();
     }
     batteryState = BatteryState.fromWindowsMap(map);
     return true;

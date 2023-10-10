@@ -96,7 +96,7 @@ class ApiCCTK {
       return false;
     }
     for (String output in pr.stdout.toString().split("\n")) {
-      List<String> argAndValue = output.replaceAll(" ", "").replaceAll("\r", "").split("=");
+      List<String> argAndValue = output.trim().replaceAll("\r", "").split("=");
       if (argAndValue.length < 2) continue;
       for (var paramKey in cctkState.parameters.keys) {
         if (argAndValue[0].contains(paramKey.cmd)) {

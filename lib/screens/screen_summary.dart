@@ -91,7 +91,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                value == null ? "" :
+                value == null ? _batteryState == null ? "" : "-" :
                 value is String ? value :
                 toInt ? "${value.toInt()}" :
                 '${double.parse((value).toStringAsFixed(1))}',
@@ -140,7 +140,11 @@ class ScreenSummaryState extends State<ScreenSummary> {
             _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleVendor}:", _batteryState?.batteryManufacturer),
             _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleType}:", _batteryState?.batteryTechnology),
             _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleDesignCapacity}:", _batteryState?.batteryDesignCapacity, unit: S.of(context)!.summaryPageSubtitleDesignCapacityUnit),
-            _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleDesignVoltage}:", _batteryState?.batteryVoltageMinDesign, unit: S.of(context)!.summaryPageSubtitleDesignVoltageUnit),
+            _getBatteryStatValue(
+              context,
+              "${_batteryState?.batteryVoltageMinDesign != null ? S.of(context)!.summaryPageSubtitleDesignVoltage : S.of(context)!.summaryPageSubtitleCurrentVoltage}:",
+              _batteryState?.batteryVoltageMinDesign ?? _batteryState?.batteryVoltageNow , unit: S.of(context)!.summaryPageSubtitleDesignVoltageUnit
+            ),
             _getBatteryStatValue(context, "${S.of(context)!.summaryPageSubtitleSerial}:", _batteryState?.batterySerialNumber),
           ],
         ),

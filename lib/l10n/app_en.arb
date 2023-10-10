@@ -13,6 +13,7 @@
     "summaryPageSubtitleType" : "Type",
     "summaryPageSubtitleDesignCapacity" : "Design Capacity",
     "summaryPageSubtitleDesignVoltage" : "Design Voltage",
+    "summaryPageSubtitleCurrentVoltage" : "Current Voltage",
     "summaryPageSubtitleDesignCapacityUnit" : "Wh",
     "summaryPageSubtitleDesignVoltageUnit" : "V",
     "summaryPageSubtitleSerial" : "S/N",
