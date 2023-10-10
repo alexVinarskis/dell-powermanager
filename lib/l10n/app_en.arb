@@ -101,5 +101,6 @@
     "powermodeTitle" : "OS Power Plan",
     "powermodePowersaving" : "Power Saving",
     "powermodeBalanced" : "Balanced",
-    "powermodePerformance" : "Performance"
+    "powermodePerformance" : "Performance",
+    "powermodeCustom" : "Custom"
 }
