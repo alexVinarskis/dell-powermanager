@@ -30,7 +30,10 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter config --enable-windows-desktop
-      - run: flutter build windows --release
+      - run: .\package.bat
+      - uses: kittaakos/upload-artifact-as-is@v0
+        with:
+          path: '*.msi'
 
   build-linux:
     runs-on: ubuntu-latest
