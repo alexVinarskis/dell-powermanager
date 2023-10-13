@@ -43,6 +43,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Linux packages
+# Linux & Windows packages
 *.deb
+*.msi
 package/*

@@ -1,0 +1,37 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package Name="dell-powermanager" Manufacturer="alexVinarskis" Version="1.0.0.0"  Compressed="yes" ProductCode="*" UpgradeCode="80b81ffa-2cb3-4a79-9f92-24d070b85099">
+        <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+        <MediaTemplate EmbedCab="yes" />
+
+        <Feature Id="Main">
+            <ComponentGroupRef Id="ProductComponents" />
+			<ComponentRef Id="ApplicationShortcutStart" />
+        </Feature>
+		<Icon Id="icon.ico" SourceFile="icon.ico"/>
+		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    </Package>
+
+	<!-- Application Folder -->
+    <Fragment>
+        <StandardDirectory Id="ProgramFiles64Folder">
+	        <Directory Id="INSTALLFOLDER" Name="!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" />
+        </StandardDirectory>
+    </Fragment>
+
+	<!-- Start Menu Shortcut -->
+	<Fragment>
+		<StandardDirectory Id="ProgramMenuFolder">
+			<Component Id="ApplicationShortcutStart" Guid="*">
+				<Shortcut Id="ApplicationStartMenuShortcut"
+						  Name="dell-powermanager"
+						  Description="dell-powermanager"
+						  Target="[INSTALLFOLDER]\dell_powermanager.exe"
+						  WorkingDirectory="INSTALLFOLDER">
+                    <Icon Id="iconShortcutStartMenu" SourceFile="icon.ico"></Icon>
+                </Shortcut>
+				<RegistryValue Root="HKCU" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</StandardDirectory>
+	</Fragment>
+</Wix>
