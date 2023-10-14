@@ -31,7 +31,7 @@ class ApiCCTK {
   static late Duration _refreshInternal;
   static late Timer _timer;
   static bool? _apiReady;
-  static final _shell = Shell();
+  static final _shell = Shell(throwOnError: false);
 
   static final CCTKState cctkState = CCTKState();
 
@@ -92,7 +92,12 @@ class ApiCCTK {
     return true;
   }
   static bool _processResponse(ProcessResult pr) {
-     if (pr.exitCode != 0) {
+    if (pr.exitCode != 0) {
+      if ((pr.stderr.toString() + pr.stdout.toString()).contains("admin/root")) {
+        cctkState.parameters[CCTK.thermalManagement] = "needs admin";
+        cctkState.parameters[CCTK.primaryBattChargeCfg] = "needs admin";
+        return true;
+      }
       return false;
     }
     for (String output in pr.stdout.toString().split("\n")) {
