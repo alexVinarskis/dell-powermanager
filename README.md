@@ -21,7 +21,7 @@ This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, 
 * Modern animated UI, supports Dark Mode
 * Short startup time, unline Dell's app
 * Packaged to .deb (Linux) .msi (Windows), with start menu shortcuts etc.
-* Integrated OTA via Github API (Linux only for now)
+* Integrated OTA via Github API
 
 Control features:
 * Battery status overview (health etc.)
@@ -39,20 +39,20 @@ Potential future features to consider:
 
 ## Development status
 Application is currently in __public beta__ stage.
-### Linux
-* UI tested, build asserted by CI
+
+* UI tested, build and packaging asserted by CI
 * Dell's CCTK integrated, as well as automated installer
 * Tested on multiple platforms, see [Compatibility](#compatibility)
-* Packaged to `.deb`, get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
-* Run from source via `flutter run`, build via `flutter build linux --release`
+* Packaged to `.deb`/`.msi`, get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases/latest), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
 * OTA integrated via Github API
 
+### Linux
+* Run from source via `flutter run`, build via `flutter build linux --release`
+* Package to `.deb` via `./package.sh`
+
 ### Windows
-* UI tested, build asserted by CI
-* Dell's CCTK integrated, as well as automated installer
-* Tested on multiple platforms, see [Compatibility](#compatibility)
-* Packaged to `.msi`, get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
 * Run from source via `flutter run`, build via `flutter build windows --release`
+* Package to `.msi` via `.\package.bat`
 
 ## Compatibility
 Tested on the following devices:
@@ -62,6 +62,7 @@ Tested on the following devices:
     * Windows 11 Pro 22H2, 22621.2428
 * Dell XPS 15 9520
     * Ubuntu 22.04, 6.2.0
+    * Windows 11 Home 22H2, 22621.2428
 * Dell XPS 13 9310
     * Ubuntu 22.04.3, 6.2.0-26-generic
     * Windows 10 pro 22H2, 19045.3324
