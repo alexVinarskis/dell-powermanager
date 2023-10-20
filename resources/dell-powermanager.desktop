@@ -3,6 +3,6 @@ Encoding=UTF-8
 Version={VERSION}
 Type=Application
 Terminal=false
-Exec={PATH_EXEC}
+Exec=bash -c "source ~/.bashrc || true && {PACKAGE}"
 Name={NAME}
 Icon={PATH_ICON}

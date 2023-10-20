@@ -22,7 +22,7 @@ class Constants {
   static const apiPathWindows =  "%ProgramFiles(x86)%\\Dell\\Command Configure\\X86_64\\cctk.exe";
 
   // These string shall also be hardcoded to ./package!
-  static const apiPathLinux = '/opt/dell/dcc/cctk';
+  static const apiPathLinux = '/opt/dell/dcc';
   static const applicationName = 'Dell Power Manager by VA';
   static const applicationVersion = '0.1.0';
 
