@@ -73,15 +73,11 @@ class ApiCCTK {
     }
     late ProcessResult pr;
     // get response
-    try {
-      if (Platform.isLinux) {
-        pr = (await _shell.run('sudo ${Constants.apiPathLinux} $arg'))[0];
-      } else {
-        // Running 'CMD /c' in PS breaks '"', yet works in CMD. Hack to wrap it in `cmd /c` twise. Thanks Microsoft.
-        pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" $arg'''))[0];
-      }
-    } catch (e) {
-      return false;
+    if (Platform.isLinux) {
+      pr = (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && sudo \$(which cctk) $arg"'''))[0];
+    } else {
+      // Running 'CMD /c' in PS breaks '"', yet works in CMD. Hack to wrap it in `cmd /c` twise. Thanks Microsoft.
+      pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" $arg'''))[0];
     }
     // process response
     if (!_processResponse(pr)) {
@@ -114,14 +110,10 @@ class ApiCCTK {
 
   static Future<bool> request(String cctkType, String mode) async {
     late ProcessResult pr;
-    try {
-      if (Platform.isLinux) {
-        pr = (await _shell.run('sudo ${Constants.apiPathLinux} --$cctkType=$mode'))[0];
-      } else {
-        pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" --$cctkType=$mode'''))[0];
-      }
-    } catch (e) {
-      return false;
+    if (Platform.isLinux) {
+      pr = (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && sudo \$(which cctk) --$cctkType=$mode"'''))[0];
+    } else {
+      pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" --$cctkType=$mode'''))[0];
     }
     // process response
     if (!_processResponse(pr)) {
