@@ -119,7 +119,6 @@ class ApiCCTK {
         pr = (await _shell.run('sudo ${Constants.apiPathLinux} --$cctkType=$mode'))[0];
       } else {
         pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" --$cctkType=$mode'''))[0];
-        return false;
       }
     } catch (e) {
       return false;
