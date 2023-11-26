@@ -42,7 +42,7 @@ mkdir package
 
 cp resources/icon.ico package/
 cp resources/dell-powermanager.w* resources/dell-powermanager.sln package/
-cp -r build/windows/Runner/Release package/
+cp -r build/windows/x64/runner/Release package/
 
 : Bake in app name and version to .msi package
 sed -i "s|1.0.0.0|%VERSION_SHORT%.0|g"                                      ./package/dell-powermanager.wxs
