@@ -59,13 +59,13 @@ class OtaManager {
         prs = (await shell.run('''    
           rm -rf ${Constants.packagesLinuxDownloadPath}/*     
           mkdir -p ${Constants.packagesLinuxDownloadPath}
-          curl -L -A "User-Agent Mozilla" $downloadUrl -o ${Constants.packagesLinuxDownloadPath}/$tagname.deb
+          curl -f -L -A "User-Agent Mozilla" $downloadUrl -o ${Constants.packagesLinuxDownloadPath}/$tagname.deb
           '''));
       } else {
         prs = (await shell.run('''
           cmd /c IF EXIST "${Constants.packagesWindowsDownloadPath}" rmdir /s /q "${Constants.packagesWindowsDownloadPath}"
           cmd /c mkdir "${Constants.packagesWindowsDownloadPath}"
-          cmd /c curl -L -A "User-Agent Edge" $downloadUrl -o "${Constants.packagesWindowsDownloadPath}\\$tagname.msi"
+          cmd /c curl -f -L -A "User-Agent Edge" $downloadUrl -o "${Constants.packagesWindowsDownloadPath}\\$tagname.msi"
           '''));
       }
       for (ProcessResult pr in prs) {

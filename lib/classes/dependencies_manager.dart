@@ -34,14 +34,14 @@ class DependenciesManager {
         prs = (await shell.run('''
           rm -rf ${Constants.packagesLinuxDownloadPath}/*     
           mkdir -p ${Constants.packagesLinuxDownloadPath}
-          curl -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlLibssl[0]} -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}
-          curl -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlDell[0]}   -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]}
+          curl -f -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlLibssl[0]} -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}
+          curl -f -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlDell[0]}   -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]}
           '''));
       } else {
         prs = (await shell.run('''
           cmd /c IF EXIST "${Constants.packagesWindowsDownloadPath}" rmdir /s /q "${Constants.packagesWindowsDownloadPath}"
           cmd /c mkdir "${Constants.packagesWindowsDownloadPath}"
-          cmd /c curl -L -A "User-Agent Edge" ${Constants.packagesWindowsUrlDell[0]} -o "${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}"
+          cmd /c curl -f -L -A "User-Agent Edge" ${Constants.packagesWindowsUrlDell[0]} -o "${Constants.packagesWindowsDownloadPath}\\${Constants.packagesWindowsUrlDell[1]}"
           '''));
       }
       for (ProcessResult pr in prs) {
