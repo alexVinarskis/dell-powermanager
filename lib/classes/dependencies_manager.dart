@@ -10,7 +10,7 @@ class DependenciesManager {
   static Future<bool> verifyDependencies() async {
     ProcessResult pr;
     if (Platform.isLinux) {
-      pr = (await shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && which cctk"'''))[0];
+      pr = (await shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && which cctk && [[ \$(sudo \$(which cctk) 2>&1) != *libcrypto* ]]"'''))[0];
     } else {
       pr = (await shell.run('''cmd /c dir "${Constants.apiPathWindows}"'''))[0];
     }
