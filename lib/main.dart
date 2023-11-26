@@ -2,7 +2,6 @@ import 'package:dell_powermanager/classes/api_powermode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import 'components/window_caption.dart' as window_caption;
@@ -19,16 +18,14 @@ Future<void> main() async {
   const String title      = Constants.applicationName;
 
   WidgetsFlutterBinding.ensureInitialized();
-  windowManager.ensureInitialized();
-  Window.setEffect(effect: WindowEffect.transparent);
+  await windowManager.ensureInitialized();
 
-  windowManager.waitUntilReadyToShow().then((_) async {
-    if (!Platform.isLinux) {
-      await windowManager.setHasShadow(false);
-    }
-    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-    await windowManager.setSize(currentSize);
-    await windowManager.setMinimumSize(minSize);
+  WindowOptions windowOptions = WindowOptions(
+    titleBarStyle: TitleBarStyle.hidden,
+    minimumSize: minSize,
+    size: currentSize,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
   });
@@ -101,9 +98,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   void onWindowFocus() {
     // Make sure to call once.
-    setState(() {
-      windowManager.setMinimumSize(minSize);
-    });
+    setState(() {});
   }
 
   Widget getAppBarTitle(String title) {
