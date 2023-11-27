@@ -76,6 +76,19 @@
     "otaAlertP1" : "Find more information and source code on the release page.",
     "otaAlertP2" : "Press the button below to automatically install the update.",
 
+    "adminCardTitle" : "Admin Rights Required",
+    "adminCardSubtitleAwaiting" : "Re-run the app as administrator",
+
+    "sudoersCardTitle" : "`sudo` permissions required",
+    "sudoersCardSubtitleAwaiting" : "Tap for more info and patch options",
+    "sudoersCardSubtitlePatching" : "Please wait... Patching...",
+    "sudoersCardSubtitlePatchingFailed" : "`sudoers.d` Modification Failed :<",
+    "sudoersCardSubtitlePatchingSucceeded" : "Patching Succeeded. Please restart the app!",
+    "sudoersAlertTitle" : "`sudo` permissions required",
+    "sudoersAlertButtonPatch" : "Inject `sudoers.d` patch",
+    "sudoersAlertP1" : "Dell's `cctk` utility requires `sudo` permissions to operate. To avoid running this app as `sudo`, add `cctk` path to `sudoers.d`.\n\nPress the button below to automatically execute the following command:",
+    "sudoersAlertP2" : "Otherwise, manually allow all users to execute `cctk` with `sudo` permissions and restart the app.\n\n[NOT RECOMMENDED]\nOthwerwise, run this app as `sudo`.",
+
     "cctkThermalOptimizedTitle" : "Optimized",
     "cctkThermalOptimizedDescription" : "This is the standard setting for cooling fan and processor heat management. This setting is a balance of performance., noise and temperature.",
     "cctkThermalQuietTitle" : "Quiet",
