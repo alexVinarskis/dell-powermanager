@@ -26,6 +26,7 @@ class Constants {
   // These string shall also be hardcoded to ./package!
   static const apiPathLinux = '/opt/dell/dcc';
   static const applicationName = 'Dell Power Manager by VA';
+  static const applicationPackageName = 'dell-powermanager';
   static const applicationVersion = '0.1.0';
 
   static const githubApiReleases = '${Constants.urlApi}/releases/latest';

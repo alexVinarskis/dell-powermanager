@@ -4,6 +4,7 @@ import '../components/menu_item.dart';
 import '../components/info_button.dart';
 import '../components/menu_dependencies.dart';
 import '../components/menu_ota.dart';
+import '../components/menu_sudoers.dart';
 import '../configs/constants.dart';
 import '../screens/screen_battery.dart';
 import '../screens/screen_summary.dart';
@@ -87,6 +88,10 @@ class ScreenParentState extends State<ScreenParent> {
                   isSelected: currentMenu == MenuItems.thermals,
                 ),
                 const Expanded(child: SizedBox(),),
+                const MenuSudoers(
+                  paddingV: 10,
+                  paddingH: 20,
+                ),
                 const MenuDependencies(
                   paddingV: 10,
                   paddingH: 20,

@@ -19,8 +19,9 @@ DEB_DIR="./package/DEBIAN"
 VERSION=$(git describe --tags)+$(date '+%Y%m%d-%H%M%S')
 
 # Bake in app name and version tag
-sed -i "s|applicationName".*"|applicationName = '${NAME}';|g"            ./lib/configs/constants.dart
-sed -i "s|applicationVersion".*"|applicationVersion = '${VERSION}';|g"   ./lib/configs/constants.dart
+sed -i "s|applicationName".*"|applicationName = '${NAME}';|g"                   ./lib/configs/constants.dart
+sed -i "s|applicationPackageName".*"|applicationPackageName = '${PACKAGE}';|g"  ./lib/configs/constants.dart
+sed -i "s|applicationVersion".*"|applicationVersion = '${VERSION}';|g"          ./lib/configs/constants.dart
 
 rm -rf ./package
 mkdir -p "$APP_DIR"
@@ -34,7 +35,6 @@ flutter build linux --release
 
 # Copy application files
 cp -r build/linux/x64/release/bundle/*      "$APP_DIR"
-cp ./resources/sudoers                      ./package/etc/sudoers.d/"$PACKAGE"
 cp ./resources/icon.png                     ./package/"$ICON_PATH"
 cp ./resources/dell-powermanager.desktop    ./package/usr/local/share/applications/
 
@@ -42,7 +42,6 @@ sed -i "s|{VERSION}|${VERSION}|g"           ./package/usr/local/share/applicatio
 sed -i "s|{PACKAGE}|${PACKAGE}|g"           ./package/usr/local/share/applications/dell-powermanager.desktop
 sed -i "s|{PATH_ICON}|${ICON_PATH}|g"       ./package/usr/local/share/applications/dell-powermanager.desktop
 sed -i "s|{NAME}|${NAME}|g"                 ./package/usr/local/share/applications/dell-powermanager.desktop
-sed -i "s|{PATH_CCTK}|${PATH_CCTK}|g"       ./package/etc/sudoers.d/"$PACKAGE"
 
 ARCHITECTURE="amd64"
 PRIORITY="standard"
