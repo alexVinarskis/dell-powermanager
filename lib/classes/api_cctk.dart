@@ -89,11 +89,6 @@ class ApiCCTK {
   }
   static bool _processResponse(ProcessResult pr) {
     if (pr.exitCode != 0) {
-      if ((pr.stderr.toString() + pr.stdout.toString()).contains("admin/root")) {
-        cctkState.parameters[CCTK.thermalManagement] = "needs admin";
-        cctkState.parameters[CCTK.primaryBattChargeCfg] = "needs admin";
-        return true;
-      }
       return false;
     }
     for (String output in pr.stdout.toString().split("\n")) {
