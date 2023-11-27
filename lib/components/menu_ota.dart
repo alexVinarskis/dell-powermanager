@@ -43,7 +43,7 @@ class MenuOtaState extends State<MenuOta> {
   }
 
   void _handleOtaState(List<String> latestOta) {
-    if (latestOta.length < 3) {
+    if (latestOta.length < 2) {
       return;
     }
     if (!OtaManager.compareUpdateRequired(latestOta[0])) {
@@ -136,11 +136,11 @@ class MenuOtaState extends State<MenuOta> {
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.justify,
               ),
-              Text(
+              _targetVersion.length > 2 ? Text(
                 S.of(context)!.otaAlertP2,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.justify,
-              ),
+              ) : const SizedBox(),
             ],
           ),
           actions: <Widget>[
@@ -155,7 +155,7 @@ class MenuOtaState extends State<MenuOta> {
                 Navigator.of(context).pop();
               },
             ),
-            TextButton.icon(
+            _targetVersion.length > 2 ? TextButton.icon(
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
@@ -165,7 +165,7 @@ class MenuOtaState extends State<MenuOta> {
                 _getOta();
                 Navigator.of(context).pop();
               },
-            ),
+            ) : const SizedBox(),
           ],
         );
       },

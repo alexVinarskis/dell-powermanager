@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dell_powermanager/classes/dependencies_manager.dart';
 import 'package:process_run/shell.dart';
 import 'package:version/version.dart';
 
@@ -34,7 +35,11 @@ class OtaManager {
         return result;
       }
       for (Map<dynamic, dynamic> asset in json[Constants.githubApiFieldAssets]) {
-        if (asset.containsKey(Constants.githubApiFieldBrowserDownloadUrl) && asset[Constants.githubApiFieldBrowserDownloadUrl].toString().endsWith(Platform.isLinux ? '.deb' : '.msi')) {
+        if (DependenciesManager.supportsAutoinstall == null) {
+          await DependenciesManager.verifySupportsAutoinstall();
+        }
+        // For linux, only .deb is supported for autoinstall
+        if (DependenciesManager.supportsAutoinstall! && asset.containsKey(Constants.githubApiFieldBrowserDownloadUrl) && asset[Constants.githubApiFieldBrowserDownloadUrl].toString().endsWith(Platform.isLinux ? ".deb" : '.msi')) {
           result.add(asset[Constants.githubApiFieldBrowserDownloadUrl]);
           break;
         }

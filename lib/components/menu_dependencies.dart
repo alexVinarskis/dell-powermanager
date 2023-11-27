@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
+import 'package:url_launcher/url_launcher.dart'; 
 import '../configs/constants.dart';
 import '../classes/api_cctk.dart';
 import '../classes/dependencies_manager.dart';
@@ -132,21 +133,35 @@ class MenuDependenciesState extends State<MenuDependencies> {
                 ),
                 TextSpan(text: Platform.isLinux ? Constants.packagesLinux.join('\n') : Constants.packagesWindows.join('\n'), style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!)),
                 TextSpan(text:
-                  '\n',
+                  '\n\n',
+                  style: Theme.of(context).textTheme.bodyMedium
+                ),
+                TextSpan(text:
+                  DependenciesManager.supportsAutoinstall ?? false ? S.of(context)!.dependenciesAlertP4_supported : S.of(context)!.dependenciesAlertP4_unsupported,
                   style: Theme.of(context).textTheme.bodyMedium
                 ),
               ],
             ),
           ),
           actions: <Widget>[
-            TextButton.icon(
+            DependenciesManager.supportsAutoinstall ?? false ? TextButton.icon(
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
               icon: const Icon(Icons.download_rounded),
-              label: Text(S.of(context)!.dependenciesAlertButton),
+              label: Text(S.of(context)!.dependenciesAlertButton_supported),
               onPressed: () {
                 _getDependencies();
+                Navigator.of(context).pop();
+              },
+            ) : TextButton.icon(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              icon: const Icon(Icons.link_rounded),
+              label: Text(S.of(context)!.dependenciesAlertButton_unsupported),
+              onPressed: () {
+                launchUrl(Uri.parse(Constants.urlDellCommandConfigure));
                 Navigator.of(context).pop();
               },
             ),
