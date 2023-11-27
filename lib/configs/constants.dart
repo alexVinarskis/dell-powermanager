@@ -7,6 +7,8 @@ class Constants {
   static const urlBugReport = 'https://github.com/${Constants.authorName}/dell-powermanager/issues/new/choose';
   static const urlApi = 'https://api.github.com/repos/${Constants.authorName}/dell-powermanager';
 
+  static const urlDellCommandConfigure = "https://www.dell.com/support/kbdoc/en-us/000178000/dell-command-configure";
+
   static const packagesLinux = ['command-configure', 'srvadmin-hapi', 'libssl1.1'];
   static const packagesWindows = ['Dell Command | Configure'];
 

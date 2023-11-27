@@ -6,6 +6,18 @@ import '../configs/constants.dart';
 
 class DependenciesManager {
   static final shell = Shell(throwOnError: false);
+  static bool? supportsAutoinstall;
+
+  static Future<void> verifySupportsAutoinstall() async {
+    if (Platform.isLinux) {
+      // For linux, only .deb via `apt` is supported for autoinstall
+      ProcessResult pr = (await shell.run('''which apt'''))[0];
+      supportsAutoinstall = pr.exitCode == 0;
+    } else {
+      // Windows supports autoinstall by default via .msi
+      supportsAutoinstall = true;
+    }
+  }
 
   static Future<bool> verifyDependencies() async {
     ProcessResult pr;
@@ -14,7 +26,13 @@ class DependenciesManager {
     } else {
       pr = (await shell.run('''cmd /c dir "${Constants.apiPathWindows}"'''))[0];
     }
-    return pr.exitCode == 0;
+    if (pr.exitCode == 0) {
+      return true;
+    }
+    if (supportsAutoinstall == null) {
+      await verifySupportsAutoinstall();
+    }
+    return false;
   }
 
   static Future<bool> downloadDependencies() async {
