@@ -29,7 +29,7 @@ class ApiPowermode {
   static late Duration _initialRefreshInternal;
   static late Duration _refreshInternal;
   static late Timer _timer;
-  static final _shell = Shell();
+  static final _shell = Shell(throwOnError: false);
 
   static PowermodeState? powermodeState;
 
@@ -56,20 +56,16 @@ class ApiPowermode {
 
   static Future<bool> _query() async {
     // get response
-    try {
-      if (Platform.isLinux) {
-        ProcessResult pr = (await _shell.run(Powermode.profileInfoLinux.cmd))[0];
-        if (!_processReponseLinux(pr)) {
-          return false;
-        }
-      } else {
-        ProcessResult pr = (await _shell.run(Powermode.profileInfoWindows.cmd))[0];
-        if (!_processReponseWindows(pr)) {
-          return false;
-        }
+    if (Platform.isLinux) {
+      ProcessResult pr = (await _shell.run(Powermode.profileInfoLinux.cmd))[0];
+      if (!_processReponseLinux(pr)) {
+        return false;
       }
-    } catch (e) {
-      return false;
+    } else {
+      ProcessResult pr = (await _shell.run(Powermode.profileInfoWindows.cmd))[0];
+      if (!_processReponseWindows(pr)) {
+        return false;
+      }
     }
     // notify listeners
     _callStateChanged(powermodeState!);
