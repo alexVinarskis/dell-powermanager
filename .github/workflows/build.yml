@@ -53,3 +53,6 @@ jobs:
       - uses: kittaakos/upload-artifact-as-is@v0
         with:
           path: '*.deb'
+      - uses: kittaakos/upload-artifact-as-is@v0
+        with:
+          path: '*.tar.xz'
