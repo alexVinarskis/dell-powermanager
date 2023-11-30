@@ -47,3 +47,6 @@ app.*.map.json
 *.deb
 *.msi
 package/*
+*.zip
+*.tar.gz
+*.tar.xz

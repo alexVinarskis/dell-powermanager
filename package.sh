@@ -17,6 +17,7 @@ APP_PATH="/opt/$PACKAGE"
 APP_DIR="./package$APP_PATH"
 DEB_DIR="./package/DEBIAN"
 VERSION=$(git describe --tags)+$(date '+%Y%m%d-%H%M%S')
+ARCHITECTURE="amd64"
 
 # Bake in app name and version tag
 sed -i "s|applicationName".*"|applicationName = '${NAME}';|g"                   ./lib/configs/constants.dart
@@ -33,6 +34,12 @@ mkdir -p ./package/usr/local/share/applications/
 # Compile release app
 flutter build linux --release
 
+# Build application archive
+(
+    cd build/linux/x64/release/bundle/
+    tar -cJf "../../../../../${PACKAGE}_${VERSION}_${ARCHITECTURE}".tar.xz *
+)
+
 # Copy application files
 cp -r build/linux/x64/release/bundle/*      "$APP_DIR"
 cp ./resources/icon.png                     ./package/"$ICON_PATH"
@@ -43,7 +50,6 @@ sed -i "s|{PACKAGE}|${PACKAGE}|g"           ./package/usr/local/share/applicatio
 sed -i "s|{PATH_ICON}|${ICON_PATH}|g"       ./package/usr/local/share/applications/dell-powermanager.desktop
 sed -i "s|{NAME}|${NAME}|g"                 ./package/usr/local/share/applications/dell-powermanager.desktop
 
-ARCHITECTURE="amd64"
 PRIORITY="standard"
 MAINTAINER="alexVinarskis <alex.vinarskis@gmail.com>"
 HOMEPAGE="https://github.com/alexVinarskis/dell-powermanager"
@@ -72,5 +78,5 @@ echo "sudo rm -f $PATH_EXEC" >> "$DEB_DIR"/prerm
 # Package
 dpkg-deb --build --root-owner-group ./package
 mv ./package.deb ./${PACKAGE}_${VERSION}_${ARCHITECTURE}.deb
-echo "Success! Produced './${PACKAGE}_${VERSION}_${ARCHITECTURE}.deb'"
+echo -e "Success!\nProduced './${PACKAGE}_${VERSION}_${ARCHITECTURE}.deb'\nProduced './${PACKAGE}_${VERSION}_${ARCHITECTURE}.tar.xz'"
 rm -rf ./package
