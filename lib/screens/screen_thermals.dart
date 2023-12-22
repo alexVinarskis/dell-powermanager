@@ -23,7 +23,7 @@ class ScreenThermals extends StatefulWidget {
 
 class ScreenThermalsState extends State<ScreenThermals> {
   PowermodeState? _powermodeState;
-  String currentMode = '';
+  ParameterState? _currentState;
   bool currentlyLoading = false;
   final Duration _refreshInternalPowermode = const Duration(seconds: 3);
 
@@ -53,18 +53,31 @@ class ScreenThermalsState extends State<ScreenThermals> {
     if (!cctkState.parameters.containsKey(CCTK.thermalManagement)) {
       return;
     }
-    String param = cctkState.parameters[CCTK.thermalManagement]?.mode ?? "";
-    if (param.isEmpty) {
+    ParameterState? state = cctkState.parameters[CCTK.thermalManagement];
+    if (state == null || (state.supported?.isEmpty ?? true)) {
       return;
     }
     setState(() {
-      currentMode = param.split(':')[0];
+      _currentState = ParameterState(
+        mode: state.mode.split(':')[0],
+        supported: state.supported,
+      );
     });
   }
   void _handlePowermodeStateUpdate(PowermodeState? powermodeState) {
     setState(() {
       _powermodeState = powermodeState;
     });
+  }
+
+  bool _isDataMissing() {
+    if ((_currentState?.supported?.isEmpty ?? true)) {
+      return true;
+    }
+    if (((_currentState?.supported?.containsValue(true) ?? false)) && (_currentState?.mode.isEmpty ?? true)) {
+      return true;
+    }
+    return false;
   }
 
   Future<bool> changeMode(mode) async {
@@ -135,7 +148,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
             onPress: () async {
               if (!currentlyLoading) {
                 setState(() {
-                  currentMode = mode;
+                  _currentState?.mode = mode;
                   currentlyLoading = true;
                 });
                 await changeMode(mode);
@@ -148,9 +161,10 @@ class ScreenThermalsState extends State<ScreenThermals> {
             },
             paddingV: 10,
             paddingH: 20,
-            isSelected: currentMode == mode,
-            isLoading:  currentMode == mode && currentlyLoading,
-            isDataMissing: currentMode.isEmpty,
+            isSelected: _currentState?.mode == mode,
+            isSupported: _currentState?.supported?[mode] ?? false,
+            isLoading:  _currentState?.mode == mode && currentlyLoading,
+            isDataMissing: _isDataMissing(),
           ),
       ]),
     );
