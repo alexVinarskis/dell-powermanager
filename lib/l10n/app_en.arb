@@ -114,6 +114,8 @@
     "cctkBatteryCustomDescription" : "Recommended for advanced users that desire greater control over when their battery starts and stops charging.",
     "cctkBatteryCustomDescriptionExt" : "Set Start and Stop range.",
 
+    "cctkModeTitleUnsupported" : "Not supported on this platform",
+
     "powermodeTitle" : "OS Power Plan",
     "powermodePowersaving" : "Power Saving",
     "powermodeBalanced" : "Balanced",

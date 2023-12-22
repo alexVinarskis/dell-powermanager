@@ -44,6 +44,7 @@ dependencies:
   intl: ^0.18.0
   flutter_localization: ^0.1.14
   version: ^3.0.2
+  touch_interceptor: ^0.1.1
 
 dev_dependencies:
   flutter_test:
