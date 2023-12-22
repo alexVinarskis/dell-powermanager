@@ -57,7 +57,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
   }
   void _handleCCTKStateUpdate(CCTKState cctkState) {
     if (cctkState.parameters.containsKey(CCTK.thermalManagement)) {
-      String param = cctkState.parameters[CCTK.thermalManagement];
+      String param = cctkState.parameters[CCTK.thermalManagement]?.mode ?? "";
       if (param.isNotEmpty) {
         setState(() {
           _currentThermalMode = param.split(':')[0];
@@ -65,13 +65,13 @@ class ScreenSummaryState extends State<ScreenSummary> {
       }
     }
     if (cctkState.parameters.containsKey(CCTK.primaryBattChargeCfg)) {
-      String param = cctkState.parameters[CCTK.primaryBattChargeCfg];
+      String param = cctkState.parameters[CCTK.primaryBattChargeCfg]?.mode ?? "";
       if (param.isNotEmpty) {
         setState(() {
           _currentBatteryMode = param.split(':')[0];
           _currentBatteryModeExtended = "";
         });
-        if (param.contains(CCTK.primaryBattChargeCfg.args.custom) && param.split(':').length >= 2) {
+        if (param.contains(CCTK.primaryBattChargeCfg.modes.custom) && param.split(':').length >= 2) {
           // custom battery mode state has paremeters, parse them
           int startValue = int.parse(param.split(':')[1].split("-")[0]);
           int stopValue  = int.parse(param.split(':')[1].split("-")[1]);
@@ -203,7 +203,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
                 ),
                 Text(
-                  CCTK.primaryBattChargeCfgStrings(context).containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfgStrings(context)[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "ERR: '$_currentBatteryMode'",
+                  CCTK.primaryBattChargeCfg.strings(context).containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfg.strings(context)[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "ERR: '$_currentBatteryMode'",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
                 ),
               ],) : const SizedBox(),
@@ -236,7 +236,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
                 ),
                 Text(
-                  CCTK.thermalManagementStrings(context).containsKey(_currentThermalMode) ? CCTK.thermalManagementStrings(context)[_currentThermalMode]![indexTitle] : "ERR: '$_currentThermalMode'",
+                  CCTK.thermalManagement.strings(context).containsKey(_currentThermalMode) ? CCTK.thermalManagement.strings(context)[_currentThermalMode]![indexTitle] : "ERR: '$_currentThermalMode'",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
                 ),
               ],) : const SizedBox(),
