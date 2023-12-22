@@ -19,7 +19,7 @@ class ScreenBattery extends StatefulWidget {
 }
 
 class ScreenBatteryState extends State<ScreenBattery> {
-  String currentMode = '';
+  ParameterState? _currentState;
   bool currentlyLoading = false;
   RangeValues customChargeRange = const RangeValues(0.50, 0.85);
   bool customChargeRangeChanging = false;
@@ -45,21 +45,36 @@ class ScreenBatteryState extends State<ScreenBattery> {
     if (!cctkState.parameters.containsKey(CCTK.primaryBattChargeCfg)) {
       return;
     }
-    String param = cctkState.parameters[CCTK.primaryBattChargeCfg]?.mode ?? "";
-    if (param.isEmpty) {
+    ParameterState? state = cctkState.parameters[CCTK.primaryBattChargeCfg];
+    if (state == null || (state.supported?.isEmpty ?? true)) {
       return;
     }
     setState(() {
-      currentMode = param.split(':')[0];
+      setState(() {
+        _currentState = ParameterState(
+          mode: state.mode.split(':')[0],
+          supported: state.supported,
+        );
+      });
     });
-    if (param.contains(CCTK.primaryBattChargeCfg.modes.custom) && param.split(':').length >= 2) {
+    if (state.mode.contains(CCTK.primaryBattChargeCfg.modes.custom) && state.mode.split(':').length >= 2) {
       // custom battery mode state has paremeters, parse them
-      double startValue = double.parse(param.split(':')[1].split("-")[0])/100;
-      double stopValue  = double.parse(param.split(':')[1].split("-")[1])/100;
+      double startValue = double.parse(state.mode.split(':')[1].split("-")[0])/100;
+      double stopValue  = double.parse(state.mode.split(':')[1].split("-")[1])/100;
       setState(() {
         customChargeRange = RangeValues(startValue, stopValue);
       });
     }
+  }
+
+  bool _isDataMissing() {
+    if ((_currentState?.supported?.isEmpty ?? true)) {
+      return true;
+    }
+    if (((_currentState?.supported?.containsValue(true) ?? false)) && (_currentState?.mode.isEmpty ?? true)) {
+      return true;
+    }
+    return false;
   }
 
   Future<bool> _changeMode(mode) async {
@@ -71,7 +86,7 @@ class ScreenBatteryState extends State<ScreenBattery> {
       return;
     }
     setState(() {
-      currentMode = mode;
+      _currentState?.mode = mode;
       currentlyLoading = true;
     });
     if (mode != CCTK.primaryBattChargeCfg.modes.custom) {
@@ -92,7 +107,7 @@ class ScreenBatteryState extends State<ScreenBattery> {
       width: 40,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: currentMode == mode || customChargeRangeChanging ?
+        color: _currentState?.mode == mode || customChargeRangeChanging ?
           Theme.of(context).colorScheme.primary.withOpacity(0.25) :
           Theme.of(context).colorScheme.surfaceVariant,
         borderRadius: const BorderRadius.all(Radius.circular(20))
@@ -117,13 +132,13 @@ class ScreenBatteryState extends State<ScreenBattery> {
                 trackShape: const RoundedRectSliderTrackShape(),
                 trackHeight: 20.0,
                 rangeThumbShape: const RoundRangeSliderThumbShape(elevation: 0.001, pressedElevation: 0.001, enabledThumbRadius: 11),
-                thumbColor: currentMode == mode || customChargeRangeChanging ?
+                thumbColor: _currentState?.mode == mode || customChargeRangeChanging ?
                   SliderTheme.of(context).activeTrackColor :
                   Theme.of(context).colorScheme.onSurfaceVariant,
-                activeTrackColor: currentMode == mode || customChargeRangeChanging ?
+                activeTrackColor: _currentState?.mode == mode || customChargeRangeChanging ?
                   SliderTheme.of(context).activeTrackColor :
                   Theme.of(context).colorScheme.onSurfaceVariant,
-                inactiveTrackColor: currentMode == mode || customChargeRangeChanging?
+                inactiveTrackColor: _currentState?.mode == mode || customChargeRangeChanging?
                   SliderTheme.of(context).inactiveTrackColor :
                   Theme.of(context).colorScheme.surfaceVariant,
                 overlayShape: const RoundSliderOverlayShape(overlayRadius: 20.0),
@@ -170,10 +185,12 @@ class ScreenBatteryState extends State<ScreenBattery> {
             onPress: () {_handlePress(mode);},
             paddingV: 10,
             paddingH: 20,
-            isSelected: currentMode == mode,
-            isLoading:  currentMode == mode && currentlyLoading,
+            isSelected: _currentState?.mode == mode,
+            isSupported: _currentState?.supported?[mode] ?? false,
+            isLoading:  _currentState?.mode == mode && currentlyLoading,
+            isDataMissing: _isDataMissing(),
+            // isDataMissing: (_currentState?.supported?.isEmpty ?? true) || !( ((_currentState?.mode.isNotEmpty ?? false) && _currentState?.mode == mode) || !(_currentState?.supported?.containsValue(true) ?? false)),
             bottomItem: _getBottomBar(mode),
-            isDataMissing: currentMode.isEmpty,
           ),
       ]),
     );

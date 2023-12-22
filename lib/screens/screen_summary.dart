@@ -26,8 +26,8 @@ class ScreenSummary extends StatefulWidget {
 class ScreenSummaryState extends State<ScreenSummary> {
   BatteryState? _batteryState;
   String _currentBatteryModeExtended = '';
-  String _currentBatteryMode = '';
-  String _currentThermalMode = '';
+  ParameterState? _currentBatteryState;
+  ParameterState? _currentThermalState;
   final Duration _refreshInternal = const Duration(seconds: 3);
 
   @override
@@ -57,30 +57,46 @@ class ScreenSummaryState extends State<ScreenSummary> {
   }
   void _handleCCTKStateUpdate(CCTKState cctkState) {
     if (cctkState.parameters.containsKey(CCTK.thermalManagement)) {
-      String param = cctkState.parameters[CCTK.thermalManagement]?.mode ?? "";
-      if (param.isNotEmpty) {
+      ParameterState? state = cctkState.parameters[CCTK.thermalManagement];
+      if (state != null && (state.supported?.isNotEmpty ?? false)) {
         setState(() {
-          _currentThermalMode = param.split(':')[0];
+          _currentThermalState = ParameterState(
+            mode: state.mode.split(':')[0],
+            supported: state.supported,
+          );
         });
       }
     }
     if (cctkState.parameters.containsKey(CCTK.primaryBattChargeCfg)) {
-      String param = cctkState.parameters[CCTK.primaryBattChargeCfg]?.mode ?? "";
-      if (param.isNotEmpty) {
+      ParameterState? state = cctkState.parameters[CCTK.primaryBattChargeCfg];
+      if (state != null && (state.supported?.isNotEmpty ?? false)) {
         setState(() {
-          _currentBatteryMode = param.split(':')[0];
           _currentBatteryModeExtended = "";
+          _currentBatteryState = ParameterState(
+            mode: state.mode.split(':')[0],
+            supported: state.supported,
+          );
         });
-        if (param.contains(CCTK.primaryBattChargeCfg.modes.custom) && param.split(':').length >= 2) {
+        if (state.mode.contains(CCTK.primaryBattChargeCfg.modes.custom) && state.mode.split(':').length >= 2) {
           // custom battery mode state has paremeters, parse them
-          int startValue = int.parse(param.split(':')[1].split("-")[0]);
-          int stopValue  = int.parse(param.split(':')[1].split("-")[1]);
+          int startValue = int.parse(state.mode.split(':')[1].split("-")[0]);
+          int stopValue  = int.parse(state.mode.split(':')[1].split("-")[1]);
           setState(() {
             _currentBatteryModeExtended = " ($startValue..$stopValue%)";
           });
         }
       }
     }
+  }
+
+  bool _isDataMissing(ParameterState? parameterState) {
+    if ((parameterState?.supported?.isEmpty ?? true)) {
+      return true;
+    }
+    if (((parameterState?.supported?.containsValue(true) ?? false)) && (parameterState?.mode.isEmpty ?? true)) {
+      return true;
+    }
+    return false;
   }
 
   Widget _getBatteryStatValue(BuildContext context, String title, var value, {String unit = "", bool toInt = false}) {
@@ -196,17 +212,25 @@ class ScreenSummaryState extends State<ScreenSummary> {
             Text('  ${S.of(context)!.summaryPageTitleBatteryMode}',
               style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
             ),
-            _currentBatteryMode.isNotEmpty ?
-              Row(children: [
+            !_isDataMissing(_currentBatteryState) ?
+              _currentBatteryState?.supported?.containsValue(true) ?? false ?
+                Row(children: [
+                  Text(
+                    ":  ",
+                    style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
+                  ),
+                  Text(
+                    CCTK.primaryBattChargeCfg.strings(context).containsKey(_currentBatteryState?.mode) ? CCTK.primaryBattChargeCfg.strings(context)[_currentBatteryState?.mode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "ERR: '$_currentBatteryState?.mode'",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],)
+                :
                 Text(
-                  ":  ",
+                  ":  ${S.of(context)!.cctkSummaryTitleUnsupported}",
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
-                ),
-                Text(
-                  CCTK.primaryBattChargeCfg.strings(context).containsKey(_currentBatteryMode) ? CCTK.primaryBattChargeCfg.strings(context)[_currentBatteryMode]![indexTitle].replaceAllMapped(RegExp(r'\((.*?)\)'), (match) => "") + _currentBatteryModeExtended : "ERR: '$_currentBatteryMode'",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
-                ),
-              ],) : const SizedBox(),
+                )
+              :
+              const SizedBox(),
           ],
         ),
       ),
@@ -229,17 +253,25 @@ class ScreenSummaryState extends State<ScreenSummary> {
             Text('  ${S.of(context)!.summaryPageTitleThermalMode}',
               style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
             ),
-            _currentThermalMode.isNotEmpty ?
-              Row(children: [
+            !_isDataMissing(_currentThermalState) ?
+              _currentThermalState?.supported?.containsValue(true) ?? false ?
+                Row(children: [
+                  Text(
+                    ":  ",
+                    style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
+                  ),
+                  Text(
+                    CCTK.thermalManagement.strings(context).containsKey(_currentThermalState?.mode) ? CCTK.thermalManagement.strings(context)[_currentThermalState?.mode]![indexTitle] : "ERR: '$_currentThermalState?.mode'",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],)
+                :
                 Text(
-                  ":  ",
+                  ":  ${S.of(context)!.cctkSummaryTitleUnsupported}",
                   style: TextStyle(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),
-                ),
-                Text(
-                  CCTK.thermalManagement.strings(context).containsKey(_currentThermalMode) ? CCTK.thermalManagement.strings(context)[_currentThermalMode]![indexTitle] : "ERR: '$_currentThermalMode'",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary),
-                ),
-              ],) : const SizedBox(),
+                )
+              :
+              const SizedBox(),
           ],
         ),
       ),
@@ -378,7 +410,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                 ),
                 elevation: 0,
                 margin: const EdgeInsets.only(bottom: 25, right: 25),
-                child: _currentBatteryMode.isEmpty ?
+                child: _isDataMissing(_currentBatteryState) ?
                   SkeletonAnimation(
                     curve: Curves.easeInOutCirc,
                     shimmerColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -395,7 +427,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
                 ),
                 elevation: 0,
                 margin: const EdgeInsets.only(bottom: 25, right: 25),
-                child: _currentThermalMode.isEmpty ?
+                child: _isDataMissing(_currentThermalState) ?
                   SkeletonAnimation(
                     curve: Curves.easeInOutCirc,
                     shimmerColor: Theme.of(context).colorScheme.secondaryContainer,

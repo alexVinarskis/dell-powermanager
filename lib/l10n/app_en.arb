@@ -115,6 +115,7 @@
     "cctkBatteryCustomDescriptionExt" : "Set Start and Stop range.",
 
     "cctkModeTitleUnsupported" : "Not supported on this platform",
+    "cctkSummaryTitleUnsupported" : "not supported",
 
     "powermodeTitle" : "OS Power Plan",
     "powermodePowersaving" : "Power Saving",
