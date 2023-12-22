@@ -1,8 +1,10 @@
 import '../classes/cctk.dart';
 
 class ParameterState {
-  late final Map <String, bool> supported = {};
+  Map <String, bool>? supported;
   String mode = "";
+
+  ParameterState({this.mode = "", this.supported});
 }
 
 class CCTKState {

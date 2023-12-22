@@ -31,6 +31,7 @@ class ApiCCTK {
   static late Duration _refreshInternal;
   static late Timer _timer;
   static bool? _apiReady;
+  static bool _cctkMutexLocked = false;
   static final _shell = Shell(throwOnError: false);
 
   static final CCTKState cctkState = CCTKState();
@@ -60,25 +61,57 @@ class ApiCCTK {
     }
   }
 
+  static void _cctkLock() {
+    _cctkMutexLocked = true;
+  }
+  static void _cctkRelease() {
+    _cctkMutexLocked = false;
+  }
+  static bool _isCctkLocked() {
+    return _cctkMutexLocked;
+  }
+
   static Future<bool> _query() async {
+    // prevent concurrent queries, these seem to really slow down everything
+    if (_isCctkLocked()) {
+      return false;
+    }
     if (!(_apiReady ?? false)) {
       _apiReady = await DependenciesManager.verifyDependencies();
       _callDepsChanged(_apiReady!);
       if (!(_apiReady ?? false)) return false;
     }
+    _cctkLock();
     // create cctk query arg
     String arg = '';
     for (var param in _queryParameters) {
-      arg+= " --${param.cmd}";
+      // verify that parameter is supported *before* querying it
+      if (cctkState.parameters[param]?.supported == null) {
+        if (!_processSupported(await _runCctk("-H --${param.cmd}"), param)) {
+          _cctkRelease();
+          continue;
+        }
+      }
+      if (cctkState.parameters[param]?.supported?.containsValue(true) ?? false) {
+        arg+= " --${param.cmd}";
+      }
+    }
+    if (arg.isEmpty) {
+      _cctkRelease();
+      _callStateChanged(cctkState);
+      return false;
     }
     // get & process response
-    if (!_processResponse(await _runCctk(arg))) {
+    bool success = _processResponse(await _runCctk(arg));
+    _cctkRelease();
+    if (!success) {
       return false;
     }
     // notify listeners
     _callStateChanged(cctkState);
     return true;
   }
+
   static bool _processResponse(ProcessResult pr) {
     if (pr.exitCode != 0) {
       return false;
@@ -92,6 +125,24 @@ class ApiCCTK {
         }
       }
     }
+    return true;
+  }
+
+  static bool _processSupported(ProcessResult pr, var param) {
+    if (pr.exitCode != 0) {
+      return false;
+    }
+    Map<String, bool> supportedModes = {};
+    for (String output in pr.stdout.toString().replaceAll("\r", "").split("\n")) {
+      if (!output.contains("Arguments:")) {
+        continue;
+      }
+      List<String> arguments = output.replaceAll("Arguments:", "").replaceAll(" ", "").split("|");
+      for (String argument in arguments) {
+        supportedModes.addEntries({argument.replaceAll("+", ""): argument.contains("+")}.entries);
+      }
+    }
+    cctkState.parameters[param]?.supported = supportedModes;
     return true;
   }
 
