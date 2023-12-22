@@ -2,47 +2,76 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 
 class CCTK {
-  static const thermalManagement = (cmd: 'ThermalManagement',
-    args: (
+  /*
+   * Thermal Management
+   * 
+   * Configures fan speeds, and (un)caps maximum CPU performance
+   * 
+   */
+  static const thermalManagement = (
+    cmd: 'ThermalManagement',
+    modes: (
       optimized: 'Optimized',
       quiet: 'Quiet',
       cool: 'Cool',
       ultra: 'UltraPerformance',
-  ));
-  static Map<String, List<String>> thermalManagementStrings(BuildContext context) {
+    ),
+    strings: _thermalManagementStrings,
+  );
+  static Map<String, List<String>> _thermalManagementStrings(BuildContext context) {
     return {
       // cctkCmd : Tile, Description
-      thermalManagement.args.optimized : [S.of(context)!.cctkThermalOptimizedTitle, S.of(context)!.cctkThermalOptimizedDescription],
-      thermalManagement.args.quiet     : [S.of(context)!.cctkThermalQuietTitle, S.of(context)!.cctkThermalQuietDescription],
-      thermalManagement.args.cool      : [S.of(context)!.cctkThermalCoolTitle, S.of(context)!.cctkThermalCoolDescription],
-      thermalManagement.args.ultra     : [S.of(context)!.cctkThermalUltraTitle, S.of(context)!.cctkThermalUltraDescription],
+      thermalManagement.modes.optimized : [S.of(context)!.cctkThermalOptimizedTitle, S.of(context)!.cctkThermalOptimizedDescription],
+      thermalManagement.modes.quiet     : [S.of(context)!.cctkThermalQuietTitle, S.of(context)!.cctkThermalQuietDescription],
+      thermalManagement.modes.cool      : [S.of(context)!.cctkThermalCoolTitle, S.of(context)!.cctkThermalCoolDescription],
+      thermalManagement.modes.ultra     : [S.of(context)!.cctkThermalUltraTitle, S.of(context)!.cctkThermalUltraDescription],
     };
   }
-  static const primaryBattChargeCfg = (cmd: 'PrimaryBattChargeCfg',
-    args: (
+
+  /*
+   * Primary Battery Configuration
+   *
+   * Configures charging speed and thresholds for custom % range
+   * 
+   */
+  static const primaryBattChargeCfg = (
+    cmd: 'PrimaryBattChargeCfg',
+    modes: (
       standard: 'Standard',
       express: 'Express',
       primAcUse: 'PrimAcUse',
       adaptive: 'Adaptive',
       custom: 'Custom',
-  ));
-  static Map<String, List<String>> primaryBattChargeCfgStrings(BuildContext context) {
+    ),
+    strings: _primaryBattChargeCfgStrings,
+  );
+  static Map<String, List<String>> _primaryBattChargeCfgStrings(BuildContext context) {
     return {
       // cctkCmd : Tile, Description, Extended Description
-      primaryBattChargeCfg.args.standard  : [S.of(context)!.cctkBatteryStandardTitle, S.of(context)!.cctkBatteryStandardDescription, S.of(context)!.cctkBatteryStandardDescriptionExt],
-      primaryBattChargeCfg.args.express   : [S.of(context)!.cctkBatteryExpressTitle, S.of(context)!.cctkBatteryExpressDescription, S.of(context)!.cctkBatteryExpressDescriptionExt],
-      primaryBattChargeCfg.args.primAcUse : [S.of(context)!.cctkBatteryPrimAcUseTitle, S.of(context)!.cctkBatteryPrimAcUseDescription, S.of(context)!.cctkBatteryPrimAcUseDescriptionExt],
-      primaryBattChargeCfg.args.adaptive  : [S.of(context)!.cctkBatteryAdaptiveTitle, S.of(context)!.cctkBatteryAdaptiveDescription, S.of(context)!.cctkBatteryAdaptiveDescriptionExt],
+      primaryBattChargeCfg.modes.standard  : [S.of(context)!.cctkBatteryStandardTitle, S.of(context)!.cctkBatteryStandardDescription, S.of(context)!.cctkBatteryStandardDescriptionExt],
+      primaryBattChargeCfg.modes.express   : [S.of(context)!.cctkBatteryExpressTitle, S.of(context)!.cctkBatteryExpressDescription, S.of(context)!.cctkBatteryExpressDescriptionExt],
+      primaryBattChargeCfg.modes.primAcUse : [S.of(context)!.cctkBatteryPrimAcUseTitle, S.of(context)!.cctkBatteryPrimAcUseDescription, S.of(context)!.cctkBatteryPrimAcUseDescriptionExt],
+      primaryBattChargeCfg.modes.adaptive  : [S.of(context)!.cctkBatteryAdaptiveTitle, S.of(context)!.cctkBatteryAdaptiveDescription, S.of(context)!.cctkBatteryAdaptiveDescriptionExt],
       // The start value range should be 50-95 percentage, the stop value range should be 55-100 percentage, and the difference between the start and stop values should be greater than or equal to 5.
       // Example: Custom:start-end
-      primaryBattChargeCfg.args.custom    : [S.of(context)!.cctkBatteryCustomTitle, S.of(context)!.cctkBatteryCustomDescription, S.of(context)!.cctkBatteryCustomDescriptionExt],
+      primaryBattChargeCfg.modes.custom    : [S.of(context)!.cctkBatteryCustomTitle, S.of(context)!.cctkBatteryCustomDescription, S.of(context)!.cctkBatteryCustomDescriptionExt],
     };
   }
-  //   Syntax:
-  // cctk --AdvBatteryChargeCfg=Disabled
-  // cctk --AdvBatteryChargeCfg=Enabled,[day]-[Beginning Of Day in HH:MM format]/[Work Period in HH:MM format],
-  static const advBatteryChargeCfg = (cmd: 'AdvBatteryChargeCfg',
-    args: (
+
+  /*
+   * Advanced Battery Configuration
+   *
+   * Configured charging periods to follow custom day/time schedule
+   * 
+   *
+   * Syntax:
+   *    cctk --AdvBatteryChargeCfg=Disabled
+   *    cctk --AdvBatteryChargeCfg=Enabled,[day]-[Beginning Of Day in HH:MM format]/[Work Period in HH:MM format],
+   * 
+   */
+  static const advBatteryChargeCfg = (
+    cmd: 'AdvBatteryChargeCfg',
+    modes: (
       disabled: 'Disabled',
       enabled: 'Enabled',
   ));

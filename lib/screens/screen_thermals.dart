@@ -53,7 +53,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
     if (!cctkState.parameters.containsKey(CCTK.thermalManagement)) {
       return;
     }
-    String param = cctkState.parameters[CCTK.thermalManagement];
+    String param = cctkState.parameters[CCTK.thermalManagement]?.mode ?? "";
     if (param.isEmpty) {
       return;
     }
@@ -129,9 +129,9 @@ class ScreenThermalsState extends State<ScreenThermals> {
             paddingV: 10,
           ),
         ),
-        for (var mode in CCTK.thermalManagementStrings(context).keys) 
-          ModeItem(CCTK.thermalManagementStrings(context)[mode]![indexTitle],
-            description: CCTK.thermalManagementStrings(context)[mode]![indexDescription],
+        for (var mode in CCTK.thermalManagement.strings(context).keys) 
+          ModeItem(CCTK.thermalManagement.strings(context)[mode]![indexTitle],
+            description: CCTK.thermalManagement.strings(context)[mode]![indexDescription],
             onPress: () async {
               if (!currentlyLoading) {
                 setState(() {

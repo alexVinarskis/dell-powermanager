@@ -96,7 +96,7 @@ class ApiCCTK {
       if (argAndValue.length < 2) continue;
       for (var paramKey in cctkState.parameters.keys) {
         if (argAndValue[0].contains(paramKey.cmd)) {
-          cctkState.parameters[paramKey] = argAndValue[1];
+          cctkState.parameters[paramKey]?.mode = argAndValue[1];
         }
       }
     }

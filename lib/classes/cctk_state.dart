@@ -1,9 +1,14 @@
 import '../classes/cctk.dart';
 
+class ParameterState {
+  late final Map <String, bool> supported = {};
+  String mode = "";
+}
+
 class CCTKState {
-  Map parameters = {
-    CCTK.thermalManagement: "",
-    CCTK.primaryBattChargeCfg: "",
-    CCTK.advBatteryChargeCfg: "",
+  Map <dynamic, ParameterState> parameters = {
+    CCTK.thermalManagement: ParameterState(),
+    CCTK.primaryBattChargeCfg: ParameterState(),
+    CCTK.advBatteryChargeCfg: ParameterState(),
   };
 }
