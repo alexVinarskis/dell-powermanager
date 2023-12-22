@@ -450,6 +450,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+  touch_interceptor:
+    dependency: "direct main"
+    description:
+      name: touch_interceptor
+      sha256: "072be1de74e525f5d7598930fa39131aaccffc9a2086ddcaaf765b57ec227409"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   typed_data:
     dependency: transitive
     description:
