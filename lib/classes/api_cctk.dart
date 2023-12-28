@@ -73,7 +73,7 @@ class ApiCCTK {
 
   static Future<bool> _query() async {
     // prevent concurrent queries, these seem to really slow down everything
-    if (_isCctkLocked()) {
+    if (_isCctkLocked() || cctkState.cctkCompatible == false) {
       return false;
     }
     if (!(_apiReady ?? false)) {
@@ -87,9 +87,10 @@ class ApiCCTK {
     for (var param in _queryParameters) {
       // verify that parameter is supported *before* querying it
       if (cctkState.parameters[param]?.supported == null) {
-        if (!_processSupported(await _runCctk("-H --${param.cmd}"), param)) {
+        if (!_processSupported(await _runCctk("-H --${param.cmd}"), param) && !(cctkState.cctkCompatible?? true)) {
           _cctkRelease();
-          continue;
+          _callStateChanged(cctkState);
+          return false;
         }
       }
       if (cctkState.parameters[param]?.supported?.containsValue(true) ?? false) {
@@ -129,6 +130,11 @@ class ApiCCTK {
   }
 
   static bool _processSupported(ProcessResult pr, var param) {
+    String output = (pr.stderr.toString() + pr.stdout.toString()).replaceAll("\n", "");
+    if ((output.isEmpty && pr.exitCode == 0) || output.contains("WMI-ACPI")) {
+      cctkState.cctkCompatible = false;
+      return false;
+    }
     if (pr.exitCode != 0) {
       return false;
     }
