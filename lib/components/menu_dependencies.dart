@@ -59,6 +59,7 @@ class MenuDependenciesState extends State<MenuDependencies> {
           _dependenciesState = DependenciesState.hidden;
         });
       });
+      ApiCCTK.removeCallbacksDepsChanged(_handleApiStateUpdate);
     }
   }
 

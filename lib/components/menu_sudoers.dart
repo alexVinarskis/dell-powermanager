@@ -57,6 +57,7 @@ class MenuSudoersState extends State<MenuSudoers> {
     setState(() {
       _sudoersState = SudoersState.awaiting;
     });
+    ApiCCTK.removeCallbacksDepsChanged(_handleApiStateUpdate);
   }
 
   void _patchSudoers() async {
