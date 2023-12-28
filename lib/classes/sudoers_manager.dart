@@ -13,8 +13,8 @@ class SudoersManager {
     ProcessResult pr;
     if (Platform.isLinux) {
       // (Linux) Verify that cctk bin was added to sudoers
-      pr = (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && [[ \$(sudo -n \$(which cctk) 2>/dev/null) != '' ]]"'''))[0];
-      runningSudo = pr.exitCode == 0;
+      pr = (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && sudo -n \$(which cctk) 2>/dev/null"'''))[0];
+      runningSudo = pr.exitCode != 1;
     } else {
       // (Windows) Verify that app is running as admin
       pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}"'''))[0];
