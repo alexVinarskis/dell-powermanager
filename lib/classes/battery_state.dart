@@ -8,13 +8,13 @@ class BatteryState {
   String?   batteryType;
   String?   batteryTechnology;
   int?      batteryCycleCount;
-  double?   batteryVoltageMinDesign;
-  double?   batteryVoltageNow;
-  double?   batteryCurrentNow;
-  double?   batteryChargeFullDesign;
-  double?   batteryChargeFull;
-  double?   batteryChargeNow;
-  int?      batteryPercentage;
+  double?   batteryVoltageMinDesign;    // V
+  double?   batteryVoltageNow;          // V
+  double?   batteryCurrentNow;          // A
+  double?   batteryChargeFullDesign;    // Ah
+  double?   batteryChargeFull;          // Ah
+  double?   batteryChargeNow;           // Ah
+  int?      batteryPercentage;          // %
   bool?     batteryPercentageLow;
   String?   batteryModelName;
   String?   batteryManufacturer;
@@ -46,6 +46,11 @@ class BatteryState {
     batteryHealth           = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryChargeFull],       (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoLinux.args.batteryChargeFullDesign]) * 100);
     batteryDesignCapacity   = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryChargeFullDesign], (var x) => double.parse(x) / 1000000 * double.parse(map[Battery.batteryInfoLinux.args.batteryVoltageMinDesign]) / 1000000);
     batteryCurrentPower     = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryCurrentNow],       (var x) => double.parse(x) / 1000000 * double.parse(map[Battery.batteryInfoLinux.args.batteryVoltageNow]) / 1000000);
+
+    // Some battery types use different parameters, if previous methods failed, attempt to use alt parameters
+    batteryHealth         ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFull],       (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoLinux.args.batteryEnergyFullDesign]) * 100);
+    batteryDesignCapacity ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFullDesign], (var x) => double.parse(x) / 1000000);
+    batteryCurrentPower   ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryPowerNow], (var x) => double.parse(x) / 1000000);
   }
   BatteryState.fromWindowsMap(Map<String, dynamic> map) {
     powerSupplyPresent      = _setIfPresent(map[Battery.batteryInfoWindows.args.powerSupplyPresent],    (var x) => x == "True");
