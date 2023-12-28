@@ -187,7 +187,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
               ),
               _batteryState!.powerSupplyPresent! && !_batteryState!.batteryCharging! ?
                 const SizedBox() : Text(
-                  ' ${_batteryState!.batteryCurrentPower!.toInt()}${S.of(context)!.summaryPageStateCharingUnit}',
+                  ' ${_batteryState!.batteryCurrentPower?.toInt()}${S.of(context)!.summaryPageStateCharingUnit}',
                   style: GoogleFonts.sourceCodePro().copyWith(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize, fontWeight: FontWeight.bold),
                 ),
             ],
