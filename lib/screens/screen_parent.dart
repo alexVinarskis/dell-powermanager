@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
+import '../components/menu_compatibility.dart';
 import '../components/menu_dependencies.dart';
 import '../components/menu_ota.dart';
 import '../components/menu_sudoers.dart';
@@ -88,6 +89,10 @@ class ScreenParentState extends State<ScreenParent> {
                   isSelected: currentMenu == MenuItems.thermals,
                 ),
                 const Expanded(child: SizedBox(),),
+                const MenuCompatibility(
+                  paddingV: 10,
+                  paddingH: 20,
+                ),
                 const MenuSudoers(
                   paddingV: 10,
                   paddingH: 20,

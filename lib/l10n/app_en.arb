@@ -45,6 +45,9 @@
     "infoButtonItemBug" : "Report Bug",
     "infoButtonItemAbout" : "About",
 
+    "compatibilityCardTitle" : "Incompatible Platform",
+    "compatibilityCardSubtitle" : "Non-Dell machine, or Unsupported Model",
+
     "dependenciesCardTitle" : "Missing Dependencies",
     "dependenciesCardSubtitleAwaiting" : "Tap for more info and install options",
     "dependenciesCardSubtitleDownloading" : "Please wait... Downloading...",

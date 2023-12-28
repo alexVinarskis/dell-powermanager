@@ -8,6 +8,7 @@ class ParameterState {
 }
 
 class CCTKState {
+  bool? cctkCompatible;
   Map <dynamic, ParameterState> parameters = {
     CCTK.thermalManagement: ParameterState(),
     CCTK.primaryBattChargeCfg: ParameterState(),
