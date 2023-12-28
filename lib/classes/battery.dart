@@ -10,12 +10,16 @@ class Battery {
       batteryPresent:               'POWER_SUPPLY_PRESENT',               // 1/0, whether battery is present
       batteryTechnology:            'POWER_SUPPLY_TECHNOLOGY',            // Li-poly
       batteryCycleCount:            'POWER_SUPPLY_CYCLE_COUNT',           // 99
-      batteryVoltageMinDesign:      'POWER_SUPPLY_VOLTAGE_MIN_DESIGN',    // 11400000
-      batteryVoltageNow:            'POWER_SUPPLY_VOLTAGE_NOW',           // 11049000
-      batteryCurrentNow:            'POWER_SUPPLY_CURRENT_NOW',           // 1675000
-      batteryChargeFullDesign:      'POWER_SUPPLY_CHARGE_FULL_DESIGN',    // 7393000
-      batteryChargeFull:            'POWER_SUPPLY_CHARGE_FULL',           // 6439000
-      batteryChargeNow:             'POWER_SUPPLY_CHARGE_NOW',            // 2119000
+      batteryVoltageMinDesign:      'POWER_SUPPLY_VOLTAGE_MIN_DESIGN',    // mV - 11400000
+      batteryVoltageNow:            'POWER_SUPPLY_VOLTAGE_NOW',           // mV - 11049000
+      batteryCurrentNow:            'POWER_SUPPLY_CURRENT_NOW',           // mA - 1675000
+      batteryPowerNow:              'POWER_SUPPLY_POWER_NOW',             // mW
+      batteryChargeFullDesign:      'POWER_SUPPLY_CHARGE_FULL_DESIGN',    // mAh - 7393000
+      batteryChargeFull:            'POWER_SUPPLY_CHARGE_FULL',           // mAh - 6439000
+      batteryChargeNow:             'POWER_SUPPLY_CHARGE_NOW',            // mAh - 2119000
+      batteryEnergyFullDesign:      'POWER_SUPPLY_ENERGY_FULL_DESIGN',    // mWh
+      batteryEnergyFull:            'POWER_SUPPLY_ENERGY_FULL',           // mWh
+      batteryEnergyNow:             'POWER_SUPPLY_ENERGY_NOW',            // mWh
       batteryCapacity:              'POWER_SUPPLY_CAPACITY',              // 32
       batteryCapacityLevel:         'POWER_SUPPLY_CAPACITY_LEVEL',        // Normal
       batteryModelName:             'POWER_SUPPLY_MODEL_NAME',            // DELL 70N2F34
@@ -32,13 +36,13 @@ class Battery {
       batteryCharging:              'Charging',                           // True/False
       batteryDischarging:           'Discharging',                        // True/False
       batteryChargeRate:            'ChargeRate',
-      batteryDischargeRate:         'DischargeRate',                      // 15618
-      batteryVoltageNow:            'Voltage',                            // 11448 (@50%) - live voltage, NOT design voltage
+      batteryDischargeRate:         'DischargeRate',                      // mW - 15618
+      batteryVoltageNow:            'Voltage',                            // mV - 11448 (@50%) - live voltage, NOT design voltage
       batteryCycleCount:            'CycleCount',                         // 99
       batteryCapacityLevel:         'Critical',                           // True/False
-      batteryCapacityFullDesign:    'DesignedCapacity',                   // Wh - 84280
-      batteryCapacityFull:          'FullChargedCapacity',                // Wh - 72743
-      batteryCapacityNow:           'RemainingCapacity',                  // Wh - 42248
+      batteryCapacityFullDesign:    'DesignedCapacity',                   // mWh - 84280
+      batteryCapacityFull:          'FullChargedCapacity',                // mWh - 72743
+      batteryCapacityNow:           'RemainingCapacity',                  // mWh - 42248
       batteryModelName:             'DeviceName',                         // DELL 70N2F34
       batteryManufacturer:          'ManufactureName',                    // SMP
       batterySerialNumber:          'SerialNumber',                       // 625
