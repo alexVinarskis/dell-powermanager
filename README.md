@@ -22,6 +22,8 @@ This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, 
 * Short startup time, unline Dell's app
 * Packaged to .deb (Linux) .msi (Windows), with start menu shortcuts etc.
 * Integrated OTA via Github API
+* Detects and handles unsupported modes on supported machines
+* Detects non-dell machines, shows error message
 
 Control features:
 * Battery status overview (health etc.)
@@ -30,8 +32,7 @@ Control features:
 * Detects OS's power mode
 
 Planned TODOs:
-* Detect non-dell machines, act accordingly
-* Detect unsupported modes on supported machines, act accordingly
+* Advanced battery charging control/shceduling ([Feature Request](https://github.com/alexVinarskis/dell-powermanager/issues/24))
 
 Potential future features to consider:
 * Add monitoring service for auto switching thermal profiles based on CPU load
