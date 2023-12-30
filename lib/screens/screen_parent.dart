@@ -89,7 +89,7 @@ class ScreenParentState extends State<ScreenParent> {
                   isSelected: currentMenu == MenuItems.thermals,
                 ),
                 const Expanded(child: SizedBox(),),
-                const MenuCompatibility(
+                const MenuDependencies(
                   paddingV: 10,
                   paddingH: 20,
                 ),
@@ -97,7 +97,7 @@ class ScreenParentState extends State<ScreenParent> {
                   paddingV: 10,
                   paddingH: 20,
                 ),
-                const MenuDependencies(
+                const MenuCompatibility(
                   paddingV: 10,
                   paddingH: 20,
                 ),
