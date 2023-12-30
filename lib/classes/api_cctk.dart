@@ -166,7 +166,7 @@ class ApiCCTK {
 
   static Future<ProcessResult> _runCctk(String arg) async {
     if (Platform.isLinux) {
-      return (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && sudo \$(which cctk) $arg"'''))[0];
+      return (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && sudo -n \$(which cctk) $arg"'''))[0];
     } else {
       return (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}" $arg'''))[0];
     }
