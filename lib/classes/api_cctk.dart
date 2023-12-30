@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:process_run/shell.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../configs/constants.dart';
 import '../classes/dependencies_manager.dart';
@@ -33,6 +35,8 @@ class ApiCCTK {
   static bool? _apiReady;
   static bool _cctkMutexLocked = false;
   static final _shell = Shell(throwOnError: false);
+
+  static SharedPreferences? _prefs;
 
   static final CCTKState cctkState = CCTKState();
 
@@ -87,10 +91,21 @@ class ApiCCTK {
     for (var param in _queryParameters) {
       // verify that parameter is supported *before* querying it
       if (cctkState.parameters[param]?.supported == null) {
-        if (!_processSupported(await _runCctk("-H --${param.cmd}"), param) && !(cctkState.cctkCompatible?? true)) {
-          _cctkRelease();
-          _callStateChanged(cctkState);
-          return false;
+        /* attempt to read cached data first */
+        _prefs ??= await SharedPreferences.getInstance();
+        String cachedString = _prefs?.getString("cctkSupportedMode${param.cmd}") ?? "";
+        if (cachedString.isNotEmpty && jsonDecode(cachedString) != null) {
+          Map<String, dynamic>? cachedMap = jsonDecode(cachedString) as Map<String, dynamic>;
+          cctkState.parameters[param]?.supported = cachedMap.cast<String, bool>();
+        } else {
+          /* fetch supported modes from cctk (slow) */
+          if (!_processSupported(await _runCctk("-H --${param.cmd}"), param) && !(cctkState.cctkCompatible?? true)) {
+            _cctkRelease();
+            _callStateChanged(cctkState);
+            return false;
+          }
+          /* update cached data */
+          await _prefs?.setString("cctkSupportedMode${param.cmd}", jsonEncode(cctkState.parameters[param]?.supported));
         }
       }
       if (cctkState.parameters[param]?.supported?.containsValue(true) ?? false) {
