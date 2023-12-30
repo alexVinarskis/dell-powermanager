@@ -13,7 +13,8 @@ enum SudoersState {
   awaiting,
   patching,
   patchingFailed,
-  patchingSucceeded,
+  patchingSucceededRestart,
+  patchingSucceededNoRestart,
 }
 
 class MenuSudoers extends StatefulWidget {
@@ -65,13 +66,28 @@ class MenuSudoersState extends State<MenuSudoers> {
       _sudoersState = SudoersState.patching;
     });
     bool patched = await SudoersManager.patchSudoers();
-    setState(() {
-      if (patched) {
-        _sudoersState = SudoersState.patchingSucceeded;
+    if (patched) {
+      setState(() {
+        _sudoersState = SudoersState.patchingSucceededNoRestart;
+      });
+      bool runningSudo = await SudoersManager.verifySudo();
+      if (runningSudo) {
+        ApiCCTK.requestUpdate();
+        Timer(const Duration(seconds: 3), () {
+          setState(() {
+            _sudoersState = SudoersState.hidden;
+          });
+        });
       } else {
-        _sudoersState = SudoersState.patchingFailed;
+        setState(() {
+          _sudoersState = SudoersState.patchingSucceededRestart;
+        });
       }
-    });
+    } else {
+      setState(() {
+        _sudoersState = SudoersState.patchingFailed;
+      });
+    }
   }
 
   Widget _getProgressBar(var state, BuildContext context) {
@@ -80,7 +96,8 @@ class MenuSudoersState extends State<MenuSudoers> {
         return const LinearProgressIndicator(backgroundColor: Colors.transparent);
       case SudoersState.patchingFailed:
         return LinearProgressIndicator(backgroundColor: Colors.transparent, color: Theme.of(context).colorScheme.error, value: 1,);
-      case SudoersState.patchingSucceeded:
+      case SudoersState.patchingSucceededRestart:
+      case SudoersState.patchingSucceededNoRestart:
         return const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Colors.green, value: 1,);
       default:
         return  const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Colors.transparent,);
@@ -91,7 +108,8 @@ class MenuSudoersState extends State<MenuSudoers> {
     switch (state) {
       case SudoersState.patchingFailed:
         return Icon(Icons.error_outline_rounded, color: Theme.of(context).colorScheme.error,);
-      case SudoersState.patchingSucceeded:
+      case SudoersState.patchingSucceededRestart:
+      case SudoersState.patchingSucceededNoRestart:
         return const Icon(Icons.check_circle_outline_outlined, color: Colors.green,);
       default:
         return const Icon(Icons.security_rounded);
@@ -156,11 +174,12 @@ class MenuSudoersState extends State<MenuSudoers> {
   @override
   Widget build(BuildContext context) {
     sudoersStateTitles = {
-      SudoersState.hidden            : "",
-      SudoersState.awaiting          : Platform.isLinux ? S.of(context)!.sudoersCardSubtitleAwaiting : S.of(context)!.adminCardSubtitleAwaiting,
-      SudoersState.patching          : S.of(context)!.sudoersCardSubtitlePatching,
-      SudoersState.patchingFailed    : S.of(context)!.sudoersCardSubtitlePatchingFailed,
-      SudoersState.patchingSucceeded : S.of(context)!.sudoersCardSubtitlePatchingSucceeded,
+      SudoersState.hidden                     : "",
+      SudoersState.awaiting                   : Platform.isLinux ? S.of(context)!.sudoersCardSubtitleAwaiting : S.of(context)!.adminCardSubtitleAwaiting,
+      SudoersState.patching                   : S.of(context)!.sudoersCardSubtitlePatching,
+      SudoersState.patchingFailed             : S.of(context)!.sudoersCardSubtitlePatchingFailed,
+      SudoersState.patchingSucceededRestart   : S.of(context)!.sudoersCardSubtitlePatchingSucceededRestart,
+      SudoersState.patchingSucceededNoRestart : S.of(context)!.sudoersCardSubtitlePatchingSucceededNoRestart,
     };
 
     return AnimatedSwitcher(
@@ -173,10 +192,10 @@ class MenuSudoersState extends State<MenuSudoers> {
         margin: EdgeInsets.symmetric(vertical: widget.paddingV, horizontal: widget.paddingH),
         child: InkWell(
           onTap: () async {
-            if (_sudoersState == SudoersState.patchingSucceeded) {
+            if (_sudoersState == SudoersState.patchingSucceededRestart) {
               exit(0);
             }
-            if (_sudoersState == SudoersState.patching) {
+            if (_sudoersState == SudoersState.patching || _sudoersState == SudoersState.patchingSucceededNoRestart) {
               return;
             }
             if (!Platform.isLinux) {
