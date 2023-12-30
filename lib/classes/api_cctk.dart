@@ -55,12 +55,14 @@ class ApiCCTK {
   }
 
   static void _callDepsChanged(bool apiReady) {
-    for (var callback in _callbacksDepsChanged) {
+    var dubList = List.from(_callbacksDepsChanged);
+    for (var callback in dubList) {
       callback(apiReady);
     }
   }
   static void _callStateChanged(CCTKState cctkState) {
-    for (var callback in _callbacksStateChanged) {
+    var dubList = List.from(_callbacksStateChanged);
+    for (var callback in dubList) {
       callback(cctkState);
     }
   }
@@ -88,7 +90,8 @@ class ApiCCTK {
     _cctkLock();
     // create cctk query arg
     String arg = '';
-    for (var param in _queryParameters) {
+    var dubList = List.from(_queryParameters);
+    for (var param in dubList) {
       // verify that parameter is supported *before* querying it
       if (cctkState.parameters[param]?.supported == null) {
         /* attempt to read cached data first */
