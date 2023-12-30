@@ -76,7 +76,7 @@ class ApiCCTK {
     if (_isCctkLocked() || cctkState.cctkCompatible == false) {
       return false;
     }
-    if (!(_apiReady ?? false)) {
+    if (!(_apiReady ?? true)) {
       _apiReady = await DependenciesManager.verifyDependencies();
       _callDepsChanged(_apiReady!);
       if (!(_apiReady ?? false)) return false;
@@ -115,6 +115,7 @@ class ApiCCTK {
 
   static bool _processResponse(ProcessResult pr) {
     if (pr.exitCode != 0) {
+      _apiReady ??= false;
       return false;
     }
     for (String output in pr.stdout.toString().split("\n")) {
@@ -136,6 +137,7 @@ class ApiCCTK {
       return false;
     }
     if (pr.exitCode != 0) {
+      _apiReady ??= false;
       return false;
     }
     Map<String, bool> supportedModes = {};
