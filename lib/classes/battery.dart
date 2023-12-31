@@ -6,7 +6,7 @@ class Battery {
       powerSupplyPresent:           'POWER_SUPPLY_ONLINE',                // 1/0, whether AC is connected
       batteryName:                  'POWER_SUPPLY_NAME',                  // BAT0
       batteryType:                  'POWER_SUPPLY_TYPE',                  // Battery
-      batteryStatus:                'POWER_SUPPLY_STATUS',                // Charging/Discharging/Not charging
+      batteryStatus:                'POWER_SUPPLY_STATUS',                // Charging/Discharging/Not charging/Full
       batteryPresent:               'POWER_SUPPLY_PRESENT',               // 1/0, whether battery is present
       batteryTechnology:            'POWER_SUPPLY_TECHNOLOGY',            // Li-poly
       batteryCycleCount:            'POWER_SUPPLY_CYCLE_COUNT',           // 99
@@ -21,7 +21,7 @@ class Battery {
       batteryEnergyFull:            'POWER_SUPPLY_ENERGY_FULL',           // mWh
       batteryEnergyNow:             'POWER_SUPPLY_ENERGY_NOW',            // mWh
       batteryCapacity:              'POWER_SUPPLY_CAPACITY',              // 32
-      batteryCapacityLevel:         'POWER_SUPPLY_CAPACITY_LEVEL',        // Normal
+      batteryCapacityLevel:         'POWER_SUPPLY_CAPACITY_LEVEL',        // Normal/Full/Low/Critical
       batteryModelName:             'POWER_SUPPLY_MODEL_NAME',            // DELL 70N2F34
       batteryManufacturer:          'POWER_SUPPLY_MANUFACTURER',          // SMP
       batterySerialNumber:          'POWER_SUPPLY_SERIAL_NUMBER',         // 625

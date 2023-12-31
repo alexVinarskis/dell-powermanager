@@ -38,7 +38,7 @@ class BatteryState {
     batteryChargeFull       = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryChargeFull],       (var x) => double.parse(x) / 1000000);
     batteryChargeNow        = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryChargeNow],        (var x) => double.parse(x) / 1000000);
     batteryPercentage       = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryCapacity],         (var x) => int.parse(x));
-    batteryPercentageLow    = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryCapacityLevel],    (var x) => x != 'Normal');
+    batteryPercentageLow    = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryCapacityLevel],    (var x) => x == 'Low' || x == 'Critical');
     batteryModelName        = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryModelName],        (var x) => x);
     batteryManufacturer     = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryManufacturer],     (var x) => x);
     batterySerialNumber     = _setIfPresent(map[Battery.batteryInfoLinux.args.batterySerialNumber],     (var x) => x);
