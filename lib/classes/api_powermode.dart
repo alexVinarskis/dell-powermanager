@@ -29,9 +29,10 @@ class ApiPowermode {
   static late Duration _initialRefreshInternal;
   static late Duration _refreshInternal;
   static late Timer _timer;
-  static final _shell = Shell(throwOnError: false);
+  static final _shell = Shell(throwOnError: false, runInShell: true);
 
   static PowermodeState? powermodeState;
+  static bool powermodeSupported = true;
 
   ApiPowermode(Duration refreshInternal) {
     _initialRefreshInternal = refreshInternal;
@@ -40,6 +41,9 @@ class ApiPowermode {
     _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
   }
   static void requestUpdate() {
+    if (!powermodeSupported) {
+      return;
+    }
     _timer.cancel();
     _query();
     _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
@@ -55,10 +59,17 @@ class ApiPowermode {
   }
 
   static Future<bool> _query() async {
+    if (!powermodeSupported) {
+      return false;
+    }
     // get response
     if (Platform.isLinux) {
       ProcessResult pr = (await _shell.run(Powermode.profileInfoLinux.cmd))[0];
       if (!_processReponseLinux(pr)) {
+        if (pr.exitCode == 127) {
+          powermodeSupported = false;
+          stop();
+        }
         return false;
       }
     } else {
