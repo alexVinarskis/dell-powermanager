@@ -26,6 +26,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
   PowermodeState? _powermodeState;
   ParameterState? _currentState;
   bool currentlyLoading = false;
+  bool _failedToSwitch = false;
   final Duration _refreshInternalPowermode = const Duration(seconds: 3);
 
   @override
@@ -63,6 +64,13 @@ class ScreenThermalsState extends State<ScreenThermals> {
         mode: state.mode.split(':')[0],
         supported: state.supported,
       );
+      if (
+        cctkState.exitStateWrite?.exitCode == CCTK.exitCodes.ok &&
+        cctkState.exitStateWrite?.cctkType == CCTK.thermalManagement.cmd &&
+        cctkState.exitStateWrite?.mode == _currentState?.mode
+        ) {
+        _failedToSwitch = false;
+      }
     });
   }
   void _handlePowermodeStateUpdate(PowermodeState? powermodeState) {
@@ -154,13 +162,17 @@ class ScreenThermalsState extends State<ScreenThermals> {
             description: CCTK.thermalManagement.strings(context)[mode]![indexDescription],
             onPress: () async {
               if (!currentlyLoading) {
+                String previousMode = _currentState!.mode;
                 setState(() {
                   _currentState?.mode = mode;
                   currentlyLoading = true;
                 });
-                await changeMode(mode);
+                _failedToSwitch = !(await changeMode(mode));
                 if (mounted) {
                   setState(() {
+                    if (_failedToSwitch) {
+                      _currentState?.mode = previousMode;
+                    }
                     currentlyLoading = false;
                   });
                 }
@@ -172,6 +184,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
             isSupported: _currentState?.supported?[mode] ?? false,
             isLoading:  _currentState?.mode == mode && currentlyLoading,
             isDataMissing: _isDataMissing(),
+            failedToSwitch: _failedToSwitch,
           ),
       ]),
     );
