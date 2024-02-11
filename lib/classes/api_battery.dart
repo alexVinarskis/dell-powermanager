@@ -4,6 +4,7 @@ import 'package:process_run/shell.dart';
 
 import '../classes/battery_state.dart';
 import '../classes/battery.dart';
+import '../configs/environment.dart';
 
 class ApiBattery {
   static final List<Duration> _additionalRefreshInternals = [];
@@ -29,7 +30,7 @@ class ApiBattery {
   static late Duration _initialRefreshInternal;
   static late Duration _refreshInternal;
   static late Timer _timer;
-  static final _shell = Shell(throwOnError: false);
+  static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
 
   static BatteryState? batteryState;
 

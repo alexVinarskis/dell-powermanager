@@ -13,7 +13,7 @@ Dell machines (XPS and Precision series laptops, potentially others) offer advan
 * [Dell Command | Configure](https://www.dell.com/support/kbdoc/en-us/000178000/dell-command-configure) CLI, available for both Windows and Linux, with impressive [list of capabilities](https://dl.dell.com/topicspdf/command-configure_reference-guide4_en-us.pdf).
 * [Dell Power Manager](https://www.dell.com/support/contents/en-au/article/product-support/self-support-knowledgebase/software-and-downloads/dell-power-manager) GUI, available for Windows only. On top of that, it is ridiculously slow to start, and (subjectively) ugly.
 
-This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, with main goal to replicate behavior of Dell Power Manager for Linux users. If it proves to be useful, I may add support for Windows as well.
+This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, with main goal to replicate behavior of Dell Power Manager for Linux users, but also does run on Windows.
 
 ## Features
 * Implement control via 'Dell Command | Configure CLI', installed separately or via integrated installer
@@ -44,7 +44,7 @@ Application is currently in __public beta__ stage.
 * UI tested, build and packaging asserted by CI
 * Dell's CCTK integrated, as well as automated installer
 * Tested on multiple platforms, see [Compatibility](#compatibility)
-* Packaged to `.deb`/`.msi`, get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases/latest), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
+* Packaged to `.msi`, `.deb`, `.tar.xz`. Get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases/latest), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
 * OTA integrated via Github API
 
 ### Linux
@@ -54,6 +54,11 @@ Application is currently in __public beta__ stage.
 ### Windows
 * Run from source via `flutter run`, build via `flutter build windows --release`
 * Package to `.msi` via `.\package.bat`
+
+## Debugging
+
+By default, all logging is supressed. Export `POWERMANAGER_DEBUG=true` before running app from CLI to get logs.
+When opening an issue, kindly save and attach the log.
 
 ## Compatibility
 Tested on the following devices:

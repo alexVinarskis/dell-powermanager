@@ -8,6 +8,7 @@ import '../configs/constants.dart';
 import '../classes/dependencies_manager.dart';
 import '../classes/cctk_state.dart';
 import '../classes/cctk.dart';
+import '../configs/environment.dart';
 
 class ApiCCTK {
   static final List _initialQueryParameters = [CCTK.thermalManagement, CCTK.primaryBattChargeCfg];
@@ -34,7 +35,7 @@ class ApiCCTK {
   static late Timer _timer;
   static bool? _apiReady;
   static bool _cctkMutexLocked = false;
-  static final _shell = Shell(throwOnError: false);
+  static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
 
   static SharedPreferences? _prefs;
 
