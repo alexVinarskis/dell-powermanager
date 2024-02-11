@@ -1,5 +1,6 @@
 class Constants {
   static const animationMs = 250;
+  static const animationFastMs = 150;
 
   static const authorName = 'alexVinarskis';
   static const applicationLegalese = '\u{a9} 2023 ${Constants.authorName}';
@@ -27,7 +28,7 @@ class Constants {
   static const apiPathLinux = '/opt/dell/dcc';
   static const applicationName = 'Dell Power Manager by VA';
   static const applicationPackageName = 'dell-powermanager';
-  static const applicationVersion = '0.8.0-22-gd544023+20231230-130025';
+  static const applicationVersion = '0.1.0';
 
   static const githubApiReleases = '${Constants.urlApi}/releases/latest';
   static const githubApiRequest = 'curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28"';
