@@ -34,9 +34,9 @@ class ScreenParentState extends State<ScreenParent> {
 
   Widget _getRHSScreen(MenuItems menuMode) {
     switch (menuMode) {
-      case MenuItems.battery: return const ScreenBattery(key: Key("screenBattery"));
-      case MenuItems.thermals: return const ScreenThermals(key: Key("screenThermals"));
-      default: return ScreenSummary(key: const Key("screenSummary"), menuCallback: _handleMenuCallback,);
+      case MenuItems.battery: return const ScreenBattery();
+      case MenuItems.thermals: return const ScreenThermals();
+      default: return ScreenSummary(menuCallback: _handleMenuCallback,);
     }
   }
 
@@ -122,8 +122,11 @@ class ScreenParentState extends State<ScreenParent> {
                     color: Theme.of(context).colorScheme.background,
                   ),
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: Constants.animationMs),
-                    child: Column(children: [_getRHSScreen(currentMenu)]),
+                    duration: const Duration(milliseconds: Constants.animationFastMs),
+                    child: Column(
+                      key: Key("$currentMenu"),
+                      children: [_getRHSScreen(currentMenu)],
+                    ),
                   ),
                 ),
               ),
