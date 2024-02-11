@@ -1,4 +1,5 @@
 import 'package:dell_powermanager/classes/api_powermode.dart';
+import 'package:dell_powermanager/configs/environment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,13 @@ Future<void> main() async {
     final license = await rootBundle.loadString('assets/fonts/OFL.txt');
     yield LicenseEntryWithLineBreaks(['assets/fonts'], license);
   });
+
+  if (kDebugMode) {
+    Environment.runningDebug = true;
+  }
+  if (Platform.environment["POWERMANAGER_DEBUG"]?.toLowerCase() == 'true') {
+    Environment.runningDebug = true;
+  }
 
   ApiCCTK(const Duration(milliseconds: 10000));
   ApiBattery(const Duration(milliseconds: 10000));

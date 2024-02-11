@@ -4,6 +4,7 @@ import 'package:process_run/shell.dart';
 
 import '../classes/powermode_state.dart';
 import '../classes/powermode.dart';
+import '../configs/environment.dart';
 
 class ApiPowermode {
   static final List<Duration> _additionalRefreshInternals = [];
@@ -29,7 +30,7 @@ class ApiPowermode {
   static late Duration _initialRefreshInternal;
   static late Duration _refreshInternal;
   static late Timer _timer;
-  static final _shell = Shell(throwOnError: false, runInShell: true);
+  static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false, runInShell: true);
 
   static PowermodeState? powermodeState;
   static bool powermodeSupported = true;

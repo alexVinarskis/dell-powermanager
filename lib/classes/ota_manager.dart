@@ -6,9 +6,10 @@ import 'package:process_run/shell.dart';
 import 'package:version/version.dart';
 
 import '../configs/constants.dart';
+import '../configs/environment.dart';
 
 class OtaManager {
-  static final _shell = Shell(throwOnError: false);
+  static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
 
   // [tagname, releaseUrl, downloadUrl]
   static Future<List<String>> checkLatestOta() async {

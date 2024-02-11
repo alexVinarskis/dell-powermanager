@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:process_run/shell.dart';
 
 import '../configs/constants.dart';
+import '../configs/environment.dart';
 
 class SudoersManager {
-  static final _shell = Shell(throwOnError: false);
+  static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
   static const sudoersPatchCmd = 'export PATH="${Constants.apiPathLinux}:\$PATH" && echo "ALL ALL=(ALL) NOPASSWD: \$(which cctk)" | sudo tee /etc/sudoers.d/${Constants.applicationPackageName}';
   static bool? runningSudo;
 
