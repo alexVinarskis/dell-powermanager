@@ -8,6 +8,7 @@ import '../classes/powermode.dart';
 import '../components/mode_item.dart';
 import '../classes/cctk.dart';
 import '../classes/cctk_state.dart';
+import '../configs/constants.dart';
 
 const indexTitle = 0;
 const indexDescription = 1;
@@ -85,22 +86,28 @@ class ScreenThermalsState extends State<ScreenThermals> {
   }
 
   Widget _getPowermodeBadge(BuildContext context, {double paddingH = 0, double paddingV = 0,}) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: Constants.animationMs),
+      child: ApiPowermode.powermodeSupported ? Card(
+        key: const Key("powermodeSupported"),
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        color: Colors.amber.withOpacity(0.4),
+        elevation: 0,
+        margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
+        child: _powermodeState == null ?
+          SkeletonAnimation(
+            curve: Curves.easeInOutCirc,
+            shimmerColor: Theme.of(context).colorScheme.secondaryContainer,
+            gradientColor: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0),
+            child: _getPowermodeContent(context),
+          ) :
+          _getPowermodeContent(context),
+      ) : const SizedBox(
+        key: Key("powermodeUnsupported"),
       ),
-      color: Colors.amber.withOpacity(0.4),
-      elevation: 0,
-      margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
-      child: _powermodeState == null ?
-        SkeletonAnimation(
-          curve: Curves.easeInOutCirc,
-          shimmerColor: Theme.of(context).colorScheme.secondaryContainer,
-          gradientColor: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0),
-          child: _getPowermodeContent(context),
-        ) :
-        _getPowermodeContent(context),
     );
   }
   Widget _getPowermodeContent(BuildContext context) {
