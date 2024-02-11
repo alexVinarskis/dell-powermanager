@@ -21,6 +21,7 @@ class ScreenBattery extends StatefulWidget {
 class ScreenBatteryState extends State<ScreenBattery> {
   ParameterState? _currentState;
   bool currentlyLoading = false;
+  bool _failedToSwitch = false;
   RangeValues customChargeRange = const RangeValues(0.50, 0.85);
   bool customChargeRangeChanging = false;
 
@@ -56,6 +57,13 @@ class ScreenBatteryState extends State<ScreenBattery> {
           supported: state.supported,
         );
       });
+      if (
+        cctkState.exitStateWrite?.exitCode == CCTK.exitCodes.ok &&
+        cctkState.exitStateWrite?.cctkType == CCTK.primaryBattChargeCfg.cmd &&
+        (cctkState.exitStateWrite?.mode ?? "").contains(_currentState!.mode)
+        ) {
+        _failedToSwitch = false;
+      }
     });
     if (state.mode.contains(CCTK.primaryBattChargeCfg.modes.custom) && state.mode.split(':').length >= 2) {
       // custom battery mode state has paremeters, parse them
@@ -85,17 +93,21 @@ class ScreenBatteryState extends State<ScreenBattery> {
     if (currentlyLoading) {
       return;
     }
+    String previousMode = _currentState!.mode;
     setState(() {
       _currentState?.mode = mode;
       currentlyLoading = true;
     });
     if (mode != CCTK.primaryBattChargeCfg.modes.custom) {
-      await _changeMode(mode);
+      _failedToSwitch = !(await _changeMode(mode));
     } else {
-      await _changeMode("$mode:${(customChargeRange.start*100).round()}-${(customChargeRange.end*100).round()}");
+      _failedToSwitch = !(await _changeMode("$mode:${(customChargeRange.start*100).round()}-${(customChargeRange.end*100).round()}"));
     }
     if (mounted) {
       setState(() {
+        if (_failedToSwitch) {
+          _currentState?.mode = previousMode;
+        }
         currentlyLoading = false;
       });
     }
@@ -189,7 +201,7 @@ class ScreenBatteryState extends State<ScreenBattery> {
             isSupported: _currentState?.supported?[mode] ?? false,
             isLoading:  _currentState?.mode == mode && currentlyLoading,
             isDataMissing: _isDataMissing(),
-            // isDataMissing: (_currentState?.supported?.isEmpty ?? true) || !( ((_currentState?.mode.isNotEmpty ?? false) && _currentState?.mode == mode) || !(_currentState?.supported?.containsValue(true) ?? false)),
+            failedToSwitch: _failedToSwitch,
             bottomItem: _getBottomBar(mode),
           ),
       ]),

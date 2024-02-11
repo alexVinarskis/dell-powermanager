@@ -12,7 +12,7 @@ enum OptionState {
 }
 
 class ModeItem extends StatefulWidget {
-  const ModeItem(this.title, {super.key, this.description = "", this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.isSupported = true, this.backgroundColor = Colors.transparent, this.isLoading = false, this.bottomItem, this.isDataMissing = false});
+  const ModeItem(this.title, {super.key, this.description = "", this.paddingH = 0, this.paddingV = 0, this.onPress, this.isSelected = false, this.isSupported = true, this.backgroundColor = Colors.transparent, this.isLoading = false, this.failedToSwitch = false, this.bottomItem, this.isDataMissing = false});
 
   final String title;
   final String description;
@@ -22,6 +22,7 @@ class ModeItem extends StatefulWidget {
   final bool isSupported;
   final bool isLoading;
   final bool isDataMissing;
+  final bool failedToSwitch;
   final Color backgroundColor;
   final Widget? bottomItem;
   final onPress;
@@ -38,6 +39,8 @@ class _ModeItemState extends State<ModeItem> {
     switch (state) {
       case OptionState.selectSucceeded:
         return const LinearProgressIndicator(backgroundColor: Colors.transparent, value: 1,);
+      case OptionState.selectFailed:
+        return LinearProgressIndicator(backgroundColor: Colors.transparent, color: Theme.of(context).colorScheme.error, value: 1,);
       case OptionState.selecting:
         return const LinearProgressIndicator(backgroundColor: Colors.transparent);
       default:
@@ -76,7 +79,13 @@ class _ModeItemState extends State<ModeItem> {
           )
           :
           const SizedBox(height: 20,),
-        _getProgressBar(widget.isSelected ? widget.isLoading ? OptionState.selecting : OptionState.selectSucceeded : OptionState.deselected, context),
+        _getProgressBar(
+          !widget.isSelected ? OptionState.deselected :
+          widget.isLoading ? OptionState.selecting :
+          widget.failedToSwitch ? OptionState.selectFailed :
+          OptionState.selectSucceeded,
+          context,
+        ),
       ],
     );
   }
