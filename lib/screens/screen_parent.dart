@@ -89,22 +89,10 @@ class ScreenParentState extends State<ScreenParent> {
                   isSelected: currentMenu == MenuItems.thermals,
                 ),
                 const Expanded(child: SizedBox(),),
-                const NotificationDependencies(
-                  paddingV: 10,
-                  paddingH: 20,
-                ),
-                const NotificationSudoers(
-                  paddingV: 10,
-                  paddingH: 20,
-                ),
-                const NotificationCompatibility(
-                  paddingV: 10,
-                  paddingH: 20,
-                ),
-                const NotificationOta(
-                  paddingV: 10,
-                  paddingH: 20,
-                ),
+                const NotificationDependencies(),
+                const NotificationSudoers(),
+                const NotificationCompatibility(),
+                const NotificationOta(),
                 InfoButton(
                   title: S.of(context)!.infoButtonTitle,
                   paddingV: 20,

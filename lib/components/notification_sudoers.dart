@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dell_powermanager/components/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../classes/api_cctk.dart';
-import '../configs/constants.dart';
 import '../classes/sudoers_manager.dart';
 
 enum SudoersState {
@@ -17,12 +17,17 @@ enum SudoersState {
   patchingSucceededNoRestart,
 }
 
-class NotificationSudoers extends StatefulWidget {
-  const NotificationSudoers({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
+final Map<SudoersState, NotificationState> mapStates = {
+  SudoersState.hidden                     : NotificationState.hidden,
+  SudoersState.awaiting                   : NotificationState.present,
+  SudoersState.patching                   : NotificationState.loading,
+  SudoersState.patchingFailed             : NotificationState.failedLoading,
+  SudoersState.patchingSucceededRestart   : NotificationState.succeeded,
+  SudoersState.patchingSucceededNoRestart : NotificationState.succeeded,
+};
 
-  final double paddingH;
-  final double paddingV;
-  final Color backgroundColor;
+class NotificationSudoers extends StatefulWidget {
+  const NotificationSudoers({super.key});
 
   @override
   State<NotificationSudoers> createState() => NotificationSudoersState();
@@ -87,32 +92,6 @@ class NotificationSudoersState extends State<NotificationSudoers> {
       setState(() {
         _sudoersState = SudoersState.patchingFailed;
       });
-    }
-  }
-
-  Widget _getProgressBar(var state, BuildContext context) {
-    switch (state) {
-      case SudoersState.patching:
-        return const LinearProgressIndicator(backgroundColor: Colors.transparent);
-      case SudoersState.patchingFailed:
-        return LinearProgressIndicator(backgroundColor: Colors.transparent, color: Theme.of(context).colorScheme.error, value: 1,);
-      case SudoersState.patchingSucceededRestart:
-      case SudoersState.patchingSucceededNoRestart:
-        return const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Colors.green, value: 1,);
-      default:
-        return  const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Colors.transparent,);
-    }
-  }
-
-  Widget _getIcon(var state, BuildContext context) {
-    switch (state) {
-      case SudoersState.patchingFailed:
-        return Icon(Icons.error_outline_rounded, color: Theme.of(context).colorScheme.error,);
-      case SudoersState.patchingSucceededRestart:
-      case SudoersState.patchingSucceededNoRestart:
-        return const Icon(Icons.check_circle_outline_outlined, color: Colors.green,);
-      default:
-        return const Icon(Icons.security_rounded);
     }
   }
 
@@ -182,60 +161,23 @@ class NotificationSudoersState extends State<NotificationSudoers> {
       SudoersState.patchingSucceededNoRestart : S.of(context)!.sudoersCardSubtitlePatchingSucceededNoRestart,
     };
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: Constants.animationMs),
-      child:  _sudoersState != SudoersState.hidden ? Card(
-        key: const Key("sudoersShownTrue"),
-        clipBehavior: Clip.antiAlias,
-        color: Colors.amber.withOpacity(0.4),
-        elevation: 0,
-        margin: EdgeInsets.symmetric(vertical: widget.paddingV, horizontal: widget.paddingH),
-        child: InkWell(
-          onTap: () async {
-            if (_sudoersState == SudoersState.patchingSucceededRestart) {
-              exit(0);
-            }
-            if (_sudoersState == SudoersState.patching || _sudoersState == SudoersState.patchingSucceededNoRestart) {
-              return;
-            }
-            if (!Platform.isLinux) {
-              return;
-            }
-            _showPatchModal();
-          },
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: _getIcon(_sudoersState, context),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          Platform.isLinux ? S.of(context)!.sudoersCardTitle : S.of(context)!.adminCardTitle,
-                          style: Theme.of(context).textTheme.titleMedium),
-                        const SizedBox(height: 5,),
-                        Text(sudoersStateTitles[_sudoersState].toString(), textAlign: TextAlign.justify,),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Align(alignment: Alignment.bottomCenter, child: _getProgressBar(_sudoersState, context),),
-            ],
-          ),
-        ),
-      ) : const SizedBox(
-        key: Key("sudoersShownFalse"),
-      ),
+    return NotificationItem(
+      Platform.isLinux ? S.of(context)!.sudoersCardTitle : S.of(context)!.adminCardTitle,
+      sudoersStateTitles[_sudoersState].toString(),
+      Icons.security_rounded,
+      state: mapStates[_sudoersState]!,
+      onPress: () async {
+        if (_sudoersState == SudoersState.patchingSucceededRestart) {
+          exit(0);
+        }
+        if (_sudoersState == SudoersState.patching || _sudoersState == SudoersState.patchingSucceededNoRestart) {
+          return;
+        }
+        if (!Platform.isLinux) {
+          return;
+        }
+        _showPatchModal();
+      },
     );
   }
 }
