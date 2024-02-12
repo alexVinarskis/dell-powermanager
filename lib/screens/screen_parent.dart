@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
-import '../components/menu_compatibility.dart';
-import '../components/menu_dependencies.dart';
-import '../components/menu_ota.dart';
-import '../components/menu_sudoers.dart';
+import '../components/notification_compatibility.dart';
+import '../components/notification_dependencies.dart';
+import '../components/notification_ota.dart';
+import '../components/notification_sudoers.dart';
 import '../configs/constants.dart';
 import '../screens/screen_battery.dart';
 import '../screens/screen_summary.dart';
@@ -89,19 +89,19 @@ class ScreenParentState extends State<ScreenParent> {
                   isSelected: currentMenu == MenuItems.thermals,
                 ),
                 const Expanded(child: SizedBox(),),
-                const MenuDependencies(
+                const NotificationDependencies(
                   paddingV: 10,
                   paddingH: 20,
                 ),
-                const MenuSudoers(
+                const NotificationSudoers(
                   paddingV: 10,
                   paddingH: 20,
                 ),
-                const MenuCompatibility(
+                const NotificationCompatibility(
                   paddingV: 10,
                   paddingH: 20,
                 ),
-                const MenuOta(
+                const NotificationOta(
                   paddingV: 10,
                   paddingH: 20,
                 ),

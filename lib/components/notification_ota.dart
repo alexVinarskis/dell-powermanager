@@ -18,18 +18,18 @@ enum OtaState {
   installationSucceeded,
 }
 
-class MenuOta extends StatefulWidget {
-  const MenuOta({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
+class NotificationOta extends StatefulWidget {
+  const NotificationOta({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
 
   final double paddingH;
   final double paddingV;
   final Color backgroundColor;
 
   @override
-  State<MenuOta> createState() => MenuOtaState();
+  State<NotificationOta> createState() => NotificationOtaState();
 }
 
-class MenuOtaState extends State<MenuOta> {
+class NotificationOtaState extends State<NotificationOta> {
   // assume running latest version by default
   OtaState _otaState = OtaState.hidden;
   // [tagname, releaseUrl, downloadUrl]
