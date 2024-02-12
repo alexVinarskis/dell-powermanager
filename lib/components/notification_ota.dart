@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dell_powermanager/components/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,12 +19,18 @@ enum OtaState {
   installationSucceeded,
 }
 
-class NotificationOta extends StatefulWidget {
-  const NotificationOta({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
+final Map<OtaState, NotificationState> mapStates = {
+  OtaState.hidden                 : NotificationState.hidden,
+  OtaState.awaiting               : NotificationState.present,
+  OtaState.downloading            : NotificationState.loading,
+  OtaState.installing             : NotificationState.loading,
+  OtaState.downloadFailed         : NotificationState.failedLoading,
+  OtaState.installationFailed     : NotificationState.failedLoading,
+  OtaState.installationSucceeded  : NotificationState.succeeded,
+};
 
-  final double paddingH;
-  final double paddingV;
-  final Color backgroundColor;
+class NotificationOta extends StatefulWidget {
+  const NotificationOta({super.key});
 
   @override
   State<NotificationOta> createState() => NotificationOtaState();
@@ -79,33 +86,6 @@ class NotificationOtaState extends State<NotificationOta> {
         _otaState = OtaState.installationFailed;
       }
     });
-  }
-
-  Widget _getProgressBar(var state, BuildContext context) {
-    switch (state) {
-      case OtaState.installing:
-      case OtaState.downloading:
-        return const LinearProgressIndicator(backgroundColor: Colors.transparent);
-      case OtaState.installationFailed:
-      case OtaState.downloadFailed:
-        return LinearProgressIndicator(backgroundColor: Colors.transparent, color: Theme.of(context).colorScheme.error, value: 1,);
-      case OtaState.installationSucceeded:
-        return const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Colors.green, value: 1,);
-      default:
-        return  const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Colors.transparent,);
-    }
-  }
-
-  Widget _getIcon(var state, BuildContext context) {
-    switch (state) {
-      case OtaState.installationFailed:
-      case OtaState.downloadFailed:
-        return Icon(Icons.error_outline_rounded, color: Theme.of(context).colorScheme.error,);
-      case OtaState.installationSucceeded:
-        return const Icon(Icons.check_circle_outline_outlined, color: Colors.green,);
-      default:
-        return const Icon(Icons.browser_updated_rounded);
-    }
   }
 
   Future<void> _showDownloadModal() {
@@ -184,57 +164,20 @@ class NotificationOtaState extends State<NotificationOta> {
       OtaState.installationSucceeded : S.of(context)!.otaCardSubtitleInstallationSucceeded,
     };
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: Constants.animationMs),
-      child:  _otaState != OtaState.hidden ? Card(
-        key: const Key("otaAvailableTrue"),
-        clipBehavior: Clip.antiAlias,
-        color: Colors.amber.withOpacity(0.4),
-        elevation: 0,
-        margin: EdgeInsets.symmetric(vertical: widget.paddingV, horizontal: widget.paddingH),
-        child: InkWell(
-          onTap: () async {
-            if (_otaState == OtaState.installing || _otaState == OtaState.downloading) {
-              return;
-            }
-            if (_otaState == OtaState.installationSucceeded) {
-              exit(0);
-            }
-            _showDownloadModal();
-          },
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: _getIcon(_otaState, context),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          S.of(context)!.otaCardTitle,
-                          style: Theme.of(context).textTheme.titleMedium),
-                        const SizedBox(height: 5,),
-                        Text(otaStateTitles[_otaState].toString(), textAlign: TextAlign.justify,),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Align(alignment: Alignment.bottomCenter, child: _getProgressBar(_otaState, context),),
-            ],
-          ),
-        ),
-      ) : const SizedBox(
-        key: Key("otaAvailableFalse"),
-      ),
+    return NotificationItem(
+      S.of(context)!.otaCardTitle,
+      otaStateTitles[_otaState].toString(),
+      Icons.browser_updated_rounded,
+      state: mapStates[_otaState]!,
+      onPress: () async {
+        if (_otaState == OtaState.installing || _otaState == OtaState.downloading) {
+          return;
+        }
+        if (_otaState == OtaState.installationSucceeded) {
+          exit(0);
+        }
+        _showDownloadModal();
+      },
     );
   }
 }
