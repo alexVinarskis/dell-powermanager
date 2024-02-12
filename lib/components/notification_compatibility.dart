@@ -9,18 +9,18 @@ enum CompatibilityState {
   incompatible,
 }
 
-class MenuCompatibility extends StatefulWidget {
-  const MenuCompatibility({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
+class NotificationCompatibility extends StatefulWidget {
+  const NotificationCompatibility({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
 
   final double paddingH;
   final double paddingV;
   final Color backgroundColor;
 
   @override
-  State<MenuCompatibility> createState() => MenuCompatibilityState();
+  State<NotificationCompatibility> createState() => NotificationCompatibilityState();
 }
 
-class MenuCompatibilityState extends State<MenuCompatibility> {
+class NotificationCompatibilityState extends State<NotificationCompatibility> {
   CompatibilityState _compatibilityState = CompatibilityState.hidden;
   late Map<CompatibilityState, String> _compatibilityStateTitles;
 

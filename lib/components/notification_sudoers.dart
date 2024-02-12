@@ -17,18 +17,18 @@ enum SudoersState {
   patchingSucceededNoRestart,
 }
 
-class MenuSudoers extends StatefulWidget {
-  const MenuSudoers({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
+class NotificationSudoers extends StatefulWidget {
+  const NotificationSudoers({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
 
   final double paddingH;
   final double paddingV;
   final Color backgroundColor;
 
   @override
-  State<MenuSudoers> createState() => MenuSudoersState();
+  State<NotificationSudoers> createState() => NotificationSudoersState();
 }
 
-class MenuSudoersState extends State<MenuSudoers> {
+class NotificationSudoersState extends State<NotificationSudoers> {
   SudoersState _sudoersState = SudoersState.hidden;
   late Map<SudoersState, String> sudoersStateTitles;
 

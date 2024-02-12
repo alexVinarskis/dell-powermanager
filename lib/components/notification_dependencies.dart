@@ -19,18 +19,18 @@ enum DependenciesState {
   installationSucceeded,
 }
 
-class MenuDependencies extends StatefulWidget {
-  const MenuDependencies({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
+class NotificationDependencies extends StatefulWidget {
+  const NotificationDependencies({super.key, this.paddingH = 0, this.paddingV = 0, this.backgroundColor = Colors.transparent});
 
   final double paddingH;
   final double paddingV;
   final Color backgroundColor;
 
   @override
-  State<MenuDependencies> createState() => MenuDependenciesState();
+  State<NotificationDependencies> createState() => NotificationDependenciesState();
 }
 
-class MenuDependenciesState extends State<MenuDependencies> {
+class NotificationDependenciesState extends State<NotificationDependencies> {
   // assume all dependencies are installed by default
   DependenciesState _dependenciesState = DependenciesState.hidden;
   late Map<DependenciesState, String> dependenciesStateTitles;
