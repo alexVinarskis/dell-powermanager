@@ -124,18 +124,17 @@ class ApiCCTK {
     // get & process response
     bool success = _processResponse(await _runCctk(arg));
     _cctkRelease();
-    if (!success) {
-      return false;
-    }
-    // notify listeners
     _callStateChanged(cctkState);
-    return true;
+    return success;
   }
 
   static bool _processResponse(ProcessResult pr) {
+    cctkState.exitCodeRead = pr.exitCode;
     if (pr.exitCode != 0) {
       _apiReady ??= false;
       return false;
+    } else {
+      _apiReady ??= true;
     }
     for (String output in pr.stdout.toString().split("\n")) {
       List<String> argAndValue = output.trim().replaceAll("\r", "").split("=");
@@ -150,6 +149,7 @@ class ApiCCTK {
   }
 
   static bool _processSupported(ProcessResult pr, var param) {
+    cctkState.exitCodeRead = pr.exitCode;
     String output = (pr.stderr.toString() + pr.stdout.toString()).replaceAll("\n", "");
     if ((output.isEmpty && pr.exitCode == 0) || output.contains("WMI-ACPI")) {
       cctkState.cctkCompatible = false;
@@ -158,6 +158,8 @@ class ApiCCTK {
     if (pr.exitCode != 0) {
       _apiReady ??= false;
       return false;
+    } else {
+      _apiReady ??= true;
     }
     Map<String, bool> supportedModes = {};
     for (String output in pr.stdout.toString().replaceAll("\r", "").split("\n")) {
@@ -174,13 +176,12 @@ class ApiCCTK {
   }
 
   static Future<bool> request(String cctkType, String mode) async {
-    // get & process response
-    if (!_processResponse(await _runCctk('--$cctkType=$mode'))) {
-      return false;
-    }
-    // notify listeners
+    /* Query, process, and respond */
+    ProcessResult pr = await _runCctk('--$cctkType=$mode');
+    bool success = _processResponse(pr);
+    cctkState.exitStateWrite = ExitState(pr.exitCode, cctkType, mode);
     _callStateChanged(cctkState);
-    return true;
+    return success;
   }
 
   static Future<ProcessResult> _runCctk(String arg) async {

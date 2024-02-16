@@ -3,6 +3,20 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CCTK {
   /*
+   * Exit codes of the CLI
+   * Used premarily for BIOS password requests handling
+   * 
+   */
+  static const exitCodes = (
+    ok:               0,
+    sysPwdRequired:   66,
+    sysPwdInvalid:    67,
+    setupPwdRequired: 65,
+    setupPwdInvalid:  58,
+    ownerPwdSet:      112,
+  );
+
+  /*
    * Thermal Management
    * 
    * Configures fan speeds, and (un)caps maximum CPU performance
