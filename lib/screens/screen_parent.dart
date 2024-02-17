@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../components/menu_item.dart';
 import '../components/info_button.dart';
+import '../components/notification_bios_protection.dart';
 import '../components/notification_compatibility.dart';
 import '../components/notification_dependencies.dart';
 import '../components/notification_ota.dart';
@@ -91,6 +92,7 @@ class ScreenParentState extends State<ScreenParent> {
                 const Expanded(child: SizedBox(),),
                 const NotificationDependencies(),
                 const NotificationSudoers(),
+                const NotificationBiosProtection(),
                 const NotificationCompatibility(),
                 const NotificationOta(),
                 InfoButton(

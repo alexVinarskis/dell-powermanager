@@ -35,13 +35,14 @@ class ApiCCTK {
   static late Timer _timer;
   static bool? _apiReady;
   static bool _cctkMutexLocked = false;
-  static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
+  static Shell _shell = Shell();
 
   static SharedPreferences? _prefs;
 
   static final CCTKState cctkState = CCTKState();
 
   ApiCCTK(Duration refreshInternal) {
+    sourceEnvironment();
     _refreshInternal = refreshInternal;
     _query();
     _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
@@ -53,6 +54,14 @@ class ApiCCTK {
   }
   static void stop() {
     _timer.cancel();
+  }
+  static void sourceEnvironment() {
+    /* (re)create shell with optional environment variables overwrite */
+    _shell = Shell(
+      verbose: Environment.runningDebug,
+      throwOnError: false,
+      environment: Environment.biosPwd == null ? null : (ShellEnvironment()..vars[Constants.varnameBiosPwd] = Environment.biosPwd!),
+    );
   }
 
   static void _callDepsChanged(bool apiReady) {
@@ -177,7 +186,13 @@ class ApiCCTK {
 
   static Future<bool> request(String cctkType, String mode) async {
     /* Query, process, and respond */
-    ProcessResult pr = await _runCctk('--$cctkType=$mode');
+    late String cmd;
+    if (Platform.isLinux) {
+      cmd = '--$cctkType=$mode${Environment.biosPwd == null ? "" : " --ValSetupPwd=\$${Constants.varnameBiosPwd} --ValSysPwd=\$${Constants.varnameBiosPwd}"}';
+    } else {
+      cmd = '--$cctkType=$mode${Environment.biosPwd == null ? "" : " --ValSetupPwd=%${Constants.varnameBiosPwd}% --ValSysPwd=%${Constants.varnameBiosPwd}%"}';
+    }
+    ProcessResult pr = await _runCctk(cmd);
     bool success = _processResponse(pr);
     cctkState.exitStateWrite = ExitState(pr.exitCode, cctkType, mode);
     _callStateChanged(cctkState);
