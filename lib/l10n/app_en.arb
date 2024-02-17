@@ -112,6 +112,9 @@
     "biosProtectionAlertRequiredPwdButton" : "OK",
     "biosProtectionAlertRequiredSysPwdP1" : "BIOS configuration is protected with `System Password`.\n\nTo alter settings, either remove password protection, or enter current password below:",
     "biosProtectionAlertRequiredSetupPwdP1" : "BIOS configuration is protected with `Setup Password`.\n\nTo alter settings, either remove password protection, or enter current password below:",
+    "biosProtectionAlertRequiredPwdSavePwdTitle" : "Save password",
+    "biosProtectionAlertRequiredPwdSavePwdDisclaimerLinux" : "Store password in system keyring via `libsecret`. It is secure, but not impossible to retrieve.\n\nUnderstand the risks before opting in.",
+    "biosProtectionAlertRequiredPwdSavePwdDisclaimerWindows" : "Store password. It is secure, but not impossible to retrieve.\n\nUnderstand the risks before opting in.",
 
     "cctkThermalOptimizedTitle" : "Optimized",
     "cctkThermalOptimizedDescription" : "This is the standard setting for cooling fan and processor heat management. This setting is a balance of performance., noise and temperature.",

@@ -46,6 +46,7 @@ dependencies:
   version: ^3.0.2
   touch_interceptor: ^0.1.1
   shared_preferences: ^2.2.2
+  flutter_secure_storage: ^9.0.0
   passwordfield: ^0.2.0
 
 dev_dependencies:

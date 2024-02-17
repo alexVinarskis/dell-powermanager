@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dell_powermanager/classes/cctk.dart';
 import 'package:dell_powermanager/components/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:passwordfield/passwordfield.dart';
 import '../classes/api_cctk.dart';
 import '../classes/bios_protection_manager.dart';
@@ -43,6 +45,7 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
   late Map<BiosProtectionState, String> biosProtectionStateSubtitles;
   final FocusNode modalButtonFocusNode = FocusNode();
   final TextEditingController modalPwdController = TextEditingController();
+  bool _savingPwd = false;
 
   @override
   void initState() {
@@ -87,6 +90,7 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
 
     /* Ignore state, if issue was already detected */
     if (
+      _biosProtectionState == BiosProtectionState.unlockingSucceeded ||
       _biosProtectionState == BiosProtectionState.unlockingSysPwdFailed ||
       _biosProtectionState == BiosProtectionState.unlockingSetupPwdFailed ||
       _biosProtectionState == BiosProtectionState.missingSetupPwd ||
@@ -127,52 +131,117 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
         return AlertDialog(
           title: Text(title),
           content: SizedBox(
-            width: 400,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "$p1\n",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.justify,
-                ),
-                PasswordField(
-                  color: Theme.of(context).colorScheme.primary,
-                  passwordConstraint: r'^\S+$',
-                  passwordDecoration: PasswordDecoration(),
-                  controller: modalPwdController,
-                  hintText: hint,
-                  autoFocus: true,
-                  onSubmit: (text) => {
-                    modalButtonFocusNode.requestFocus(),
-                  },
-                  border: PasswordBorder(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
+            width: 450,
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) { 
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      p1,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.justify,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5, top: 30, bottom: 25),
+                      child: PasswordField(
                         color: Theme.of(context).colorScheme.primary,
+                        passwordConstraint: r'^\S+$',
+                        passwordDecoration: PasswordDecoration(),
+                        controller: modalPwdController,
+                        hintText: hint,
+                        autoFocus: true,
+                        onSubmit: (text) => {
+                          modalButtonFocusNode.requestFocus(),
+                        },
+                        border: PasswordBorder(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                        ),
+                        errorMessage: S.of(context)!.biosProtectionAlertRequiredPwdErrorMsg,
                       ),
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.primary,
+                    Card(
+                      clipBehavior: Clip.antiAlias,
+                      color: Theme.of(context).colorScheme.surface.withOpacity(0.75),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.0),
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.error,
+                      elevation: 0,
+                      margin: const EdgeInsets.only(left: 5, right: 5),
+                      child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _savingPwd = !_savingPwd;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Checkbox(
+                              value: _savingPwd,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _savingPwd = value!;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 6),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    S.of(context)!.biosProtectionAlertRequiredPwdSavePwdTitle,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                Container(
+                                  width: 360,
+                                  padding: const EdgeInsets.symmetric(vertical: 6),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    Platform.isLinux ? S.of(context)!.biosProtectionAlertRequiredPwdSavePwdDisclaimerLinux : S.of(context)!.biosProtectionAlertRequiredPwdSavePwdDisclaimerWindows,
+                                    textAlign: TextAlign.justify,
+                                    style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
+                    ), 
                     ),
-                  ),
-                  errorMessage: S.of(context)!.biosProtectionAlertRequiredPwdErrorMsg,
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ),
           actions: <Widget>[
@@ -187,6 +256,9 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
                 final String enteredPwd = modalPwdController.text;
                 if (enteredPwd.isNotEmpty) {
                   BiosProtectionManager.loadPassword(enteredPwd);
+                  if (_savingPwd) {
+                    BiosProtectionManager.secureWritePassword(enteredPwd);
+                  }
                   ApiCCTK.request(ApiCCTK.cctkState.exitStateWrite!.cctkType, ApiCCTK.cctkState.exitStateWrite!.mode);
                   setState(() {
                     _biosProtectionState = BiosProtectionState.unlocking;
@@ -196,7 +268,7 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
             ),
           ],
         );
-      }
+      },
     );
   }
 
@@ -207,7 +279,7 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
         return AlertDialog(
           title: Text(S.of(context)!.biosProtectionAlertOwnerPwdTitle),
           content: SizedBox(
-            width: 400,
+            width: 450,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

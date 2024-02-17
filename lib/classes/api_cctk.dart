@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:dell_powermanager/classes/bios_protection_manager.dart';
 import 'package:process_run/shell.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +44,7 @@ class ApiCCTK {
 
   ApiCCTK(Duration refreshInternal) {
     sourceEnvironment();
+    BiosProtectionManager.secureReadPassword();
     _refreshInternal = refreshInternal;
     _query();
     _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
