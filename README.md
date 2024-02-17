@@ -24,6 +24,7 @@ This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, 
 * Integrated OTA via Github API
 * Detects and handles unsupported modes on supported machines
 * Detects non-dell machines, shows error message
+* Support protected BIOS (System/Setup/Owner passwords), and secure key saving
 
 Control features:
 * Battery status overview (health etc.)
@@ -82,6 +83,9 @@ Please see [issues](https://github.com/alexVinarskis/dell-powermanager/issues).
 ## Credits
 * Dell for providing 'Dell Command | Configure CLI'
 * Google for creating Flutter :)
+
+## Disclaimer
+As per license, this software is provided as-is, without any warranty. It is not affiliated with Dell in any way. Use at your own risk. Me or any other contributors are not responsible for any damage caused by this software, including but not limited to data loss, hardware damage, data breaches etc. Where applicable, integrated solution for secure key saving is used, but it is not guaranteed to be secure in any way. Understand risk and implications before using it. No legal claims can be made against the author or contributors.
 
 ## License
 This application is licensed under GPLv3. In short, this means you use/copy/modify/distribute it for free, but you must provide source code of your modifications, and keep the same license. You cannot sell it as proprietary software. See [LICENSE](LICENSE) for details.
