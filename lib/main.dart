@@ -1,4 +1,5 @@
 import 'package:dell_powermanager/classes/api_powermode.dart';
+import 'package:dell_powermanager/classes/bios_protection_manager.dart';
 import 'package:dell_powermanager/configs/environment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,11 @@ Future<void> main() async {
   if (kDebugMode) {
     Environment.runningDebug = true;
   }
-  if (Platform.environment["POWERMANAGER_DEBUG"]?.toLowerCase() == 'true') {
+  if (Platform.environment[Constants.varnamePowermanagerDebug]?.toLowerCase() == 'true') {
     Environment.runningDebug = true;
+  }
+  if ((Platform.environment[Constants.varnameBiosPwd]?? "").isNotEmpty) {
+    BiosProtectionManager.loadPassword(Platform.environment[Constants.varnameBiosPwd]!);
   }
 
   ApiCCTK(const Duration(milliseconds: 10000));
