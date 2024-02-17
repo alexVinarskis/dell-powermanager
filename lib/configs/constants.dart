@@ -38,4 +38,5 @@ class Constants {
   static const githubApiFieldHtmlUrl = 'html_url';
 
   static const varnameBiosPwd = 'BIOS_PWD';
+  static const varnamePowermanagerDebug = 'POWERMANAGER_DEBUG';
 }
