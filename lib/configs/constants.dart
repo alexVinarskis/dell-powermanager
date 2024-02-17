@@ -36,4 +36,6 @@ class Constants {
   static const githubApiFieldAssets = 'assets';
   static const githubApiFieldBrowserDownloadUrl = 'browser_download_url';
   static const githubApiFieldHtmlUrl = 'html_url';
+
+  static const varnameBiosPwd = 'BIOS_PWD';
 }
