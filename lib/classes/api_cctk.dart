@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dell_powermanager/classes/bios_protection_manager.dart';
 import 'package:process_run/shell.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import '../configs/constants.dart';
 import '../classes/dependencies_manager.dart';
@@ -39,6 +40,7 @@ class ApiCCTK {
   static Shell _shell = Shell();
 
   static SharedPreferences? _prefs;
+  static const _uuid = Uuid();
 
   static final CCTKState cctkState = CCTKState();
 
@@ -186,7 +188,7 @@ class ApiCCTK {
     return true;
   }
 
-  static Future<bool> request(String cctkType, String mode) async {
+  static Future<bool> request(String cctkType, String mode, {String? requestCode}) async {
     /* Query, process, and respond */
     late String cmd;
     if (Platform.isLinux) {
@@ -196,7 +198,7 @@ class ApiCCTK {
     }
     ProcessResult pr = await _runCctk(cmd);
     bool success = _processResponse(pr);
-    cctkState.exitStateWrite = ExitState(pr.exitCode, cctkType, mode);
+    cctkState.exitStateWrite = ExitState(pr.exitCode, cctkType, mode, requestCode?? _uuid.v4());
     _callStateChanged(cctkState);
     return success;
   }

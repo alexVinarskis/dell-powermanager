@@ -46,6 +46,7 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
   final FocusNode modalButtonFocusNode = FocusNode();
   final TextEditingController modalPwdController = TextEditingController();
   bool _savingPwd = false;
+  String _lastRequestCode = "";
 
   @override
   void initState() {
@@ -65,6 +66,10 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
     if (cctkState.exitStateWrite == null) {
       return;
     }
+    if (cctkState.exitStateWrite!.requestCode == _lastRequestCode) {
+      return;
+    }
+    _lastRequestCode = cctkState.exitStateWrite!.requestCode;
 
     /* Once succeeded, exit */
     if (cctkState.exitStateWrite!.exitCode == CCTK.exitCodes.ok) {
@@ -90,11 +95,8 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
 
     /* Ignore state, if issue was already detected */
     if (
-      _biosProtectionState == BiosProtectionState.unlockingSucceeded ||
-      _biosProtectionState == BiosProtectionState.unlockingSysPwdFailed ||
-      _biosProtectionState == BiosProtectionState.unlockingSetupPwdFailed ||
-      _biosProtectionState == BiosProtectionState.missingSetupPwd ||
-      _biosProtectionState == BiosProtectionState.missingSysPwd
+      _biosProtectionState != BiosProtectionState.hidden &&
+      _biosProtectionState != BiosProtectionState.unlocking
       ) {
         return;
     }
