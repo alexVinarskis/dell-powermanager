@@ -11,8 +11,9 @@ class ExitState {
   int exitCode;
   String cctkType;
   String mode;
+  String requestCode;
 
-  ExitState(this.exitCode, this.cctkType, this.mode);
+  ExitState(this.exitCode, this.cctkType, this.mode, this.requestCode);
 }
 
 class CCTKState {
