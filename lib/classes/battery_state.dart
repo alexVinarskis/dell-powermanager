@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'battery.dart';
 
 class BatteryState {
@@ -51,6 +53,10 @@ class BatteryState {
     batteryHealth         ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFull],       (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoLinux.args.batteryEnergyFullDesign]) * 100);
     batteryDesignCapacity ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFullDesign], (var x) => double.parse(x) / 1000000);
     batteryCurrentPower   ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryPowerNow], (var x) => double.parse(x) / 1000000);
+
+    /* Cap certain values to 100% */
+    batteryPercentage = _capIfPresent(batteryPercentage, 100);
+    batteryHealth     = _capIfPresent(batteryHealth, 100.0);
   }
   BatteryState.fromWindowsMap(Map<String, dynamic> map) {
     powerSupplyPresent      = _setIfPresent(map[Battery.batteryInfoWindows.args.powerSupplyPresent],    (var x) => x == "True");
@@ -66,6 +72,10 @@ class BatteryState {
     batteryPercentage       = _setIfPresent(map[Battery.batteryInfoWindows.args.batteryCapacityNow],    (var x) => (int.parse(x) / double.parse(map[Battery.batteryInfoWindows.args.batteryCapacityFull]) * 100).toInt());
     batteryHealth           = _setIfPresent(map[Battery.batteryInfoWindows.args.batteryCapacityFull],   (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoWindows.args.batteryCapacityFullDesign]) * 100);
     batteryCurrentPower     = _setIfPresent(map[batteryCharging! ? Battery.batteryInfoWindows.args.batteryChargeRate : Battery.batteryInfoWindows.args.batteryDischargeRate],  (var x) => double.parse(x) / 1000);
+
+    /* Cap certain values to 100% */
+    batteryPercentage = _capIfPresent(batteryPercentage, 100);
+    batteryHealth     = _capIfPresent(batteryHealth, 100.0);
   }
 
   _setIfPresent(var source, var transformation) {
@@ -73,5 +83,11 @@ class BatteryState {
       return null;
     }
     return transformation(source);
+  }
+  _capIfPresent(num? source, num cap) {
+    if (source == null) {
+      return null;
+    }
+    return min(source, cap);
   }
 }
