@@ -36,13 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   window_manager: ^0.3.7
   flutter_acrylic: ^1.1.3
-  process_run: ^0.13.1
+  process_run: ^0.14.1+3
   google_fonts: ^6.1.0
   url_launcher: ^6.1.14
   flutter_svg: ^2.0.7
   skeleton_text: ^3.0.1
   intl: ^0.18.0
-  flutter_localization: ^0.1.14
+  flutter_localization: ^0.2.0
   version: ^3.0.2
   touch_interceptor: ^0.1.1
   shared_preferences: ^2.2.2
