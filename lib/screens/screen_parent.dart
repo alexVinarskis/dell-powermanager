@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../components/menu_item.dart';
-import '../components/info_button.dart';
 import '../components/notification_bios_protection.dart';
 import '../components/notification_compatibility.dart';
 import '../components/notification_dependencies.dart';
 import '../components/notification_ota.dart';
 import '../components/notification_sudoers.dart';
+import '../components/settings_modal.dart';
 import '../configs/constants.dart';
 import '../screens/screen_battery.dart';
 import '../screens/screen_summary.dart';
@@ -95,10 +95,22 @@ class ScreenParentState extends State<ScreenParent> {
                 const NotificationBiosProtection(),
                 const NotificationCompatibility(),
                 const NotificationOta(),
-                InfoButton(
-                  title: S.of(context)!.infoButtonTitle,
-                  paddingV: 20,
-                  paddingH: 20,
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 20,
+                    left: 20
+                  ),
+                  child: IconButton(
+                    icon: const Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Icon(Icons.settings_rounded),
+                    ),
+                    onPressed: () {
+                      SettingsModal.showModal(context);
+                    },
+                  ),
                 ),
               ]),
             ),

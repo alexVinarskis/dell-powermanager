@@ -40,10 +40,10 @@
     "parentMenuTitleThermal" : "Thermal Management",
     "parentMenuDescriptionThermal" : "Customize system thermal and fan settings",
 
-    "infoButtonTitle" : "Misc",
-    "infoButtonItemHomepage" : "Homepage",
-    "infoButtonItemBug" : "Report Bug",
-    "infoButtonItemAbout" : "About",
+    "settingsAlertTileHomepage" : "Homepage",
+    "settingsAlertTileBug" : "Report Bug",
+    "settingsAlertTileAbout" : "About",
+    "settingsAlertTitle" : "Settings & Misc",
 
     "compatibilityCardTitle" : "Incompatible Platform",
     "compatibilityCardSubtitle" : "Non-Dell machine, or Unsupported Model",
