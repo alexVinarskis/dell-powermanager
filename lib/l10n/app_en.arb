@@ -48,6 +48,9 @@
     "settingsAlertResetBiosPwdTitle" : "Reset saved BIOS Password",
     "settingsAlertResetBiosPwdSubTitleTodo" : "Tap to erase",
     "settingsAlertResetBiosPwdSubTitleDone" : "Erased!",
+    "settingsAlertResetSettingsTitle" : "Reset app's data and settings",
+    "settingsAlertResetSettingsSubTitleTodo" : "Tap to erase",
+    "settingsAlertResetSettingsSubTitleDone" : "Erased!",
 
     "compatibilityCardTitle" : "Incompatible Platform",
     "compatibilityCardSubtitle" : "Non-Dell machine, or Unsupported Model",

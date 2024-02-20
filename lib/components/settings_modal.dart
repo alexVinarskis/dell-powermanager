@@ -4,6 +4,7 @@ import 'package:dell_powermanager/classes/bios_protection_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../configs/constants.dart';
@@ -172,6 +173,17 @@ class SettingsModal {
                   subtitleAlt: S.of(context)!.settingsAlertResetBiosPwdSubTitleDone,
                   icon: Icons.delete_rounded,
                   onPressed: () => BiosProtectionManager.secureDeletePassword(),
+                ),
+                SettingTile(
+                  title: S.of(context)!.settingsAlertResetSettingsTitle,
+                  subtitle: S.of(context)!.settingsAlertResetSettingsSubTitleTodo,
+                  subtitleAlt: S.of(context)!.settingsAlertResetSettingsSubTitleDone,
+                  icon: Icons.delete_rounded,
+                  onPressed: () async {
+                    /* Erase saved preferences and cached variables */
+                    SharedPreferences preferences = await SharedPreferences.getInstance();
+                    await preferences.clear();
+                  },
                 ),
               ],
             ),
