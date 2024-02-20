@@ -166,6 +166,13 @@ class SettingsModal {
                   ],
                 ),
                 const SizedBox(height: 15,),
+                SettingTile(
+                  title: S.of(context)!.settingsAlertResetBiosPwdTitle,
+                  subtitle: S.of(context)!.settingsAlertResetBiosPwdSubTitleTodo,
+                  subtitleAlt: S.of(context)!.settingsAlertResetBiosPwdSubTitleDone,
+                  icon: Icons.delete_rounded,
+                  onPressed: () => BiosProtectionManager.secureDeletePassword(),
+                ),
               ],
             ),
           ),

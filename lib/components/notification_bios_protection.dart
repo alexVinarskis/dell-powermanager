@@ -52,6 +52,7 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
   void initState() {
     super.initState();
     ApiCCTK.addCallbacksStateChanged(_handleCCTKStateUpdate);
+    BiosProtectionManager.addCallbacksBiosPwdChanged(_handleBiosPwdChanged);
   }
 
   @override
@@ -59,9 +60,14 @@ class NotificationBiosProtectionState extends State<NotificationBiosProtection> 
     modalButtonFocusNode.dispose();
     modalPwdController.dispose();
     ApiCCTK.removeCallbacksStateChanged(_handleCCTKStateUpdate);
+    BiosProtectionManager.removeCallbacksBiosPwdChanged(_handleBiosPwdChanged);
     super.dispose();
   }
-
+  
+  void _handleBiosPwdChanged(String? biosPwd) {
+    /* Re-add callbacks, if password was removed */
+    ApiCCTK.addCallbacksStateChanged(_handleCCTKStateUpdate);
+  }
   void _handleCCTKStateUpdate(CCTKState cctkState) {
     if (cctkState.exitStateWrite == null) {
       return;
