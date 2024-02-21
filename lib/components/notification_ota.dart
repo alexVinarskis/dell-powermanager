@@ -46,14 +46,29 @@ class NotificationOtaState extends State<NotificationOta> {
   @override
   void initState() {
     super.initState();
+    OtaManager.addCallbacksOtaChanged(_handleOtaState);
     OtaManager.checkLatestOta().then((latestOta) => _handleOtaState(latestOta));
   }
 
+  @override
+  void dispose() {
+    OtaManager.removeCallbacksOtaChanged(_handleOtaState);
+    super.dispose();
+  }
+
   void _handleOtaState(List<String> latestOta) {
-    if (latestOta.length < 2) {
+    /* Update in progress */
+    if (
+      _otaState == OtaState.installationSucceeded ||
+      _otaState == OtaState.installing ||
+      _otaState == OtaState.downloading
+    ) {
       return;
     }
-    if (!OtaManager.compareUpdateRequired(latestOta[0])) {
+    if (latestOta.length < 2 || !OtaManager.compareUpdateRequired(latestOta[0])) {
+      setState(() {
+        _otaState = OtaState.hidden;
+      });
       return;
     }
     if (_otaState == OtaState.hidden) {

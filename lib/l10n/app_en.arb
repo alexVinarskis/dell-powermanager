@@ -51,6 +51,10 @@
     "settingsAlertResetSettingsTitle" : "Reset app's data and settings",
     "settingsAlertResetSettingsSubTitleTodo" : "Tap to erase",
     "settingsAlertResetSettingsSubTitleDone" : "Erased!",
+    "settingsAlertOtaEnabledTitle" : "Check for updates on startup",
+    "settingsAlertOtaEnabledSubTitleEnabled" : "Enabled",
+    "settingsAlertOtaEnabledSubTitleEnabledAlt" : "Enabled, checking...",
+    "settingsAlertOtaEnabledSubTitleDisabled" : "Disabled",
 
     "compatibilityCardTitle" : "Incompatible Platform",
     "compatibilityCardSubtitle" : "Non-Dell machine, or Unsupported Model",

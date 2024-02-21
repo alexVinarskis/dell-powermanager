@@ -1,18 +1,54 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dell_powermanager/classes/dependencies_manager.dart';
 import 'package:process_run/shell.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
 
+import '../classes/dependencies_manager.dart';
 import '../configs/constants.dart';
 import '../configs/environment.dart';
 
 class OtaManager {
   static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
+  static SharedPreferences? _prefs;
+  static const _prefNameOtaCheckEnabled = "otaCheckEnabled";
+
+  static final List<Function(List<String> latestOta)> _callbacksOtaChanged = [];
+  static void addCallbacksOtaChanged(var callback)  { _callbacksOtaChanged.add(callback); }
+  static void removeCallbacksOtaChanged(var callback) { _callbacksOtaChanged.remove(callback); }
+  static void _callOtaChanged(List<String> latestOta) {
+    var dubList = List.from(_callbacksOtaChanged);
+    for (var callback in dubList) {
+      callback(latestOta);
+    }
+  }
+
+  static Future<void> setOtaCheckEnabled(bool value) async {
+    _prefs ??= await SharedPreferences.getInstance();
+    bool previousValue = await isOtaCheckEnabled();
+    if (value != previousValue) {
+      await _prefs?.setBool(_prefNameOtaCheckEnabled, value);
+      checkLatestOta(otaCheckEnabled: value).then((latestOta) => _callOtaChanged(latestOta));
+    }
+  }
+  static Future<bool> isOtaCheckEnabled() async {
+    _prefs ??= await SharedPreferences.getInstance();
+    bool? isOtaCheckEnabled = _prefs?.getBool(_prefNameOtaCheckEnabled);
+    if (isOtaCheckEnabled == null) {
+      isOtaCheckEnabled = true;
+      await _prefs?.setBool(_prefNameOtaCheckEnabled, isOtaCheckEnabled);
+      checkLatestOta(otaCheckEnabled: isOtaCheckEnabled).then((latestOta) => _callOtaChanged(latestOta));
+    }
+    return isOtaCheckEnabled;
+  }
 
   // [tagname, releaseUrl, downloadUrl]
-  static Future<List<String>> checkLatestOta() async {
+  static Future<List<String>> checkLatestOta({bool? otaCheckEnabled}) async {
+    otaCheckEnabled ??= await isOtaCheckEnabled();
+    if (!otaCheckEnabled) {
+      return [];
+    }
     List<String> result = [];
     ProcessResult pr = (await _shell.run('${Platform.isLinux ? "" : "cmd /c"} ${Constants.githubApiRequest} ${Constants.githubApiReleases}'))[0];
     if (pr.exitCode != 0) {
