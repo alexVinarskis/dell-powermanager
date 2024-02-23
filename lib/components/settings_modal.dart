@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../classes/bios_protection_manager.dart';
 import '../classes/ota_manager.dart';
+import '../classes/sudoers_manager.dart';
 import '../configs/constants.dart';
 
 
@@ -288,6 +290,10 @@ class SettingsModal {
                         /* Erase saved preferences and cached variables */
                         SharedPreferences preferences = await SharedPreferences.getInstance();
                         await preferences.clear();
+                        /* Undo sudoers patch, if applied, do NOT await */
+                        if (Platform.isLinux) {
+                          SudoersManager.unpatchSudoers();
+                        }
                         /* Re-initialize settings modal, to reflect changes */
                         setState(() {
                           settingIntanceKey = UniqueKey();
