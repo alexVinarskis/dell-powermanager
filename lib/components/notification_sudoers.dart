@@ -41,53 +41,70 @@ class NotificationSudoersState extends State<NotificationSudoers> {
   void initState() {
     super.initState();
     ApiCCTK.addCallbacksDepsChanged(_handleApiStateUpdate);
+    SudoersManager.addCallbacksSudoersChanged(_handleSudoersChanged);
   }
 
   @override
   void dispose() {
     ApiCCTK.removeCallbacksDepsChanged(_handleApiStateUpdate);
+    SudoersManager.removeCallbacksSudoersChanged(_handleSudoersChanged);
     super.dispose();
   }
 
+  void _handleSudoersChanged() {
+    SudoersManager.verifySudo().then((runningSudo) => _handleSudoersState(runningSudo));
+  }
   void _handleApiStateUpdate(bool apiReady) {
     if (!apiReady) {
       return;
     }
-    SudoersManager.verifySudo().then((runningSudo) => _handleSudoersState(runningSudo));
+    ApiCCTK.removeCallbacksDepsChanged(_handleApiStateUpdate);
+    _handleSudoersChanged();
   }
 
   void _handleSudoersState(bool runningSudo) {
-    if (runningSudo) {
+    /* Was hidden already, ignore */
+    if (runningSudo && _sudoersState == SudoersState.hidden) {
       return;
     }
+    /* Freshly successfully patched, but not running sudo */
+    if (!runningSudo && _sudoersState == SudoersState.patchingSucceededNoRestart) {
+      setState(() {
+        _sudoersState = SudoersState.patchingSucceededRestart;
+      });
+      return;
+    }
+    /* Succeeded, and it was not hidden yet */
+    if (runningSudo) {
+      ApiCCTK.requestUpdate();
+      Timer(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            _sudoersState = SudoersState.hidden;
+          });
+        }
+      });
+      return;
+    }
+    /* Did not succeed, but reason is known, ignore */
+    if (_sudoersState == SudoersState.patchingSucceededRestart || _sudoersState == SudoersState.patchingFailed) {
+      return;
+    }
+    /* Did not succeed, reason is unknown */
     setState(() {
       _sudoersState = SudoersState.awaiting;
     });
-    ApiCCTK.removeCallbacksDepsChanged(_handleApiStateUpdate);
   }
 
   void _patchSudoers() async {
     setState(() {
       _sudoersState = SudoersState.patching;
     });
-    bool patched = await SudoersManager.patchSudoers();
+    final bool patched = await SudoersManager.patchSudoers();
     if (patched) {
       setState(() {
         _sudoersState = SudoersState.patchingSucceededNoRestart;
       });
-      bool runningSudo = await SudoersManager.verifySudo();
-      if (runningSudo) {
-        ApiCCTK.requestUpdate();
-        Timer(const Duration(seconds: 3), () {
-          setState(() {
-            _sudoersState = SudoersState.hidden;
-          });
-        });
-      } else {
-        setState(() {
-          _sudoersState = SudoersState.patchingSucceededRestart;
-        });
-      }
     } else {
       setState(() {
         _sudoersState = SudoersState.patchingFailed;
