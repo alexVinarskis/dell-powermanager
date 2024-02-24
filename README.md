@@ -16,15 +16,17 @@ Dell machines (XPS and Precision series laptops, potentially others) offer advan
 This app is a modern, Flutter based GUI on top of Dell Command | Configure CLI, with main goal to replicate behavior of Dell Power Manager for Linux users, but also does run on Windows.
 
 ## Features
-* Implement control via 'Dell Command | Configure CLI', installed separately or via integrated installer
-* Integrated dependencies downloader and installer
+* Implements control via 'Dell Command | Configure CLI' (CCTK)
 * Modern animated UI, supports Dark Mode
-* Short startup time, unline Dell's app
-* Packaged to .deb (Linux) .msi (Windows), with start menu shortcuts etc.
-* Integrated OTA via Github API
+* Short startup time, much faster than Dell's Windows app
 * Detects and handles unsupported modes on supported machines
 * Detects non-dell machines, shows error message
 * Support protected BIOS (System/Setup/Owner passwords), and secure key saving
+
+For Debian/Ubuntu based Linux and Windows, app is slightly more productized:
+* Integrated dependencies downloader and installer
+* Packaged to `.deb`/`.msi`, with start menu shortcuts etc.
+* Integrated OTA via Github API
 
 Control features:
 * Battery status overview (health etc.)
@@ -42,38 +44,49 @@ Potential future features to consider:
 ## Development status
 Application is currently in __public beta__ stage.
 
+* Dell's CCTK integrated (with automated installer for select OSs)
+* Update checks implemented (with OTA ia Github API for select OSs)
 * UI tested, build and packaging asserted by CI
-* Dell's CCTK integrated, as well as automated installer
 * Tested on multiple platforms, see [Compatibility](#compatibility)
 * Packaged to `.msi`, `.deb`, `.tar.xz`. Get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases/latest), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
-* OTA integrated via Github API
 
 ### Linux
 * Run from source via `flutter run`, build via `flutter build linux --release`
-* Package to `.deb` via `./package.sh`
+* Package to `.deb`, `.tar.xz` via `./package.sh`
 
 ### Windows
 * Run from source via `flutter run`, build via `flutter build windows --release`
 * Package to `.msi` via `.\package.bat`
 
-## Debugging
+## Contributing
+
+### Debugging
 
 By default, all logging is supressed. Export `POWERMANAGER_DEBUG=true` before running app from CLI to get logs.
-When opening an issue, kindly save and attach the log.
+Eg.: `export POWERMANAGER_DEBUG=true && ./dell-powermanager > file.log`. When opening an issue, kindly save and attach the log.
+
+### Translations
+App supports multiple languages via Flutter's localization library. If you want to contribute:
+* Check out [lib/l10n/*.arb](lib/l10n/app_en.arb) files.
+* Create similar file for you language, translate the strings.
+* Open PR with your changes.
 
 ## Compatibility
 Tested on the following devices:
+* Dell XPS 17 9700
+    * [Tumbleweed OpenSUSE, 6.7.5](https://github.com/alexVinarskis/dell-powermanager/issues/31)
 * Dell XPS 15 9530
     * Ubuntu 23.04, 6.5.0-060500-generic
     * Ubuntu 23.10, 6.5.0-060500-generic
     * Windows 11 Pro 22H2, 22621.2428
 * Dell XPS 15 9520
+    * [Arch, 6.7.5](https://github.com/alexVinarskis/dell-powermanager/issues/31)
     * Ubuntu 22.04, 6.2.0
     * Windows 11 Home 22H2, 22621.2428
 * Dell XPS 13 9310
     * Ubuntu 22.04.3, 6.2.0-26-generic
     * Windows 10 pro 22H2, 19045.3324
- * Dell Vostro 5401
+* Dell Vostro 5401
     * [Ubuntu 23.10](https://github.com/alexVinarskis/dell-powermanager/issues/23) 
 
 If you experienced problems with any of the above mentioned devices, please open [**Bug Report**](https://github.com/alexVinarskis/dell-powermanager/issues/new?template=bug_report.md&title=[BUG]). If you have tested it on other devices, please report [**Tested device**](https://github.com/alexVinarskis/dell-powermanager/issues).
