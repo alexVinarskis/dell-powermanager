@@ -17,7 +17,8 @@ APP_PATH="/opt/$PACKAGE"
 APP_DIR="./package$APP_PATH"
 DEB_DIR="./package/DEBIAN"
 VERSION=$(git describe --tags)+$(date '+%Y%m%d-%H%M%S')
-ARCHITECTURE="amd64"
+ARCHITECTURE=$(dpkg --print-architecture)
+BUILD_PATH="build/linux/$([[ $(dpkg --print-architecture) == 'arm64' ]] && echo 'arm64' || echo 'x64')/release/bundle"
 
 # Bake in app name and version tag
 sed -i "s|applicationName".*"|applicationName = '${NAME}';|g"                   ./lib/configs/constants.dart
@@ -32,16 +33,17 @@ mkdir -p ./package/etc/sudoers.d
 mkdir -p ./package/usr/local/share/applications/
 
 # Compile release app
+flutter clean
 flutter build linux --release
 
 # Build application archive
 (
-    cd build/linux/x64/release/bundle/
+    cd "$BUILD_PATH"
     tar -cJf "../../../../../${PACKAGE}_${VERSION}_${ARCHITECTURE}".tar.xz *
 )
 
 # Copy application files
-cp -r build/linux/x64/release/bundle/*      "$APP_DIR"
+cp -r "$BUILD_PATH"/*                       "$APP_DIR"
 cp ./resources/icon.png                     ./package/"$ICON_PATH"
 cp ./resources/dell-powermanager.desktop    ./package/usr/local/share/applications/
 
