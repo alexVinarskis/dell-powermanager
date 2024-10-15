@@ -58,7 +58,7 @@ class ApiBattery {
   static Future<bool> _query() async {
     // get response
     if (Platform.isLinux) {
-      ProcessResult pr = (await _shell.run(Battery.batteryInfoLinux.cmd))[0];
+      ProcessResult pr = (await _shell.run('''bash -c "${Battery.batteryInfoLinux.cmd}"'''))[0];
       if (!_processReponseLinux(pr)) {
         return false;
       }

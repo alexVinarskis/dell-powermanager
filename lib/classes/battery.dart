@@ -1,6 +1,6 @@
 class Battery {
   static const batteryInfoLinux = (
-    cmd: 'cat /sys/class/power_supply/AC/uevent /sys/class/power_supply/BAT0/uevent',
+    cmd: 'cat /sys/class/power_supply/*/uevent',
     args: (
       // parameters                  linux variable names                    sample values for XPS 9530
       powerSupplyPresent:           'POWER_SUPPLY_ONLINE',                // 1/0, whether AC is connected
