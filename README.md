@@ -73,9 +73,13 @@ App supports multiple languages via Flutter's localization library. If you want 
 
 ## Compatibility
 Tested on the following devices:
+* Dell Precision 7560
+    * [Fedora 41, 6.12.4](https://github.com/alexVinarskis/dell-powermanager/issues/47)
 * Dell XPS 17 9700
     * [Tumbleweed OpenSUSE, 6.7.5](https://github.com/alexVinarskis/dell-powermanager/issues/31)
-* Dell XPS 15 9530
+* Dell XPS 15 9560
+    * [Arch Linux, 6.11.6-arch1-1](https://github.com/alexVinarskis/dell-powermanager/issues/46)
+* Dell XPS 15 9530 (2023/Fiorano)
     * Ubuntu 23.04, 6.5.0-060500-generic
     * Ubuntu 23.10, 6.5.0-060500-generic
     * Windows 11 Pro 22H2, 22621.2428
