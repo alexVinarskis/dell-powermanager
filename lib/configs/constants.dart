@@ -14,11 +14,11 @@ class Constants {
   static const packagesWindows = ['Dell Command | Configure'];
 
   // [link, filename]
-  static const packagesLinuxUrlDell = ['https://dl.dell.com/FOLDER09518608M/1/command-configure_4.10.0-5.ubuntu22_amd64.tar.gz', 'command-configure_4.10.0-5.ubuntu22_amd64.tar.gz'];
+  static const packagesLinuxUrlDell = ['https://dl.dell.com/FOLDER10469726M/1/command-configure_4.11.0-6.ubuntu22_amd64.tar.gz', 'command-configure_4.11.0-6.ubuntu22_amd64.tar.gz'];
   static const packagesLinuxUrlLibssl = ['http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb', 'libssl1.1_1.1.1f-1ubuntu2_amd64.deb'];
   static const packagesLinuxDownloadPath = '/tmp/dell-powermanager';
 
-  static const packagesWindowsUrlDell = ['https://dl.dell.com/FOLDER09477091M/2/Dell-Command-Configure-Application_D6VXJ_WIN_4.10.0.607_A00_01.EXE', 'Dell-Command-Configure-Application_D6VXJ_WIN_4.10.0.607_A00_01.EXE'];
+  static const packagesWindowsUrlDell = ['https://dl.dell.com/FOLDER10718959M/1/Dell-Command-Configure-Application_5WCHH_WIN_4.11.0.70_A00.EXE', 'Dell-Command-Configure-Application_5WCHH_WIN_4.11.0.70_A00.EXE'];
   // CMD variables notation!
   // Windows may have either CMD or PowerShell as default shell. Revert to using CMD, as it is always there
   static const packagesWindowsDownloadPath ="%TEMP%\\dell-powermanager";
