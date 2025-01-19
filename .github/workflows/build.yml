@@ -37,9 +37,18 @@ jobs:
           path: '*.msi'
 
   build-linux:
-    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          arch:
+            - name: amd64
+              runner: ubuntu-24.04
+              image: anynameaaa/amd64_flutterenv:noble
+            - name: arm64
+              runner: ubuntu-24.04-arm
+              image: anynameaaa/arm64_flutterenv:noble
+    runs-on: ${{ matrix.arch.runner }}
     container:
-      image: anynameaaa/amd64_flutterenv:noble
+      image: ${{ matrix.arch.image }}
     needs: lint
     steps:
       - uses: actions/checkout@v4
