@@ -51,8 +51,14 @@ Application is currently in __public beta__ stage.
 * Packaged to `.msi`, `.deb`, `.tar.xz`. Get latest stable build at [Releases](https://github.com/alexVinarskis/dell-powermanager/releases/latest), or latest development build at [CI artifacts](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml?query=branch%3Amaster)
 
 ### Linux
+* Install dependencies:
+```
+sudo apt-get install -y ninja-build libgtk-3-dev libsqlite3-dev libsecret-1-0 libsecret-1-dev
+```
 * Run from source via `flutter run`, build via `flutter build linux --release`
 * Package to `.deb`, `.tar.xz` via `./package.sh`
+
+ATTENTION: do _not_ install flutter from `snap`, you native [installation instead](https://docs.flutter.dev/get-started/install/linux/desktop) - snap-provided flutter will fail to compile for this project due to [snap specific issues](https://github.com/juliansteenbakker/flutter_secure_storage/issues/676).
 
 ### Windows
 * Run from source via `flutter run`, build via `flutter build windows --release`
