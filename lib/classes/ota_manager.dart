@@ -87,7 +87,7 @@ class OtaManager {
           break;
         }
       } else {
-        String arch = (await _shell.run('dpkg --print-architecture'))[0].stdout.toString();
+        String arch = (await _shell.run('dpkg --print-architecture'))[0].stdout.toString().trim();
         if (asset[Constants.githubApiFieldBrowserDownloadUrl]
             .toString()
             .endsWith('.deb') &&
