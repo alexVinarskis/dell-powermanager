@@ -75,9 +75,27 @@ class OtaManager {
         await DependenciesManager.verifySupportsAutoinstall();
       }
       // For linux, only .deb is supported for autoinstall
-      if (DependenciesManager.supportsAutoinstall! && asset.containsKey(Constants.githubApiFieldBrowserDownloadUrl) && asset[Constants.githubApiFieldBrowserDownloadUrl].toString().endsWith(Platform.isLinux ? ".deb" : '.msi')) {
-        result.add(asset[Constants.githubApiFieldBrowserDownloadUrl]);
-        break;
+      if (!DependenciesManager.supportsAutoinstall! ||
+          !asset.containsKey(Constants.githubApiFieldBrowserDownloadUrl)) {
+        continue;
+      }
+      if (Platform.isWindows) {
+        if (asset[Constants.githubApiFieldBrowserDownloadUrl]
+            .toString()
+            .endsWith('.msi')) {
+          result.add(asset[Constants.githubApiFieldBrowserDownloadUrl]);
+          break;
+        }
+      } else {
+        String arch = (await _shell.run('dpkg --print-architecture'))[0].stdout.toString();
+        if (asset[Constants.githubApiFieldBrowserDownloadUrl]
+            .toString()
+            .endsWith('.deb') &&
+            asset[Constants.githubApiFieldBrowserDownloadUrl]
+            .toString().contains(arch) ) {
+          result.add(asset[Constants.githubApiFieldBrowserDownloadUrl]);
+          break;
+        }
       }
     }
     return result;
