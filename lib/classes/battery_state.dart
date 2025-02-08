@@ -26,10 +26,10 @@ class BatteryState {
   double?   batteryCurrentPower;        // W, charing/discharing power, depends on status
 
   BatteryState.fromLinuxMap(Map<String, dynamic> map) {
-    // populate data from Linux String
+    /* populate data from Linux String */
     powerSupplyPresent      = _setIfPresent(map[Battery.batteryInfoLinux.args.powerSupplyPresent],      (var x) => x == "1");
     batteryPresent          = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryPresent],          (var x) => x == "1");
-    batteryCharging         = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryStatus],           (var x) => x == "Charging");
+    batteryCharging         = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryStatus],           (var x) => x.toString().toLowerCase() == "charging");
     batteryType             = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryType],             (var x) => x);
     batteryTechnology       = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryTechnology],       (var x) => x);
     batteryCycleCount       = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryCycleCount],       (var x) => int.parse(x));
@@ -45,14 +45,22 @@ class BatteryState {
     batteryManufacturer     = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryManufacturer],     (var x) => x);
     batterySerialNumber     = _setIfPresent(map[Battery.batteryInfoLinux.args.batterySerialNumber],     (var x) => x);
 
+    batteryChargeNow      ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyNow], (var x) => double.parse(x) / 1000000);
+    batteryChargeFull     ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFull], (var x) => double.parse(x) / 1000000);
+    batteryPercentage     ??= _setIfPresent(batteryChargeNow.toString(), (var x) => (double.parse(x) / batteryChargeFull! * 100)).round();
+
     batteryHealth           = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryChargeFull],       (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoLinux.args.batteryChargeFullDesign]) * 100);
     batteryDesignCapacity   = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryChargeFullDesign], (var x) => double.parse(x) / 1000000 * double.parse(map[Battery.batteryInfoLinux.args.batteryVoltageMinDesign]) / 1000000);
     batteryCurrentPower     = _setIfPresent(map[Battery.batteryInfoLinux.args.batteryCurrentNow],       (var x) => double.parse(x) / 1000000 * double.parse(map[Battery.batteryInfoLinux.args.batteryVoltageNow]) / 1000000);
 
-    // Some battery types use different parameters, if previous methods failed, attempt to use alt parameters
+    /* Some battery types use different parameters, if previous methods failed, attempt to use alt parameters */
     batteryHealth         ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFull],       (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoLinux.args.batteryEnergyFullDesign]) * 100);
     batteryDesignCapacity ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryEnergyFullDesign], (var x) => double.parse(x) / 1000000);
     batteryCurrentPower   ??= _setIfPresent(map[Battery.batteryInfoLinux.args.batteryPowerNow], (var x) => double.parse(x) / 1000000);
+    batteryCurrentPower     = batteryCurrentPower?.abs();
+
+    /* Some platform don't correctly indicate that psu is present - deduct from battery status, assuming if its not 'discharging' then its plugged in */
+    powerSupplyPresent      = (powerSupplyPresent?? false) || !(map[Battery.batteryInfoLinux.args.batteryStatus]?.toString().toLowerCase().contains('discharging') ?? true);
 
     /* Cap certain values to 100% */
     batteryPercentage = _capIfPresent(batteryPercentage, 100);
