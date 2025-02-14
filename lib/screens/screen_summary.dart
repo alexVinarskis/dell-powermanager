@@ -115,7 +115,7 @@ class ScreenSummaryState extends State<ScreenSummary> {
               ),
               const SizedBox(width: 5,),
               SizedBox(
-                width: 20,
+                width: 26,
                 child: Text(unit, style: GoogleFonts.sourceCodePro().copyWith(fontSize: Theme.of(context).textTheme.titleMedium!.fontSize),),
               ),
             ],

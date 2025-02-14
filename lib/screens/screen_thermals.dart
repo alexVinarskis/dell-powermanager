@@ -121,7 +121,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
   Widget _getPowermodeContent(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15),
-      width: 260,
+      width: 300,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
