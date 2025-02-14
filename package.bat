@@ -27,6 +27,18 @@ set "VERSION_TAG=%VER_GIT%+%VER_DATE%"
 echo Version: %VERSION_TAG%
 echo Version short: %VERSION_SHORT%
 
+: Detect system architecture
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+    set ARCH=x64
+    set ARCH_NAME=amd64
+) else if "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
+    set ARCH=arm64
+    set ARCH_NAME=arm64
+) else (
+    echo Unsupported architecture: %PROCESSOR_ARCHITECTURE%
+    exit /b 1
+)
+
 : Bake in app name and version tag to Flutter app
 sed -i "s|applicationName".*"|applicationName = '%NAME%';|g"                ./lib/configs/constants.dart
 sed -i "s|applicationVersion".*"|applicationVersion = '%VERSION_TAG%';|g"   ./lib/configs/constants.dart
@@ -42,15 +54,15 @@ mkdir package
 
 cp resources/icon.ico package/
 cp resources/dell-powermanager.w* resources/dell-powermanager.sln package/
-cp -r build/windows/x64/runner/Release package/
+cp -r build/windows/%ARCH%/runner/Release package/
 
 : Bake in app name and version to .msi package
 sed -i "s|1.0.0.0|%VERSION_SHORT%.0|g"                                      ./package/dell-powermanager.wxs
 sed -i "s|dell-powermanager|%NAME%|g"                                       ./package/dell-powermanager.wxs
 
-cd package && dotnet build dell-powermanager.wixproj /p:Platform=x64 /clp:ErrorsOnly --configuration Release || exit 1
+cd package && dotnet build dell-powermanager.wixproj /p:Platform=%ARCH% /clp:ErrorsOnly --configuration Release || exit 1
 cd ..
 
-cp package/bin/x64/Release/dell-powermanager.msi ./%PACKAGE%_%VERSION_TAG%_amd64.msi || exit 1
-echo Success! Produced './%PACKAGE%_%VERSION_TAG%_amd64.msi'
+cp package/bin/%ARCH%/Release/dell-powermanager.msi ./%PACKAGE%_%VERSION_TAG%_%ARCH_NAME$%.msi || exit 1
+echo Success! Produced './%PACKAGE%_%VERSION_TAG%_%ARCH_NAME$%.msi'
 rmdir /s/q package
