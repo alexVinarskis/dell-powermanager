@@ -8,6 +8,9 @@ on:
     branches:
       - master
       - '*package*'
+  release:
+    types:
+      - created
 
 jobs:
   lint:
@@ -39,9 +42,15 @@ jobs:
           name: ${{ env.MSI_FILE }}
           path: '*.msi'
           if-no-files-found: error
+      - name: Publish to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.MSI_FILE }}
 
   build-linux:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
@@ -72,3 +81,10 @@ jobs:
           name: ${{ env.TAR_FILE }}
           path: '*.tar*'
           if-no-files-found: error
+      - name: Publish to Release
+        if: github.event_name == 'release'        
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ env.DEB_FILE }}
+            ${{ env.TAR_FILE }}
