@@ -85,7 +85,7 @@ App supports multiple languages via Flutter's localization library. If you want 
 ## Compatibility
 Tested on the following devices:
 * Dell Latitude 5400
-    * [Ubuntu 22.04](https://github.com/alexVinarskis/dell-powermanager/issues/56)
+    * [Ubuntu 24.04](https://github.com/alexVinarskis/dell-powermanager/issues/56)
 * Dell Precision 7560
     * [Fedora 41, 6.12.4](https://github.com/alexVinarskis/dell-powermanager/issues/47)
 * Dell XPS 17 9700
