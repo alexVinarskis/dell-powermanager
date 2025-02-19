@@ -1,15 +1,2 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.0">
-	<ItemGroup>
-		<HarvestDirectory Include="Release">
-			<ComponentGroupName>ProductComponents</ComponentGroupName>
-			<DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
-			<SuppressRootDirectory>true</SuppressRootDirectory>
-		</HarvestDirectory>
-
-		<BindPath Include="Release" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="WixToolset.Heat" Version="4.0.2" />
-	</ItemGroup>
+﻿<Project Sdk="WixToolset.Sdk/5.0.2">
 </Project>
