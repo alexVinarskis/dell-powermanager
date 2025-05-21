@@ -84,6 +84,8 @@ App supports multiple languages via Flutter's localization library. If you want 
 
 ## Compatibility
 Tested on the following devices:
+* Dell G3 15 3500
+    * [Windows 11 24H2 (OS Build 26100.4061)](https://github.com/alexVinarskis/dell-powermanager/issues/65)
 * Dell Latitude 5400
     * [Ubuntu 24.04](https://github.com/alexVinarskis/dell-powermanager/issues/56)
 * Dell Precision 7560
