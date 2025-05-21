@@ -6,7 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_acrylic
   flutter_localization
   flutter_secure_storage_windows
-  screen_retriever
+  screen_retriever_windows
   url_launcher_windows
   window_manager
 )

@@ -50,3 +50,6 @@ package/*
 *.zip
 *.tar.gz
 *.tar.xz
+
+# Build-time localizations
+lib/l10n/app_localizations*
