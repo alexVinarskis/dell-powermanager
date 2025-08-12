@@ -1,6 +1,6 @@
+import 'package:dell_powermanager/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:skeleton_text/skeleton_text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../classes/api_cctk.dart';
 import '../classes/api_powermode.dart';
 import '../classes/powermode_state.dart';
