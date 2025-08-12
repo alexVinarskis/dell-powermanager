@@ -1,5 +1,5 @@
+import 'package:dell_powermanager/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import '../components/menu_item.dart';
 import '../components/notification_bios_protection.dart';
 import '../components/notification_compatibility.dart';

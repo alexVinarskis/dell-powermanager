@@ -1,6 +1,6 @@
 import 'package:dell_powermanager/components/notification_item.dart';
+import 'package:dell_powermanager/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../classes/api_cctk.dart';
 import '../classes/cctk_state.dart';
 

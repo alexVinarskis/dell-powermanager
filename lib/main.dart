@@ -1,11 +1,11 @@
 import 'package:dell_powermanager/classes/api_powermode.dart';
 import 'package:dell_powermanager/classes/bios_protection_manager.dart';
 import 'package:dell_powermanager/configs/environment.dart';
+import 'package:dell_powermanager/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 import 'components/window_caption.dart' as window_caption;
 import 'dart:io' show Platform;
 import '../classes/api_battery.dart';
