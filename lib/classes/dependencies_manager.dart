@@ -44,7 +44,6 @@ class DependenciesManager {
       prs = (await _shell.run('''
         rm -rf ${Constants.packagesLinuxDownloadPath}/*     
         mkdir -p ${Constants.packagesLinuxDownloadPath}
-        curl -f -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlLibssl[0]} -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]}
         curl -f -L -A "User-Agent Mozilla" ${Constants.packagesLinuxUrlDell[0]}   -o ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]}
         '''));
     } else {
@@ -64,10 +63,9 @@ class DependenciesManager {
     bool result = true;
     List<ProcessResult> prs;
     if (Platform.isLinux) {
-      // Install libssl *first*, else after dell command cli is install, it may be queried, and may crash if libssl is missing
       prs = (await _shell.run('''
         tar -xf ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlDell[1]} -C ${Constants.packagesLinuxDownloadPath}
-        pkexec bash -c "ss=0; apt install -y -f ${Constants.packagesLinuxDownloadPath}/${Constants.packagesLinuxUrlLibssl[1]} || ((ss++)); apt install -y -f ${Constants.packagesLinuxDownloadPath}/*.deb || ((ss++)); rm -rf ${Constants.packagesLinuxDownloadPath}/* || ((ss++)); exit \$ss"
+        pkexec bash -c "ss=0; apt install -y -f ${Constants.packagesLinuxDownloadPath}/*.deb || ((ss++)); rm -rf ${Constants.packagesLinuxDownloadPath}/* || ((ss++)); exit \$ss"
         '''));
     } else {
       prs = (await _shell.run('''
