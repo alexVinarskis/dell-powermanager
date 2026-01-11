@@ -112,6 +112,8 @@ Tested on the following devices:
     * Windows 10 pro 22H2, 19045.3324
 * Dell Vostro 5401
     * [Ubuntu 23.10](https://github.com/alexVinarskis/dell-powermanager/issues/23) 
+* Dell Pro Max 14 Premium
+    * Ubuntu 25.10, 6.17.0-8-generic
 
 If you experienced problems with any of the above mentioned devices, please open [**Bug Report**](https://github.com/alexVinarskis/dell-powermanager/issues/new?template=bug_report.md&title=[BUG]). If you have tested it on other devices, please report [**Tested device**](https://github.com/alexVinarskis/dell-powermanager/issues).
 
