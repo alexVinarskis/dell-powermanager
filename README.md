@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=alexVinarskis&project=dell-powermanager&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 [![Build](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/alexVinarskis/dell-powermanager/actions/workflows/build.yml)
 [![GitHub release (with filter)](https://img.shields.io/github/v/release/alexVinarskis/dell-powermanager?label=Release)](https://github.com/alexVinarskis/dell-powermanager/releases/latest)
 ![GitHub all releases](https://img.shields.io/github/downloads/alexVinarskis/dell-powermanager/total?label=Downloads)
