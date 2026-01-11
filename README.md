@@ -97,6 +97,8 @@ Tested on the following devices:
 * Dell XPS 15 9530 (2023/Fiorano)
     * Ubuntu 23.04, 6.5.0-060500-generic
     * Ubuntu 23.10, 6.5.0-060500-generic
+    * [Ubuntu 25.04](https://github.com/alexVinarskis/dell-powermanager/issues/71)
+    * Ubuntu 25.10
     * Windows 11 Pro 22H2, 22621.2428
 * Dell XPS 15 9520
     * [Arch, 6.7.5](https://github.com/alexVinarskis/dell-powermanager/issues/31)
