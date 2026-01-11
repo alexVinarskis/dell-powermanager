@@ -10,12 +10,11 @@ class Constants {
 
   static const urlDellCommandConfigure = "https://www.dell.com/support/kbdoc/en-us/000178000/dell-command-configure";
 
-  static const packagesLinux = ['command-configure', 'srvadmin-hapi', 'libssl1.1'];
+  static const packagesLinux = ['command-configure', 'srvadmin-hapi', 'libssl3'];
   static const packagesWindows = ['Dell Command | Configure'];
 
   // [link, filename]
-  static const packagesLinuxUrlDell = ['https://dl.dell.com/FOLDER10469726M/1/command-configure_4.11.0-6.ubuntu22_amd64.tar.gz', 'command-configure_4.11.0-6.ubuntu22_amd64.tar.gz'];
-  static const packagesLinuxUrlLibssl = ['http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb', 'libssl1.1_1.1.1f-1ubuntu2_amd64.deb'];
+  static const packagesLinuxUrlDell = ['https://dl.dell.com/FOLDER12705845M/1/command-configure_5.1.0-6.ubuntu24_amd64.tar.gz', 'command-configure_5.1.0-6.ubuntu24_amd64.tar.gz'];
   static const packagesLinuxDownloadPath = '/tmp/dell-powermanager';
 
   static const packagesWindowsUrlDell = ['https://dl.dell.com/FOLDER10718959M/1/Dell-Command-Configure-Application_5WCHH_WIN_4.11.0.70_A00.EXE', 'Dell-Command-Configure-Application_5WCHH_WIN_4.11.0.70_A00.EXE'];
