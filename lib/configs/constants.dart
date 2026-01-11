@@ -3,7 +3,7 @@ class Constants {
   static const animationFastMs = 150;
 
   static const authorName = 'alexVinarskis';
-  static const applicationLegalese = '\u{a9} 2023 ${Constants.authorName}';
+  static const applicationLegalese = '\u{a9} 2025 ${Constants.authorName}';
   static const urlHomepage = 'https://github.com/${Constants.authorName}/dell-powermanager';
   static const urlBugReport = 'https://github.com/${Constants.authorName}/dell-powermanager/issues/new/choose';
   static const urlApi = 'https://api.github.com/repos/${Constants.authorName}/dell-powermanager';
