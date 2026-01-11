@@ -17,7 +17,7 @@ class Constants {
   static const packagesLinuxUrlDell = ['https://dl.dell.com/FOLDER12705845M/1/command-configure_5.1.0-6.ubuntu24_amd64.tar.gz', 'command-configure_5.1.0-6.ubuntu24_amd64.tar.gz'];
   static const packagesLinuxDownloadPath = '/tmp/dell-powermanager';
 
-  static const packagesWindowsUrlDell = ['https://dl.dell.com/FOLDER10718959M/1/Dell-Command-Configure-Application_5WCHH_WIN_4.11.0.70_A00.EXE', 'Dell-Command-Configure-Application_5WCHH_WIN_4.11.0.70_A00.EXE'];
+  static const packagesWindowsUrlDell = ['https://dl.dell.com/FOLDER13914977M/1/Dell-Command-Configure-Application_5RNW8_WIN64_5.2.1.16_A00.EXE', 'Dell-Command-Configure-Application_5RNW8_WIN64_5.2.1.16_A00.EXE'];
   // CMD variables notation!
   // Windows may have either CMD or PowerShell as default shell. Revert to using CMD, as it is always there
   static const packagesWindowsDownloadPath ="%TEMP%\\dell-powermanager";
