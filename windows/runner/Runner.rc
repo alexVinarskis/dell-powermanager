@@ -93,7 +93,7 @@ BEGIN
             VALUE "FileDescription", "dell_powermanager" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "dell_powermanager" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.vinalex. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.vinalex. All rights reserved." "\0"
             VALUE "OriginalFilename", "dell_powermanager.exe" "\0"
             VALUE "ProductName", "dell_powermanager" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
