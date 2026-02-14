@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../configs/constants.dart';
 import '../configs/environment.dart';
+import 'bios_backend.dart';
 import 'cctk.dart';
 import 'cctk_state.dart';
 
@@ -171,8 +172,9 @@ Install-Module -Name DellBIOSProvider -Scope CurrentUser -Force -AllowClobber -E
     int exitCode = pr.exitCode;
     final stderr = pr.stderr.toString();
     if (exitCode != 0 && stderr.isNotEmpty) {
-      if (stderr.contains('password', caseSensitive: false) && stderr.contains('required', caseSensitive: false)) exitCode = 65;
-      else if (stderr.contains('password', caseSensitive: false) && stderr.contains('invalid', caseSensitive: false)) exitCode = 67;
+      final stderrLower = stderr.toLowerCase();
+      if (stderrLower.contains('password') && stderrLower.contains('required')) exitCode = 65;
+      else if (stderrLower.contains('password') && stderrLower.contains('invalid')) exitCode = 67;
     }
     cctkState.exitStateWrite = ExitState(exitCode, cctkType, mode, requestId);
     cctkState.exitCodeRead = exitCode;
