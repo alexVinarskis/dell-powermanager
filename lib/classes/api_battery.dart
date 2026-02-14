@@ -100,16 +100,13 @@ class ApiBattery {
       return false;
     }
     Map<String, dynamic> map = {};
-    List<String> lines = pr.stdout.toString().split("\n");
-    for (String line in lines) {
-      if (line.isEmpty) {
-        continue;
-      }
-      List<String> parts = line.replaceAll("\r", "").split(": ");
-      if (parts.length != 2) {
-        continue;
-      }
-      map[parts[0].trim()] = parts[1].trim();
+    final lines = pr.stdout.toString().replaceAll("\r", "").split("\n");
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) continue;
+      final colonSpace = trimmed.indexOf(": ");
+      if (colonSpace <= 0) continue;
+      map[trimmed.substring(0, colonSpace).trim()] = trimmed.substring(colonSpace + 2).trim();
     }
     batteryState = BatteryState.fromWindowsMap(map);
     return true;

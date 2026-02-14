@@ -28,8 +28,8 @@ class Battery {
     ),
   );
   static const batteryInfoWindows = (
-    // As per https://superuser.com/a/995048
-    cmd: '''powershell -command "Get-WmiObject -Namespace 'root\\wmi' -Query 'select * from MSBatteryClass'" ''',
+    // As per https://superuser.com/a/995048. MSBatteryClass returns multiple subclasses (BatteryStatus, BatteryFullChargedCapacity, BatteryStaticData); we must iterate ALL instances and merge properties so we get RemainingCapacity, FullChargedCapacity, DesignedCapacity, PowerOnline, etc. Output "Name: Value" for reliable parsing.
+    cmd: r'''powershell -NoProfile -Command "Get-WmiObject -Namespace 'root\wmi' -Query 'select * from MSBatteryClass' | ForEach-Object { $_.PSObject.Properties | ForEach-Object { $_.Name + ': ' + $_.Value } }"''',
     args: (
       // paramters                   WmiObject name
       powerSupplyPresent:           'PowerOnline',                        // True/False
