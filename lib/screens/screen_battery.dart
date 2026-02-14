@@ -33,7 +33,6 @@ class ScreenBatteryState extends State<ScreenBattery> {
     _handleStateUpdate(ApiCCTK.cctkState);
     ApiCCTK.addQueryParameter(CCTK.primaryBattChargeCfg);
     ApiCCTK.addCallbacksStateChanged(_handleStateUpdate);
-    ApiCCTK.requestUpdate();
   }
   @override
   void dispose() {
@@ -53,12 +52,10 @@ class ScreenBatteryState extends State<ScreenBattery> {
       return;
     }
     setState(() {
-      setState(() {
-        _currentState = ParameterState(
-          mode: state.mode.split(':')[0],
-          supported: state.supported,
-        );
-      });
+      _currentState = ParameterState(
+        mode: state.mode.split(':')[0],
+        supported: state.supported,
+      );
       if (
         cctkState.exitStateWrite?.exitCode == CCTK.exitCodes.ok &&
         cctkState.exitStateWrite?.cctkType == CCTK.primaryBattChargeCfg.cmd &&

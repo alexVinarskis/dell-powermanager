@@ -39,7 +39,6 @@ class ScreenThermalsState extends State<ScreenThermals> {
     ApiPowermode.addQueryDuration(_refreshInternalPowermode);
     ApiCCTK.addQueryParameter(CCTK.thermalManagement);
     ApiCCTK.addCallbacksStateChanged(_handleCCTKStateUpdate);
-    ApiCCTK.requestUpdate();
   }
   @override
   void dispose() {

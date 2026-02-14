@@ -49,7 +49,9 @@ Future<void> main() async {
   final List<String> args = Platform.executableArguments;
   Environment.useCctk = args.contains(Constants.argUseCctk);
 
-  ApiCCTK(const Duration(milliseconds: 10000));
+  ApiCCTK.initPreload();
+  ApiCCTK.ensureBackend();
+  ApiCCTK(const Duration(seconds: 30));
   ApiBattery(const Duration(milliseconds: 10000));
   ApiPowermode(const Duration(milliseconds: 10000));
   runApp(const MyApp(title: title));

@@ -42,11 +42,27 @@ class ApiCCTK {
   static Shell _shell = Shell();
 
   static SharedPreferences? _prefs;
+  static Future<SharedPreferences>? _prefsFuture;
   static const _uuid = Uuid();
 
   static final CCTKState cctkState = CCTKState();
   static BiosBackend? _backend;
+  static Future<BiosBackend>? _backendCreation;
   static bool _dellBiosProviderAttemptedAndFailed = false;
+  /// When true, periodic timer skips starting a new _query() so a waiting request() can run sooner.
+  static bool _writePending = false;
+
+  /// Call from main() to preload SharedPreferences so the first _query() does not wait on getInstance().
+  static void initPreload() {
+    _prefsFuture ??= SharedPreferences.getInstance();
+  }
+
+  /// Call from main() (without awaiting) to pre-warm the backend so the first _query() skips ensureReady().
+  static Future<void> ensureBackend() async {
+    await BiosProtectionManager.secureReadPassword();
+    sourceEnvironment();
+    await _getOrCreateBackend();
+  }
 
   /// True when the Missing Dependencies warning should be shown: Linux or --use-cctk (CCTK required), or Windows default and DellBIOSProvider failed.
   static bool _shouldShowDepsWarning() =>
@@ -54,23 +70,27 @@ class ApiCCTK {
       Environment.useCctk ||
       (Platform.isWindows && !Environment.useCctk && _dellBiosProviderAttemptedAndFailed);
 
-  /// Selects backend: Linux or --use-cctk -> CctkBackend; Windows -> try DellBIOSProvider then CctkBackend.
-  static Future<BiosBackend> _getOrCreateBackend() async {
-    if (_backend != null) return _backend!;
+  static Future<BiosBackend> _createBackend() async {
     if (Platform.isLinux || Environment.useCctk) {
-      _backend = CctkBackend(_shell);
-      return _backend!;
+      return CctkBackend(_shell);
     }
     if (Platform.isWindows) {
       final dp = DellBiosProviderBackend(_shell);
       if (await dp.ensureReady()) {
-        _backend = dp;
-        return _backend!;
+        return dp;
       }
       _dellBiosProviderAttemptedAndFailed = true;
     }
-    _backend = CctkBackend(_shell);
-    return _backend!;
+    return CctkBackend(_shell);
+  }
+
+  /// Selects backend: Linux or --use-cctk -> CctkBackend; Windows -> try DellBIOSProvider then CctkBackend.
+  static Future<BiosBackend> _getOrCreateBackend() async {
+    if (_backend != null) return _backend!;
+    _backendCreation ??= _createBackend();
+    final b = await _backendCreation!;
+    _backend = b;
+    return b;
   }
 
   ApiCCTK(Duration refreshInternal) {
@@ -78,12 +98,18 @@ class ApiCCTK {
     BiosProtectionManager.secureReadPassword();
     _refreshInternal = refreshInternal;
     _query();
-    _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
+    _timer = Timer.periodic(_refreshInternal, (Timer t) {
+      if (_writePending) return;
+      _query();
+    });
   }
   static void requestUpdate() {
     _timer.cancel();
     _query();
-    _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
+    _timer = Timer.periodic(_refreshInternal, (Timer t) {
+      if (_writePending) return;
+      _query();
+    });
   }
   static void stop() {
     _timer.cancel();
@@ -146,7 +172,7 @@ class ApiCCTK {
         if (!(_apiReady ?? false)) return false;
       }
 
-      _prefs ??= await SharedPreferences.getInstance();
+      _prefs ??= await (_prefsFuture ?? SharedPreferences.getInstance());
       final success = await backend
           .query(List.from(_queryParameters), cctkState, _prefs)
           .timeout(Duration(seconds: Constants.backendQueryTimeoutSec), onTimeout: () => throw TimeoutException('query'));
@@ -172,6 +198,7 @@ class ApiCCTK {
   }
 
   static Future<bool> request(String cctkType, String mode, {String? requestCode}) async {
+    _writePending = true;
     await _cctkAcquire();
     try {
       final backend = await _getOrCreateBackend();
@@ -200,6 +227,8 @@ class ApiCCTK {
       return false;
     } finally {
       _cctkReleaseMutex();
+      _writePending = false;
+      _query();
     }
   }
 }

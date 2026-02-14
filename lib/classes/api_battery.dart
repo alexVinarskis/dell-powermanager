@@ -10,17 +10,21 @@ class ApiBattery {
   static final List<Duration> _additionalRefreshInternals = [];
   static void addQueryDuration(Duration interval) {
     _additionalRefreshInternals.add(interval);
-    List durations = {..._additionalRefreshInternals, _initialRefreshInternal}.toList();
-    durations.sort(((a, b) => a.compareTo(b)));
-    _refreshInternal = durations[0];
-    requestUpdate();
+    final durations = <Duration>[..._additionalRefreshInternals, _initialRefreshInternal]..sort((a, b) => a.compareTo(b));
+    final newMin = durations.first;
+    if (newMin != _refreshInternal) {
+      _refreshInternal = newMin;
+      requestUpdate();
+    }
   }
   static void removeQueryDuration(Duration interval) {
     _additionalRefreshInternals.remove(interval);
-    List durations = {..._additionalRefreshInternals, _initialRefreshInternal}.toList();
-    durations.sort(((a, b) => a.compareTo(b)));
-    _refreshInternal = durations[0];
-    requestUpdate();
+    final durations = <Duration>[..._additionalRefreshInternals, _initialRefreshInternal]..sort((a, b) => a.compareTo(b));
+    final newMin = durations.first;
+    if (newMin != _refreshInternal) {
+      _refreshInternal = newMin;
+      requestUpdate();
+    }
   }
 
   static final List<Function(BatteryState batteryState)> _callbacksStateChanged = [];
