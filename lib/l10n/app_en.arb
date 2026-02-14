@@ -154,6 +154,7 @@
 
     "cctkModeTitleUnsupported" : "Not supported on this platform",
     "cctkSummaryTitleUnsupported" : "not supported",
+    "settingApplyFailedSnackbar" : "Setting could not be applied. Try again or check BIOS password.",
 
     "powermodeTitle" : "OS Power Plan",
     "powermodePowersaving" : "Power Saving",

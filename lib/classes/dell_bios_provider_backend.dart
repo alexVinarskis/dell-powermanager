@@ -144,9 +144,19 @@ Install-Module -Name DellBIOSProvider -Scope CurrentUser -Force -AllowClobber -E
     } else if (cctkType == 'PrimaryBattChargeCfg') {
       if (mode.startsWith('Custom:') && mode.contains(':')) {
         final parts = mode.split(':');
+        String? start;
+        String? stop;
         if (parts.length >= 3) {
-          final start = parts[1];
-          final stop = parts[2];
+          start = parts[1];
+          stop = parts[2];
+        } else if (parts.length == 2 && parts[1].contains('-')) {
+          final range = parts[1].split('-');
+          if (range.length >= 2) {
+            start = range[0].trim();
+            stop = range[1].trim();
+          }
+        }
+        if (start != null && stop != null) {
           script = "Import-Module DellBIOSProvider; Set-Item \"DellSmbios:\\*\\PrimaryBattChargeCfg\" -Value 'Custom'";
           if (Environment.biosPwd != null) script += " -Password \$env:${Constants.varnameBiosPwd}";
           script += "; Set-Item \"DellSmbios:\\*\\CustomChargeStart\" -Value $start";

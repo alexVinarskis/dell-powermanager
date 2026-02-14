@@ -59,13 +59,29 @@ class CctkBackend implements BiosBackend {
     return _processResponse(await _runCctk(arg), cctkState);
   }
 
+  /// Converts UI/backend format "Custom:50:85" to CCTK format "Custom:50-85".
+  static String _modeToCctkFormat(String cctkType, String mode) {
+    if (cctkType != 'PrimaryBattChargeCfg' || !mode.startsWith('Custom:') || !mode.contains(':')) {
+      return mode;
+    }
+    final parts = mode.split(':');
+    if (parts.length >= 3) {
+      return 'Custom:${parts[1]}-${parts[2]}';
+    }
+    if (parts.length == 2 && parts[1].contains('-')) {
+      return mode; // already CCTK format
+    }
+    return mode;
+  }
+
   @override
   Future<bool> request(String cctkType, String mode, CCTKState cctkState, {String? requestCode}) async {
+    final cctkMode = _modeToCctkFormat(cctkType, mode);
     late String cmd;
     if (Platform.isLinux) {
-      cmd = '--$cctkType=$mode${Environment.biosPwd == null ? "" : " --ValSetupPwd=\$${Constants.varnameBiosPwd} --ValSysPwd=\$${Constants.varnameBiosPwd}"}';
+      cmd = '--$cctkType=$cctkMode${Environment.biosPwd == null ? "" : " --ValSetupPwd=\$${Constants.varnameBiosPwd} --ValSysPwd=\$${Constants.varnameBiosPwd}"}';
     } else {
-      cmd = '--$cctkType=$mode${Environment.biosPwd == null ? "" : " --ValSetupPwd=%${Constants.varnameBiosPwd}% --ValSysPwd=%${Constants.varnameBiosPwd}%"}';
+      cmd = '--$cctkType=$cctkMode${Environment.biosPwd == null ? "" : " --ValSetupPwd=%${Constants.varnameBiosPwd}% --ValSysPwd=%${Constants.varnameBiosPwd}%"}';
     }
     final pr = await _runCctk(cmd);
     final success = _processResponse(pr, cctkState);

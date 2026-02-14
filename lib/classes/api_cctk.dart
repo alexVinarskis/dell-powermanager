@@ -37,7 +37,8 @@ class ApiCCTK {
   static late Duration _refreshInternal;
   static late Timer _timer;
   static bool? _apiReady;
-  static bool _cctkMutexLocked = false;
+  static bool _cctkLockHeld = false;
+  static final List<Completer<void>> _cctkWaitQueue = [];
   static Shell _shell = Shell();
 
   static SharedPreferences? _prefs;
@@ -105,49 +106,94 @@ class ApiCCTK {
     for (final callback in dubList) callback(state);
   }
 
-  static void _cctkLock() { _cctkMutexLocked = true; }
-  static void _cctkRelease() { _cctkMutexLocked = false; }
-  static bool _isCctkLocked() => _cctkMutexLocked;
+  /// Acquire the backend mutex (waits if _query() or another request() is running).
+  /// Uses a queue of completers so only one caller holds the lock at a time; no race when multiple callers await concurrently.
+  static Future<void> _cctkAcquire() async {
+    final completer = Completer<void>();
+    _cctkWaitQueue.add(completer);
+    if (!_cctkLockHeld) {
+      _cctkLockHeld = true;
+      _cctkWaitQueue.remove(completer);
+      return;
+    }
+    await completer.future;
+  }
+
+  /// Release the backend mutex; unblocks the next waiter if any.
+  static void _cctkReleaseMutex() {
+    if (_cctkWaitQueue.isNotEmpty) {
+      _cctkWaitQueue.removeAt(0).complete();
+    } else {
+      _cctkLockHeld = false;
+    }
+  }
 
   static Future<bool> _query() async {
-    if (_isCctkLocked() || cctkState.cctkCompatible == false) return false;
+    if (cctkState.cctkCompatible == false) return false;
 
-    final backend = await _getOrCreateBackend();
-    if (!(_apiReady ?? true)) {
-      _apiReady = await backend.ensureReady();
-      if (_apiReady!) {
-        _callDepsChanged(true);
-      } else if (_shouldShowDepsWarning()) {
-        _callDepsChanged(false);
+    await _cctkAcquire();
+    try {
+      final backend = await _getOrCreateBackend();
+      if (!(_apiReady ?? true)) {
+        _apiReady = await backend.ensureReady();
+        if (_apiReady!) {
+          _callDepsChanged(true);
+        } else if (_shouldShowDepsWarning()) {
+          _callDepsChanged(false);
+        }
+        if (!(_apiReady ?? false)) return false;
       }
-      if (!(_apiReady ?? false)) return false;
-    }
 
-    _cctkLock();
-    _prefs ??= await SharedPreferences.getInstance();
-    final success = await backend.query(List.from(_queryParameters), cctkState, _prefs);
-    _cctkRelease();
-    if (!success) {
+      _prefs ??= await SharedPreferences.getInstance();
+      final success = await backend.query(List.from(_queryParameters), cctkState, _prefs);
+      if (!success) {
+        // Mark not ready so next _query() re-runs ensureReady() (recovery from transient backend/BIOS failure).
+        _apiReady = false;
+        if (_shouldShowDepsWarning()) _callDepsChanged(false);
+      } else {
+        _apiReady = true;
+        _callDepsChanged(true);
+      }
+      _callStateChanged(cctkState);
+      return success;
+    } catch (_) {
+      // Transient failure (e.g. timeout, IO): mark not ready so next _query() re-runs ensureReady().
       _apiReady = false;
       if (_shouldShowDepsWarning()) _callDepsChanged(false);
-    } else {
-      _apiReady = true;
-      _callDepsChanged(true);
+      _callStateChanged(cctkState);
+      return false;
+    } finally {
+      _cctkReleaseMutex();
     }
-    _callStateChanged(cctkState);
-    return success;
   }
 
   static Future<bool> request(String cctkType, String mode, {String? requestCode}) async {
-    final backend = await _getOrCreateBackend();
-    final success = await backend.request(cctkType, mode, cctkState, requestCode: requestCode ?? _uuid.v4());
-    if (!success) {
+    await _cctkAcquire();
+    try {
+      final backend = await _getOrCreateBackend();
+      final success = await backend.request(cctkType, mode, cctkState, requestCode: requestCode ?? _uuid.v4());
+      if (!success) {
+        _apiReady = false;
+        if (_shouldShowDepsWarning()) _callDepsChanged(false);
+      } else {
+        _callDepsChanged(true);
+        // Reflect written value in state so UI stays in sync without waiting for next _query().
+        for (final param in cctkState.parameters.keys) {
+          if (param.cmd == cctkType) {
+            cctkState.parameters[param]?.mode = mode;
+            break;
+          }
+        }
+      }
+      _callStateChanged(cctkState);
+      return success;
+    } catch (_) {
       _apiReady = false;
       if (_shouldShowDepsWarning()) _callDepsChanged(false);
-    } else {
-      _callDepsChanged(true);
+      _callStateChanged(cctkState);
+      return false;
+    } finally {
+      _cctkReleaseMutex();
     }
-    _callStateChanged(cctkState);
-    return success;
   }
 }

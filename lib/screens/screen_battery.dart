@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:dell_powermanager/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../classes/api_cctk.dart';
 import '../components/mode_item.dart';
@@ -21,6 +22,7 @@ class ScreenBattery extends StatefulWidget {
 class ScreenBatteryState extends State<ScreenBattery> {
   ParameterState? _currentState;
   bool currentlyLoading = false;
+  bool _requestInProgress = false;
   bool _failedToSwitch = false;
   RangeValues customChargeRange = const RangeValues(0.50, 0.85);
   bool customChargeRangeChanging = false;
@@ -66,9 +68,26 @@ class ScreenBatteryState extends State<ScreenBattery> {
       }
     });
     if (state.mode.contains(CCTK.primaryBattChargeCfg.modes.custom) && state.mode.split(':').length >= 2) {
-      // custom battery mode state has paremeters, parse them
-      double startValue = double.parse(state.mode.split(':')[1].split("-")[0])/100;
-      double stopValue  = double.parse(state.mode.split(':')[1].split("-")[1])/100;
+      // custom battery mode state has parameters; accept "Custom:50:85" (backend) or "Custom:50-85" (legacy/CCTK)
+      final parts = state.mode.split(':');
+      String startStr;
+      String stopStr;
+      if (parts.length >= 3) {
+        startStr = parts[1];
+        stopStr = parts[2];
+      } else {
+        final rangePart = parts[1];
+        if (rangePart.contains('-')) {
+          final range = rangePart.split('-');
+          startStr = range[0];
+          stopStr = range.length >= 2 ? range[1] : range[0];
+        } else {
+          startStr = rangePart;
+          stopStr = rangePart;
+        }
+      }
+      final startValue = double.parse(startStr) / 100;
+      final stopValue = double.parse(stopStr) / 100;
       setState(() {
         customChargeRange = RangeValues(startValue, stopValue);
       });
@@ -90,9 +109,10 @@ class ScreenBatteryState extends State<ScreenBattery> {
   }
 
   void _handlePress(mode) async {
-    if (currentlyLoading) {
+    if (_requestInProgress || currentlyLoading) {
       return;
     }
+    _requestInProgress = true;
     String previousMode = _currentState!.mode;
     setState(() {
       _currentState?.mode = mode;
@@ -101,7 +121,7 @@ class ScreenBatteryState extends State<ScreenBattery> {
     if (mode != CCTK.primaryBattChargeCfg.modes.custom) {
       _failedToSwitch = !(await _changeMode(mode));
     } else {
-      _failedToSwitch = !(await _changeMode("$mode:${(customChargeRange.start*100).round()}-${(customChargeRange.end*100).round()}"));
+      _failedToSwitch = !(await _changeMode("$mode:${(customChargeRange.start*100).round()}:${(customChargeRange.end*100).round()}"));
     }
     if (mounted) {
       setState(() {
@@ -110,7 +130,13 @@ class ScreenBatteryState extends State<ScreenBattery> {
         }
         currentlyLoading = false;
       });
+      if (_failedToSwitch) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(S.of(context)!.settingApplyFailedSnackbar)),
+        );
+      }
     }
+    _requestInProgress = false;
   }
 
   Widget _getPercentageIndicator(String value, mode) {
