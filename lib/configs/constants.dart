@@ -41,4 +41,11 @@ class Constants {
 
   /// Launch argument to force Dell Command | Configure (CCTK) instead of DellBIOSProvider on Windows.
   static const argUseCctk = '--use-cctk';
+
+  /// Timeout in seconds for a single BIOS read (query). Prevents UI from hanging if backend hangs.
+  static const backendQueryTimeoutSec = 90;
+  /// Timeout in seconds for a single BIOS write (request). Prevents "loading forever" if PowerShell/CCTK hangs.
+  static const backendRequestTimeoutSec = 45;
+  /// Timeout for backend ensureReady (e.g. first-time DellBIOSProvider install).
+  static const backendEnsureReadyTimeoutSec = 120;
 }

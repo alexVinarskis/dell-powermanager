@@ -135,7 +135,9 @@ class ApiCCTK {
     try {
       final backend = await _getOrCreateBackend();
       if (!(_apiReady ?? true)) {
-        _apiReady = await backend.ensureReady();
+        _apiReady = await backend
+            .ensureReady()
+            .timeout(Duration(seconds: Constants.backendEnsureReadyTimeoutSec), onTimeout: () => throw TimeoutException('ensureReady'));
         if (_apiReady!) {
           _callDepsChanged(true);
         } else if (_shouldShowDepsWarning()) {
@@ -145,7 +147,9 @@ class ApiCCTK {
       }
 
       _prefs ??= await SharedPreferences.getInstance();
-      final success = await backend.query(List.from(_queryParameters), cctkState, _prefs);
+      final success = await backend
+          .query(List.from(_queryParameters), cctkState, _prefs)
+          .timeout(Duration(seconds: Constants.backendQueryTimeoutSec), onTimeout: () => throw TimeoutException('query'));
       if (!success) {
         // Mark not ready so next _query() re-runs ensureReady() (recovery from transient backend/BIOS failure).
         _apiReady = false;
@@ -171,7 +175,9 @@ class ApiCCTK {
     await _cctkAcquire();
     try {
       final backend = await _getOrCreateBackend();
-      final success = await backend.request(cctkType, mode, cctkState, requestCode: requestCode ?? _uuid.v4());
+      final success = await backend
+          .request(cctkType, mode, cctkState, requestCode: requestCode ?? _uuid.v4())
+          .timeout(Duration(seconds: Constants.backendRequestTimeoutSec), onTimeout: () => throw TimeoutException('request'));
       if (!success) {
         _apiReady = false;
         if (_shouldShowDepsWarning()) _callDepsChanged(false);
