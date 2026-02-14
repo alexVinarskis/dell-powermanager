@@ -46,6 +46,8 @@ Future<void> main() async {
   if ((Platform.environment[Constants.varnameBiosPwd]?? "").isNotEmpty) {
     BiosProtectionManager.loadPassword(Platform.environment[Constants.varnameBiosPwd]!);
   }
+  final List<String> args = Platform.executableArguments;
+  Environment.useCctk = args.contains(Constants.argUseCctk);
 
   ApiCCTK(const Duration(milliseconds: 10000));
   ApiBattery(const Duration(milliseconds: 10000));

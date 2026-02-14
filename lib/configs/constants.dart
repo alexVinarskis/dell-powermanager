@@ -38,4 +38,7 @@ class Constants {
 
   static const varnameBiosPwd = 'BIOS_PWD';
   static const varnamePowermanagerDebug = 'POWERMANAGER_DEBUG';
+
+  /// Launch argument to force Dell Command | Configure (CCTK) instead of DellBIOSProvider on Windows.
+  static const argUseCctk = '--use-cctk';
 }
