@@ -64,14 +64,13 @@ class ApiCCTK {
     await _getOrCreateBackend();
   }
 
-  /// True when the Missing Dependencies warning should be shown: Linux or --use-cctk (CCTK required), or Windows default and DellBIOSProvider failed.
+  /// True when the Missing Dependencies warning should be shown: Linux (CCTK required) or Windows and DellBIOSProvider failed.
   static bool _shouldShowDepsWarning() =>
       Platform.isLinux ||
-      Environment.useCctk ||
-      (Platform.isWindows && !Environment.useCctk && _dellBiosProviderAttemptedAndFailed);
+      (Platform.isWindows && _dellBiosProviderAttemptedAndFailed);
 
   static Future<BiosBackend> _createBackend() async {
-    if (Platform.isLinux || Environment.useCctk) {
+    if (Platform.isLinux) {
       return CctkBackend(_shell);
     }
     if (Platform.isWindows) {
@@ -80,11 +79,12 @@ class ApiCCTK {
         return dp;
       }
       _dellBiosProviderAttemptedAndFailed = true;
+      return dp;
     }
     return CctkBackend(_shell);
   }
 
-  /// Selects backend: Linux or --use-cctk -> CctkBackend; Windows -> try DellBIOSProvider then CctkBackend.
+  /// Selects backend: Linux -> CctkBackend; Windows -> DellBiosProviderBackend only (no CCTK fallback).
   static Future<BiosBackend> _getOrCreateBackend() async {
     if (_backend != null) return _backend!;
     _backendCreation ??= _createBackend();

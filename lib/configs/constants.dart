@@ -9,6 +9,7 @@ class Constants {
   static const urlApi = 'https://api.github.com/repos/${Constants.authorName}/dell-powermanager';
 
   static const urlDellCommandConfigure = "https://www.dell.com/support/kbdoc/en-us/000178000/dell-command-configure";
+  static const urlDellBiosProvider = "https://www.dell.com/support/manuals/en-us/command-powershell-provider";
 
   static const packagesLinux = ['command-configure', 'srvadmin-hapi', 'libssl3'];
   static const packagesWindows = ['Dell Command | Configure'];
@@ -38,9 +39,6 @@ class Constants {
 
   static const varnameBiosPwd = 'BIOS_PWD';
   static const varnamePowermanagerDebug = 'POWERMANAGER_DEBUG';
-
-  /// Launch argument to force Dell Command | Configure (CCTK) instead of DellBIOSProvider on Windows.
-  static const argUseCctk = '--use-cctk';
 
   /// Timeout in seconds for a single BIOS read (query). Prevents UI from hanging if backend hangs.
   static const backendQueryTimeoutSec = 45;

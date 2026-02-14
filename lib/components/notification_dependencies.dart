@@ -98,6 +98,39 @@ class NotificationDependenciesState extends State<NotificationDependencies> {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
+        if (Platform.isWindows) {
+          return AlertDialog(
+            title: Text(S.of(context)!.dependenciesCardTitle),
+            content: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: S.of(context)!.dependenciesAlertWindowsP1,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const TextSpan(text: '\n\n'),
+                  TextSpan(
+                    text: S.of(context)!.dependenciesAlertWindowsP2,
+                    style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                icon: const Icon(Icons.link_rounded),
+                label: Text(S.of(context)!.dependenciesAlertButtonOpenGuide),
+                onPressed: () {
+                  launchUrl(Uri.parse(Constants.urlDellBiosProvider));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
         return AlertDialog(
           title: Text(S.of(context)!.dependenciesCardTitle),
           content: RichText(
@@ -112,7 +145,7 @@ class NotificationDependenciesState extends State<NotificationDependencies> {
                   S.of(context)!.dependenciesAlertP3,
                   style: Theme.of(context).textTheme.bodyMedium
                 ),
-                TextSpan(text: Platform.isLinux ? Constants.packagesLinux.join('\n') : Constants.packagesWindows.join('\n'), style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!)),
+                TextSpan(text: Constants.packagesLinux.join('\n'), style: GoogleFonts.sourceCodePro().copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!)),
                 TextSpan(text:
                   '\n\n',
                   style: Theme.of(context).textTheme.bodyMedium

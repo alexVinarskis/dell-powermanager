@@ -28,9 +28,11 @@ class SudoersManager {
       pr = (await _shell.run('''bash -c "export PATH="${Constants.apiPathLinux}:\$PATH" && sudo -n \$(which cctk) 2>/dev/null"'''))[0];
       runningSudo = pr.exitCode != 1;
     } else {
-      // (Windows) Verify that app is running as admin
-      pr = (await _shell.run('''cmd /c cmd /c "${Constants.apiPathWindows}"'''))[0];
-      runningSudo = !((pr.stderr.toString() + pr.stdout.toString()).contains("admin/root"));
+      // (Windows) Verify that app is running as administrator (no CCTK dependency)
+      pr = (await _shell.run(
+          r'''powershell -NoProfile -Command "([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)"'''))[0];
+      runningSudo = pr.exitCode == 0 &&
+          pr.stdout.toString().trim().toLowerCase() == 'true';
     }
     return runningSudo!;
   }

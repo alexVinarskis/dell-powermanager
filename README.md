@@ -18,12 +18,12 @@ Dell machines (XPS and Precision series laptops, potentially others) offer advan
 * [Dell Command | PowerShell Provider](https://www.dell.com/support/manuals/en-us/command-powershell-provider) (DellBIOSProvider), Windows only — PowerShell module for the same BIOS attributes; this app can use it on Windows and will auto-install it when missing.
 * [Dell Power Manager](https://www.dell.com/support/contents/en-au/article/product-support/self-support-knowledgebase/software-and-downloads/dell-power-manager) GUI, available for Windows only. On top of that, it is ridiculously slow to start, and (subjectively) ugly.
 
-This app is a modern, Flutter-based GUI for BIOS power and thermal settings. On **Windows**, it uses the **DellBIOSProvider** PowerShell module by default (with optional auto-install when missing), or **Dell Command | Configure (CCTK)** if you pass `--use-cctk`. On **Linux**, it uses **Dell Command | Configure (CCTK)** only. The main goal is to replicate the behavior of Dell Power Manager for Linux users, while also running on Windows with a lighter dependency when using DellBIOSProvider.
+This app is a modern, Flutter-based GUI for BIOS power and thermal settings. On **Windows**, it uses the **DellBIOSProvider** PowerShell module only (auto-installed when missing). On **Linux**, it uses **Dell Command | Configure (CCTK)** only. The main goal is to replicate the behavior of Dell Power Manager for Linux users, while also running on Windows with a lighter dependency via DellBIOSProvider.
 
 ## Features
 
-* **Windows:** BIOS settings controlled via **DellBIOSProvider** (PowerShell module; default, auto-installed when missing) or **Dell Command | Configure (CCTK)**. Pass `--use-cctk` at launch to use CCTK instead of DellBIOSProvider.
-* **Linux:** BIOS settings controlled via **Dell Command | Configure (CCTK)** only (DellBIOSProvider is a Windows-only PowerShell module from Dell, so CCTK is the sole option on Linux)
+* **Windows:** BIOS settings controlled via **DellBIOSProvider** (PowerShell module; auto-installed when missing).
+* **Linux:** BIOS settings controlled via **Dell Command | Configure (CCTK)** only.
 * Modern animated UI, supports Dark Mode
 * Short startup time, much faster than Dell's Windows app
 * Detects and handles unsupported modes on supported machines
@@ -32,7 +32,7 @@ This app is a modern, Flutter-based GUI for BIOS power and thermal settings. On 
 
 For Debian/Ubuntu based Linux and Windows, app is slightly more productized:
 
-* Integrated dependencies downloader and installer (on Windows, DellBIOSProvider is auto-installed when missing; use `--use-cctk` to rely on Dell Command | Configure instead)
+* Integrated dependencies downloader and installer (on Windows, DellBIOSProvider is auto-installed when missing; on Linux, CCTK can be downloaded and installed from the app)
 * Packaged to `.deb`/`.msi`, with start menu shortcuts etc.
 * Integrated OTA via Github API
 
@@ -57,7 +57,7 @@ Potential future features to consider:
 
 Application is currently in **stable, maintained** state.
 
-* **Windows:** DellBIOSProvider powershell module used by default (auto-installed when missing); use `--use-cctk` to switch to Dell Command | Configure (CCTK)
+* **Windows:** DellBIOSProvider PowerShell module only (auto-installed when missing)
 * **Linux:** Dell Command | Configure (CCTK) integrated (with automated installer for select OSs)
 * Update checks implemented (with OTA ia Github API for select OSs)
 * UI tested, build and packaging asserted by CI
@@ -89,10 +89,6 @@ ATTENTION: do _not_ install flutter from `snap`, you native [installation instea
 * Package to `.msi` via `.\package.bat`
 
 ## Contributing
-
-### Launch arguments (Windows)
-
-* **`--use-cctk`** — Force use of **Dell Command | Configure (CCTK)** instead of DellBIOSProvider. Use this if CCTK is already installed and you prefer it, or if DellBIOSProvider cannot be used in your environment. On Linux this switch has no effect (CCTK is always used).
 
 ### Debugging
 
