@@ -45,6 +45,13 @@ class ApiCCTK {
 
   static final CCTKState cctkState = CCTKState();
   static BiosBackend? _backend;
+  static bool _dellBiosProviderAttemptedAndFailed = false;
+
+  /// True when the Missing Dependencies warning should be shown: Linux or --use-cctk (CCTK required), or Windows default and DellBIOSProvider failed.
+  static bool _shouldShowDepsWarning() =>
+      Platform.isLinux ||
+      Environment.useCctk ||
+      (Platform.isWindows && !Environment.useCctk && _dellBiosProviderAttemptedAndFailed);
 
   /// Selects backend: Linux or --use-cctk -> CctkBackend; Windows -> try DellBIOSProvider then CctkBackend.
   static Future<BiosBackend> _getOrCreateBackend() async {
@@ -59,6 +66,7 @@ class ApiCCTK {
         _backend = dp;
         return _backend!;
       }
+      _dellBiosProviderAttemptedAndFailed = true;
     }
     _backend = CctkBackend(_shell);
     return _backend!;
@@ -107,7 +115,11 @@ class ApiCCTK {
     final backend = await _getOrCreateBackend();
     if (!(_apiReady ?? true)) {
       _apiReady = await backend.ensureReady();
-      _callDepsChanged(_apiReady!);
+      if (_apiReady!) {
+        _callDepsChanged(true);
+      } else if (_shouldShowDepsWarning()) {
+        _callDepsChanged(false);
+      }
       if (!(_apiReady ?? false)) return false;
     }
 
@@ -117,9 +129,10 @@ class ApiCCTK {
     _cctkRelease();
     if (!success) {
       _apiReady = false;
-      _callDepsChanged(false);
+      if (_shouldShowDepsWarning()) _callDepsChanged(false);
     } else {
       _apiReady = true;
+      _callDepsChanged(true);
     }
     _callStateChanged(cctkState);
     return success;
@@ -130,7 +143,9 @@ class ApiCCTK {
     final success = await backend.request(cctkType, mode, cctkState, requestCode: requestCode ?? _uuid.v4());
     if (!success) {
       _apiReady = false;
-      _callDepsChanged(false);
+      if (_shouldShowDepsWarning()) _callDepsChanged(false);
+    } else {
+      _callDepsChanged(true);
     }
     _callStateChanged(cctkState);
     return success;
