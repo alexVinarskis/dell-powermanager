@@ -11,6 +11,7 @@ import '../classes/cctk.dart';
 import '../classes/bios_backend.dart';
 import '../classes/cctk_backend.dart';
 import '../classes/dell_bios_provider_backend.dart';
+import '../classes/runtime_metrics.dart';
 import '../configs/environment.dart';
 
 class ApiCCTK {
@@ -51,6 +52,8 @@ class ApiCCTK {
   static bool _dellBiosProviderAttemptedAndFailed = false;
   /// When true, periodic timer skips starting a new _query() so a waiting request() can run sooner.
   static bool _writePending = false;
+  static DateTime? _ensureReadyRetryAfter;
+  static int _ensureReadyBackoffSec = 5;
 
   /// Call from main() to preload SharedPreferences so the first _query() does not wait on getInstance().
   static void initPreload() {
@@ -155,18 +158,27 @@ class ApiCCTK {
   }
 
   static Future<bool> _query() async {
+    final startedMs = RuntimeMetrics.nowMs();
     if (cctkState.cctkCompatible == false) return false;
 
     await _cctkAcquire();
     try {
       final backend = await _getOrCreateBackend();
       if (!(_apiReady ?? true)) {
+        if (_ensureReadyRetryAfter != null && DateTime.now().isBefore(_ensureReadyRetryAfter!)) {
+          RuntimeMetrics.logDuration('apiCctk.query.ensureReadyBackoff', startedMs, extra: 'until=${_ensureReadyRetryAfter!.toIso8601String()}');
+          return false;
+        }
         _apiReady = await backend
             .ensureReady()
             .timeout(Duration(seconds: Constants.backendEnsureReadyTimeoutSec), onTimeout: () => throw TimeoutException('ensureReady'));
         if (_apiReady!) {
+          _ensureReadyRetryAfter = null;
+          _ensureReadyBackoffSec = 5;
           _callDepsChanged(true);
         } else if (_shouldShowDepsWarning()) {
+          _ensureReadyRetryAfter = DateTime.now().add(Duration(seconds: _ensureReadyBackoffSec));
+          _ensureReadyBackoffSec = (_ensureReadyBackoffSec * 2).clamp(5, 60).toInt();
           _callDepsChanged(false);
         }
         if (!(_apiReady ?? false)) return false;
@@ -185,12 +197,16 @@ class ApiCCTK {
         _callDepsChanged(true);
       }
       _callStateChanged(cctkState);
+      RuntimeMetrics.logDuration('apiCctk.query', startedMs, extra: 'success=$success');
       return success;
     } catch (_) {
       // Transient failure (e.g. timeout, IO): mark not ready so next _query() re-runs ensureReady().
       _apiReady = false;
+      _ensureReadyRetryAfter = DateTime.now().add(Duration(seconds: _ensureReadyBackoffSec));
+      _ensureReadyBackoffSec = (_ensureReadyBackoffSec * 2).clamp(5, 60).toInt();
       if (_shouldShowDepsWarning()) _callDepsChanged(false);
       _callStateChanged(cctkState);
+      RuntimeMetrics.logDuration('apiCctk.query.exception', startedMs);
       return false;
     } finally {
       _cctkReleaseMutex();
@@ -198,6 +214,7 @@ class ApiCCTK {
   }
 
   static Future<bool> request(String cctkType, String mode, {String? requestCode}) async {
+    final startedMs = RuntimeMetrics.nowMs();
     _writePending = true;
     await _cctkAcquire();
     try {
@@ -219,11 +236,15 @@ class ApiCCTK {
         }
       }
       _callStateChanged(cctkState);
+      RuntimeMetrics.logDuration('apiCctk.request', startedMs, extra: 'type=$cctkType success=$success');
       return success;
     } catch (_) {
       _apiReady = false;
+      _ensureReadyRetryAfter = DateTime.now().add(Duration(seconds: _ensureReadyBackoffSec));
+      _ensureReadyBackoffSec = (_ensureReadyBackoffSec * 2).clamp(5, 60).toInt();
       if (_shouldShowDepsWarning()) _callDepsChanged(false);
       _callStateChanged(cctkState);
+      RuntimeMetrics.logDuration('apiCctk.request.exception', startedMs, extra: 'type=$cctkType');
       return false;
     } finally {
       _cctkReleaseMutex();

@@ -5,31 +5,42 @@ import 'package:process_run/shell.dart';
 import '../classes/battery_state.dart';
 import '../classes/battery.dart';
 import '../configs/environment.dart';
+import 'runtime_metrics.dart';
 
 class ApiBattery {
   static final List<Duration> _additionalRefreshInternals = [];
-  static void addQueryDuration(Duration interval) {
-    _additionalRefreshInternals.add(interval);
+  static const Duration _idleRefreshInternal = Duration(minutes: 1);
+  static bool _hasSubscribers() => _callbacksStateChanged.isNotEmpty;
+  static void _updateRefreshInterval() {
     final durations = <Duration>[..._additionalRefreshInternals, _initialRefreshInternal]..sort((a, b) => a.compareTo(b));
-    final newMin = durations.first;
+    var newMin = durations.first;
+    if (!_hasSubscribers() && _additionalRefreshInternals.isEmpty && newMin < _idleRefreshInternal) {
+      newMin = _idleRefreshInternal;
+    }
     if (newMin != _refreshInternal) {
       _refreshInternal = newMin;
       requestUpdate();
     }
+  }
+  static void addQueryDuration(Duration interval) {
+    _additionalRefreshInternals.add(interval);
+    _updateRefreshInterval();
   }
   static void removeQueryDuration(Duration interval) {
     _additionalRefreshInternals.remove(interval);
-    final durations = <Duration>[..._additionalRefreshInternals, _initialRefreshInternal]..sort((a, b) => a.compareTo(b));
-    final newMin = durations.first;
-    if (newMin != _refreshInternal) {
-      _refreshInternal = newMin;
-      requestUpdate();
-    }
+    _updateRefreshInterval();
   }
 
   static final List<Function(BatteryState batteryState)> _callbacksStateChanged = [];
-  static void addCallbacksStateChanged(var callback)  { _callbacksStateChanged.add(callback); }
-  static void removeCallbacksStateChanged(var callback) { _callbacksStateChanged.remove(callback); }
+  static void addCallbacksStateChanged(var callback)  {
+    _callbacksStateChanged.add(callback);
+    _updateRefreshInterval();
+    requestUpdate();
+  }
+  static void removeCallbacksStateChanged(var callback) {
+    _callbacksStateChanged.remove(callback);
+    _updateRefreshInterval();
+  }
 
   static late Duration _initialRefreshInternal;
   static late Duration _refreshInternal;
@@ -40,7 +51,7 @@ class ApiBattery {
 
   ApiBattery(Duration refreshInternal) {
     _initialRefreshInternal = refreshInternal;
-    _refreshInternal = _initialRefreshInternal;
+    _refreshInternal = _idleRefreshInternal;
     _query();
     _timer = Timer.periodic(_refreshInternal, (Timer t) => _query());
   }
@@ -60,13 +71,19 @@ class ApiBattery {
   }
 
   static Future<bool> _query() async {
+    if (!_hasSubscribers() && _additionalRefreshInternals.isEmpty) {
+      return false;
+    }
+    final startedMs = RuntimeMetrics.nowMs();
     // get response
     if (Platform.isLinux) {
+      RuntimeMetrics.increment('process.batteryLinux');
       ProcessResult pr = (await _shell.run('''bash -c "${Battery.batteryInfoLinux.cmd}"'''))[0];
       if (!_processReponseLinux(pr)) {
         return false;
       }
     } else {
+      RuntimeMetrics.increment('process.batteryWindows');
       ProcessResult pr = (await _shell.run(Battery.batteryInfoWindows.cmd))[0];
       if (!_processReponseWindows(pr)) {
         return false;
@@ -74,6 +91,7 @@ class ApiBattery {
     }
     // notify listeners
     _callStateChanged(batteryState!);
+    RuntimeMetrics.logDuration('apiBattery.query', startedMs);
     return true;
   }
   static bool _processReponseLinux(ProcessResult pr) {

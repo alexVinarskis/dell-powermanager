@@ -8,11 +8,15 @@ import 'package:version/version.dart';
 import '../classes/dependencies_manager.dart';
 import '../configs/constants.dart';
 import '../configs/environment.dart';
+import 'runtime_metrics.dart';
 
 class OtaManager {
   static final _shell = Shell(verbose: Environment.runningDebug, throwOnError: false);
   static SharedPreferences? _prefs;
   static const _prefNameOtaCheckEnabled = "otaCheckEnabled";
+  static const _prefNameOtaLatestResult = "otaLatestResult";
+  static const _prefNameOtaLastCheckMs = "otaLastCheckMs";
+  static const _otaCheckTtlMs = 24 * 60 * 60 * 1000;
 
   static final List<Function(List<String> latestOta)> _callbacksOtaChanged = [];
   static void addCallbacksOtaChanged(var callback)  { _callbacksOtaChanged.add(callback); }
@@ -29,7 +33,7 @@ class OtaManager {
     bool previousValue = await isOtaCheckEnabled();
     if (value != previousValue) {
       await _prefs?.setBool(_prefNameOtaCheckEnabled, value);
-      checkLatestOta(otaCheckEnabled: value).then((latestOta) => _callOtaChanged(latestOta));
+      checkLatestOta(otaCheckEnabled: value, useCache: false).then((latestOta) => _callOtaChanged(latestOta));
     }
   }
   static Future<bool> isOtaCheckEnabled() async {
@@ -38,20 +42,48 @@ class OtaManager {
     if (isOtaCheckEnabled == null) {
       isOtaCheckEnabled = true;
       await _prefs?.setBool(_prefNameOtaCheckEnabled, isOtaCheckEnabled);
-      checkLatestOta(otaCheckEnabled: isOtaCheckEnabled).then((latestOta) => _callOtaChanged(latestOta));
+      checkLatestOta(otaCheckEnabled: isOtaCheckEnabled, useCache: false).then((latestOta) => _callOtaChanged(latestOta));
     }
     return isOtaCheckEnabled;
   }
 
-  // [tagname, releaseUrl, downloadUrl]
-  static Future<List<String>> checkLatestOta({bool? otaCheckEnabled}) async {
-    otaCheckEnabled ??= await isOtaCheckEnabled();
-    if (!otaCheckEnabled) {
+  static Future<List<String>> getCachedLatestOta() async {
+    _prefs ??= await SharedPreferences.getInstance();
+    final jsonString = _prefs?.getString(_prefNameOtaLatestResult);
+    if (jsonString == null || jsonString.isEmpty) {
       return [];
     }
+    final decoded = jsonDecode(jsonString);
+    if (decoded is List) {
+      return decoded.map((e) => e.toString()).toList();
+    }
+    return [];
+  }
+
+  // [tagname, releaseUrl, downloadUrl]
+  static Future<List<String>> checkLatestOta({bool? otaCheckEnabled, bool useCache = true}) async {
+    final startedMs = RuntimeMetrics.nowMs();
+    _prefs ??= await SharedPreferences.getInstance();
+    otaCheckEnabled ??= await isOtaCheckEnabled();
+    if (!otaCheckEnabled) {
+      RuntimeMetrics.logDuration('ota.checkLatestOta.skipDisabled', startedMs);
+      return [];
+    }
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    final lastCheckMs = _prefs?.getInt(_prefNameOtaLastCheckMs) ?? 0;
+    if (useCache && nowMs - lastCheckMs < _otaCheckTtlMs) {
+      final cached = await getCachedLatestOta();
+      if (cached.isNotEmpty) {
+        RuntimeMetrics.logDuration('ota.checkLatestOta.cacheHit', startedMs);
+        return cached;
+      }
+    }
+
     List<String> result = [];
+    RuntimeMetrics.increment('process.otaApi');
     ProcessResult pr = (await _shell.run('${Platform.isLinux ? "" : "cmd /c"} ${Constants.githubApiRequest} ${Constants.githubApiReleases}'))[0];
     if (pr.exitCode != 0) {
+      RuntimeMetrics.logDuration('ota.checkLatestOta.apiFailed', startedMs, extra: 'exit=${pr.exitCode}');
       return result;
     }
     Map<dynamic, dynamic> json = jsonDecode(pr.stdout.toString());
@@ -70,10 +102,15 @@ class OtaManager {
     if (!json.containsKey(Constants.githubApiFieldAssets)) {
       return result;
     }
+    if (DependenciesManager.supportsAutoinstall == null) {
+      await DependenciesManager.verifySupportsAutoinstall();
+    }
+    String? arch;
+    if (Platform.isLinux && DependenciesManager.supportsAutoinstall == true) {
+      RuntimeMetrics.increment('process.otaDpkgArch');
+      arch = (await _shell.run('dpkg --print-architecture'))[0].stdout.toString().trim();
+    }
     for (Map<dynamic, dynamic> asset in json[Constants.githubApiFieldAssets]) {
-      if (DependenciesManager.supportsAutoinstall == null) {
-        await DependenciesManager.verifySupportsAutoinstall();
-      }
       // For linux, only .deb is supported for autoinstall
       if (!DependenciesManager.supportsAutoinstall! ||
           !asset.containsKey(Constants.githubApiFieldBrowserDownloadUrl)) {
@@ -87,7 +124,9 @@ class OtaManager {
           break;
         }
       } else {
-        String arch = (await _shell.run('dpkg --print-architecture'))[0].stdout.toString().trim();
+        if (arch == null || arch.isEmpty) {
+          continue;
+        }
         if (asset[Constants.githubApiFieldBrowserDownloadUrl]
             .toString()
             .endsWith('.deb') &&
@@ -98,6 +137,9 @@ class OtaManager {
         }
       }
     }
+    await _prefs?.setInt(_prefNameOtaLastCheckMs, nowMs);
+    await _prefs?.setString(_prefNameOtaLatestResult, jsonEncode(result));
+    RuntimeMetrics.logDuration('ota.checkLatestOta.network', startedMs);
     return result;
   }
 
