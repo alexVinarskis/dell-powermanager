@@ -47,7 +47,8 @@ class NotificationOtaState extends State<NotificationOta> {
   void initState() {
     super.initState();
     OtaManager.addCallbacksOtaChanged(_handleOtaState);
-    OtaManager.checkLatestOta().then((latestOta) => _handleOtaState(latestOta));
+    OtaManager.getCachedLatestOta().then((latestOta) => _handleOtaState(latestOta));
+    OtaManager.checkLatestOta(useCache: false).then((latestOta) => _handleOtaState(latestOta));
   }
 
   @override

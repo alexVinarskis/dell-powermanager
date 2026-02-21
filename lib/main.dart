@@ -10,6 +10,7 @@ import 'components/window_caption.dart' as window_caption;
 import 'dart:io' show Platform;
 import '../classes/api_battery.dart';
 import '../classes/api_cctk.dart';
+import '../classes/runtime_metrics.dart';
 import '../screens/screen_parent.dart';
 import '../configs/constants.dart';
 
@@ -18,9 +19,12 @@ Size currentSize  = Size(minSize.width-52, minSize.height-52);  // hack, since c
 
 Future<void> main() async {
   const String title      = Constants.applicationName;
+  final startupStarted = RuntimeMetrics.nowMs();
 
   WidgetsFlutterBinding.ensureInitialized();
+  RuntimeMetrics.logDuration('main.widgetsInitialized', startupStarted);
   await windowManager.ensureInitialized();
+  RuntimeMetrics.logDuration('main.windowManagerInitialized', startupStarted);
 
   WindowOptions windowOptions = WindowOptions(
     titleBarStyle: TitleBarStyle.hidden,
@@ -47,10 +51,14 @@ Future<void> main() async {
     BiosProtectionManager.loadPassword(Platform.environment[Constants.varnameBiosPwd]!);
   }
 
-  ApiCCTK(const Duration(milliseconds: 10000));
+  ApiCCTK.initPreload();
+  ApiCCTK.ensureBackend();
+  ApiCCTK(const Duration(seconds: 30));
   ApiBattery(const Duration(milliseconds: 10000));
   ApiPowermode(const Duration(milliseconds: 10000));
+  RuntimeMetrics.logDuration('main.apiConstructorsInitialized', startupStarted);
   runApp(const MyApp(title: title));
+  RuntimeMetrics.logDuration('main.runAppCalled', startupStarted);
 }
 
 class MyApp extends StatelessWidget {

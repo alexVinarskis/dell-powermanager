@@ -77,9 +77,12 @@ class BatteryState {
     batteryManufacturer     = _setIfPresent(map[Battery.batteryInfoWindows.args.batteryManufacturer],   (var x) => x);
     batterySerialNumber     = _setIfPresent(map[Battery.batteryInfoWindows.args.batterySerialNumber],   (var x) => x);
 
-    batteryPercentage       = _setIfPresent(map[Battery.batteryInfoWindows.args.batteryCapacityNow],    (var x) => (int.parse(x) / double.parse(map[Battery.batteryInfoWindows.args.batteryCapacityFull]) * 100).toInt());
-    batteryHealth           = _setIfPresent(map[Battery.batteryInfoWindows.args.batteryCapacityFull],   (var x) => double.parse(x) / double.parse(map[Battery.batteryInfoWindows.args.batteryCapacityFullDesign]) * 100);
-    batteryCurrentPower     = _setIfPresent(map[batteryCharging! ? Battery.batteryInfoWindows.args.batteryChargeRate : Battery.batteryInfoWindows.args.batteryDischargeRate],  (var x) => double.parse(x) / 1000);
+    final capacityFull = map[Battery.batteryInfoWindows.args.batteryCapacityFull];
+    final capacityFullDesign = map[Battery.batteryInfoWindows.args.batteryCapacityFullDesign];
+    batteryPercentage       = _setIfPresent(map[Battery.batteryInfoWindows.args.batteryCapacityNow],    (var x) => capacityFull != null && capacityFull.toString().isNotEmpty ? (int.parse(x) / double.parse(capacityFull) * 100).toInt() : null);
+    batteryHealth           = _setIfPresent(capacityFull,   (var x) => capacityFullDesign != null && capacityFullDesign.toString().isNotEmpty ? double.parse(x) / double.parse(capacityFullDesign) * 100 : null);
+    final powerKey = (batteryCharging == true) ? Battery.batteryInfoWindows.args.batteryChargeRate : Battery.batteryInfoWindows.args.batteryDischargeRate;
+    batteryCurrentPower     = _setIfPresent(map[powerKey],  (var x) => double.parse(x) / 1000);
 
     /* Cap certain values to 100% */
     batteryPercentage = _capIfPresent(batteryPercentage, 100);

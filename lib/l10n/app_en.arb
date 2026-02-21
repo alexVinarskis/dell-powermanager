@@ -74,6 +74,9 @@
     "dependenciesAlertP3" : "CLI\nand its dependencies to operate:\n\n",
     "dependenciesAlertP4_supported" : "Press the button below to automatically install these\npackages, or install them manually and restart the app.",
     "dependenciesAlertP4_unsupported" : "Install these packages from respective providers\nand restart the app.",
+    "dependenciesAlertWindowsP1" : "The DellBIOSProvider PowerShell module could not be loaded. This app needs it to control BIOS power and thermal settings on Windows.",
+    "dependenciesAlertWindowsP2" : "Install it in PowerShell (Run as Administrator):\nInstall-Module -Name DellBIOSProvider -Scope CurrentUser -Force",
+    "dependenciesAlertButtonOpenGuide" : "Open installation guide",
 
     "otaCardTitle" : "Update Available",
     "otaCardSubtitleAwaiting" : "Tap for more info and install options",
@@ -154,6 +157,7 @@
 
     "cctkModeTitleUnsupported" : "Not supported on this platform",
     "cctkSummaryTitleUnsupported" : "not supported",
+    "settingApplyFailedSnackbar" : "Setting could not be applied. Try again or check BIOS password.",
 
     "powermodeTitle" : "OS Power Plan",
     "powermodePowersaving" : "Power Saving",

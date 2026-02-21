@@ -26,6 +26,7 @@ class ScreenThermalsState extends State<ScreenThermals> {
   PowermodeState? _powermodeState;
   ParameterState? _currentState;
   bool currentlyLoading = false;
+  bool _requestInProgress = false;
   bool _failedToSwitch = false;
   final Duration _refreshInternalPowermode = const Duration(seconds: 3);
 
@@ -38,7 +39,6 @@ class ScreenThermalsState extends State<ScreenThermals> {
     ApiPowermode.addQueryDuration(_refreshInternalPowermode);
     ApiCCTK.addQueryParameter(CCTK.thermalManagement);
     ApiCCTK.addCallbacksStateChanged(_handleCCTKStateUpdate);
-    ApiCCTK.requestUpdate();
   }
   @override
   void dispose() {
@@ -161,22 +161,30 @@ class ScreenThermalsState extends State<ScreenThermals> {
           ModeItem(CCTK.thermalManagement.strings(context)[mode]![indexTitle],
             description: CCTK.thermalManagement.strings(context)[mode]![indexDescription],
             onPress: () async {
-              if (!currentlyLoading) {
-                String previousMode = _currentState!.mode;
+              if (_requestInProgress || currentlyLoading) {
+                return;
+              }
+              _requestInProgress = true;
+              String previousMode = _currentState!.mode;
+              setState(() {
+                _currentState?.mode = mode;
+                currentlyLoading = true;
+              });
+              _failedToSwitch = !(await changeMode(mode));
+              if (mounted) {
                 setState(() {
-                  _currentState?.mode = mode;
-                  currentlyLoading = true;
+                  if (_failedToSwitch) {
+                    _currentState?.mode = previousMode;
+                  }
+                  currentlyLoading = false;
                 });
-                _failedToSwitch = !(await changeMode(mode));
-                if (mounted) {
-                  setState(() {
-                    if (_failedToSwitch) {
-                      _currentState?.mode = previousMode;
-                    }
-                    currentlyLoading = false;
-                  });
+                if (_failedToSwitch) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(S.of(context)!.settingApplyFailedSnackbar)),
+                  );
                 }
               }
+              _requestInProgress = false;
             },
             paddingV: 10,
             paddingH: 20,
